@@ -121,7 +121,7 @@ class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, p
             AddTenderTander++
             val insertDoc = con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?")
             insertDoc.setInt(1, idTender)
-            insertDoc.setString(2, "Скачать файл (16 Кб) ")
+            insertDoc.setString(2, "Скачать файл")
             insertDoc.setString(3, urlDoc)
             insertDoc.executeUpdate()
             insertDoc.close()
