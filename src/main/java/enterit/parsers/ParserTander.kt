@@ -21,6 +21,7 @@ class ParserTander : Iparser {
     init {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog")
         java.util.logging.Logger.getLogger("org.openqa.selenium").level = Level.OFF
+        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver")
     }
 
     companion object WebCl {
