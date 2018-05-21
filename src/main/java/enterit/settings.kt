@@ -8,13 +8,15 @@ import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 
 val executePath: String = File(Class.forName("enterit.AppKt").protectionDomain.codeSource.location.path).parentFile.toString()
-const val arguments = "tander"
+const val arguments = "tander, safmarg"
 lateinit var arg: Arguments
 var Database: String? = null
 var tempDirTenders: String? = null
 var logDirTenders: String? = null
 var tempDirTendersTander: String? = null
 var logDirTendersTander: String? = null
+var tempDirTendersSafmarg: String? = null
+var logDirTendersSafmarg: String? = null
 var UserTander: String? = null
 var PassTander: String? = null
 var Prefix: String? = null
@@ -25,6 +27,7 @@ var Port: Int = 0
 var logPath: String? = null
 val DateNow = Date()
 var AddTenderTander: Int = 0
+var AddTenderSafmarg: Int = 0
 var UrlConnect: String? = null
 var formatter: Format = SimpleDateFormat("dd.MM.yyyy kk:mm:ss")
 var formatterGpn: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy kk:mm")
@@ -50,6 +53,8 @@ fun getSettings() = try {
                     "database" -> Database = it.childNodes.item(0).textContent
                     "tempdir_tenders_tander" -> tempDirTendersTander = executePath + File.separator + it.childNodes.item(0).textContent
                     "logdir_tenders_tander" -> logDirTendersTander = executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_safmar" -> tempDirTendersSafmarg = executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_safmar" -> logDirTendersSafmarg = executePath + File.separator + it.childNodes.item(0).textContent
                     "prefix" -> Prefix = try {
                         it.childNodes.item(0).textContent
                     } catch (e: Exception) {
@@ -76,6 +81,7 @@ fun init(args: Array<String>) {
     } else {
         when (args[0]) {
             "tander" -> arg = Arguments.TANDER
+            "safmarg" -> arg = Arguments.SAFMARG
             else -> run { println("Неверно указаны аргументы, используйте $arguments, выходим из программы"); System.exit(0) }
 
         }
@@ -83,6 +89,7 @@ fun init(args: Array<String>) {
     getSettings()
     when (arg) {
         Arguments.TANDER -> run { tempDirTenders = tempDirTendersTander; logDirTenders = logDirTendersTander }
+        Arguments.SAFMARG -> run { tempDirTenders = tempDirTendersSafmarg; logDirTenders = logDirTendersSafmarg }
     }
     if (tempDirTenders == null || tempDirTenders == "") {
         println("Не задана папка для временных файлов, выходим из программы")
