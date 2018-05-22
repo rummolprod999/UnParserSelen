@@ -49,7 +49,8 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
             logger("can not find dates in tender", tn.href, datePubT, endDateT)
             return
         }
-        val status = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Статус торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim({ it <= ' ' }) ?: ""
+        val status = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Статус торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim({ it <= ' ' })
+                ?: ""
         DriverManager.getConnection(UrlConnect, UserDb, PassDb).use(fun(con: Connection) {
             val dateVer = Date()
 
