@@ -1,5 +1,8 @@
 package enterit.tenders
 
+import enterit.PassDb
+import enterit.UrlConnect
+import enterit.UserDb
 import enterit.data_classes.SafmargT
 import enterit.formatterGpn
 import enterit.parsers.ParserSafmarg
@@ -11,6 +14,8 @@ import org.openqa.selenium.By
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
+import java.sql.Connection
+import java.sql.DriverManager
 import java.util.*
 
 class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbstract(), ITender {
@@ -44,7 +49,11 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
             logger("can not find dates in tender", tn.href, datePubT, endDateT)
             return
         }
-        val status = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Статус торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim({ it <= ' ' })
+        val status = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Статус торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim({ it <= ' ' }) ?: ""
+        DriverManager.getConnection(UrlConnect, UserDb, PassDb).use(fun(con: Connection) {
+            val dateVer = Date()
+
+        })
 
 
     }
