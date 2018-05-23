@@ -5,6 +5,7 @@ import enterit.data_classes.SafmargT
 import enterit.parsers.ParserSafmarg
 import enterit.tools.*
 import org.openqa.selenium.By
+import org.openqa.selenium.WebElement
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
@@ -271,7 +272,14 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
                     close()
                 }
             }
-            val purobj2 = driver.findElements(By.xpath("//tr[contains(@class, 'purchase-items-table')]//table/tbody/tr[position() > 1]"))
+            var purobj2 = mutableListOf<WebElement>()
+            val toggler = driver.findElementWithoutException(By.xpath("//tr[@class = 'purchase-items-toggler-row' and @onclick]"))
+            if (toggler != null) {
+                toggler.click()
+                Thread.sleep(3000)
+                purobj2 = driver.findElements(By.xpath("//tr[contains(@class, 'purchase-items-table')]//table/tbody/tr[position() > 1]"))
+            }
+
             purobj2.forEach {
                 val name1 = it.findElementWithoutException(By.xpath(".//td[2]"))?.text?.trim({ it <= ' ' })
                         ?: ""
