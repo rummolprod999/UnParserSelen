@@ -1,6 +1,6 @@
 package enterit.parsers
 
-import enterit.data_classes.SafmargT
+import enterit.dataclasses.SafmargT
 import enterit.tenders.TenderSafmarg
 import enterit.tools.findElementWithoutException
 import enterit.tools.logger

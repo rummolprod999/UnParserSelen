@@ -2,5 +2,6 @@ package enterit
 
 enum class Arguments {
     TANDER,
-    SAFMARG
+    SAFMARG,
+    TALAN
 }

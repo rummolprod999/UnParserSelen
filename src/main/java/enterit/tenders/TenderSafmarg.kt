@@ -1,7 +1,7 @@
 package enterit.tenders
 
 import enterit.*
-import enterit.data_classes.SafmargT
+import enterit.dataclasses.SafmargT
 import enterit.parsers.ParserSafmarg
 import enterit.tools.*
 import org.openqa.selenium.By
