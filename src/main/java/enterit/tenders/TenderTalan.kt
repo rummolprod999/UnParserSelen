@@ -74,7 +74,37 @@ class TenderTalan(val tn: TalanT) : TenderAbstract(), ITender {
             }
             rs.close()
             stmt.close()
-
+            var IdOrganizer = 0
+            val urlOrgT = htmlTen.selectFirst("label:containsOwn(Организатор) + div > div > a")?.attr("href")?.trim { it <= ' ' }
+                    ?: ""
+            if (urlOrgT != "") {
+                val urlOrg = "$etpUrl$urlOrgT"
+                val pageOrg = downloadFromUrl(urlOrg)
+                if (pageOrg == "") {
+                    logger("Gets empty string ${this::class.simpleName}", urlOrg)
+                    return
+                }
+                val htmlOrg = Jsoup.parse(pageOrg)
+                val fullnameOrg = htmlOrg.selectFirst("label:containsOwn(Полное наименование) + div > div")?.ownText()?.trim { it <= ' ' }
+                        ?: ""
+                if (fullnameOrg != "") {
+                    val stmto = con.prepareStatement("SELECT id_organizer FROM ${Prefix}organizer WHERE full_name = ?")
+                    stmto.setString(1, fullnameOrg)
+                    val rso = stmto.executeQuery()
+                    if (rso.next()) {
+                        IdOrganizer = rso.getInt(1)
+                        rso.close()
+                        stmto.close()
+                    } else {
+                        rso.close()
+                        stmto.close()
+                        val postalAdr = htmlOrg.selectFirst("label:containsOwn(Почтовый адрес) + div > div")?.ownText()?.trim { it <= ' ' }
+                                ?: ""
+                        val factAdr = htmlOrg.selectFirst("label:containsOwn(Юридический адрес) + div > div")?.ownText()?.trim { it <= ' ' }
+                                ?: ""
+                    }
+                }
+            }
         })
     }
 }
