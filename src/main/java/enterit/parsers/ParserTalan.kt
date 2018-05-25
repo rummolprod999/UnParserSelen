@@ -69,7 +69,7 @@ class ParserTalan : Iparser {
     private fun parserTender(el: WebElement) {
         val purNum = el.findElementWithoutException(By.xpath(".//td[1]/a"))?.text?.trim({ it <= ' ' })
                 ?: ""
-        println(purNum)
+        //println(purNum)
         if (purNum == "") {
             logger("can not find purNum in tender")
             return
