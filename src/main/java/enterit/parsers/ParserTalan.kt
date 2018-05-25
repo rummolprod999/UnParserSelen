@@ -98,7 +98,9 @@ class ParserTalan : Iparser {
                 ?: ""
         val placingWayName = el.findElementWithoutException(By.xpath(".//td[9]"))?.text?.trim({ it <= ' ' })
                 ?: ""
-        val tn = TalanT(purNum, hrefT, hrefL, purName, pubDate, endDate, status, placingWayName)
+        val urlOrg = el.findElementWithoutException(By.xpath(".//td[7]/a"))?.getAttribute("href")?.trim({ it <= ' ' })
+                ?: ""
+        val tn = TalanT(purNum, hrefT, hrefL, purName, pubDate, endDate, status, placingWayName, urlOrg)
         try {
             val t = TenderTalan(tn)
             t.parsing()

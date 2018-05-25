@@ -79,13 +79,13 @@ class TenderTalan(val tn: TalanT) : TenderAbstract(), ITender {
             var IdOrganizer = 0
             var inn = ""
             var fullnameOrg = ""
-            val urlOrgT = htmlTen.selectFirst("label:containsOwn(Организатор) + div > div > a")?.attr("href")?.trim { it <= ' ' }
-                    ?: ""
+            /*val urlOrgT = htmlTen.selectFirst("label:containsOwn(Организатор) + div > div > a")?.attr("href")?.trim { it <= ' ' }
+                    ?: ""*/
+            val urlOrgT = tn.urlOrg
             if (urlOrgT != "") {
-                val urlOrg = "$etpUrl$urlOrgT"
-                val pageOrg = downloadFromUrl(urlOrg)
+                val pageOrg = downloadFromUrl(urlOrgT)
                 if (pageOrg == "") {
-                    logger("Gets empty string ${this::class.simpleName}", urlOrg)
+                    logger("Gets empty string ${this::class.simpleName}", urlOrgT)
                     return
                 }
                 val htmlOrg = Jsoup.parse(pageOrg)
