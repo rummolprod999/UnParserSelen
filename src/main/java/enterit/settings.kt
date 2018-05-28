@@ -8,7 +8,7 @@ import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 
 val executePath: String = File(Class.forName("enterit.AppKt").protectionDomain.codeSource.location.path).parentFile.toString()
-const val arguments = "tander, safmarg, talan"
+const val arguments = "tander, safmarg, talan, mvideo"
 lateinit var arg: Arguments
 var Database: String? = null
 var tempDirTenders: String? = null
@@ -19,7 +19,10 @@ var tempDirTendersSafmarg: String? = null
 var logDirTendersSafmarg: String? = null
 var tempDirTendersTalan: String? = null
 var logDirTendersTalan: String? = null
+var tempDirTendersMvideo: String? = null
+var logDirTendersMvideo: String? = null
 var UserTander: String? = null
+var UserMvideo: String? = null
 var PassTander: String? = null
 var Prefix: String? = null
 var UserDb: String? = null
@@ -30,6 +33,7 @@ var logPath: String? = null
 val DateNow = Date()
 var AddTenderTander: Int = 0
 var AddTenderSafmarg: Int = 0
+var AddTenderMvideo: Int = 0
 var AddTenderTalan: Int = 0
 var UrlConnect: String? = null
 var formatter: Format = SimpleDateFormat("dd.MM.yyyy kk:mm:ss")
@@ -60,6 +64,8 @@ fun getSettings() = try {
                     "logdir_tenders_safmar" -> logDirTendersSafmarg = executePath + File.separator + it.childNodes.item(0).textContent
                     "tempdir_tenders_talan" -> tempDirTendersTalan = executePath + File.separator + it.childNodes.item(0).textContent
                     "logdir_tenders_talan" -> logDirTendersTalan = executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_mvideo" -> tempDirTendersMvideo = executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_mvideo" -> logDirTendersMvideo = executePath + File.separator + it.childNodes.item(0).textContent
                     "prefix" -> Prefix = try {
                         it.childNodes.item(0).textContent
                     } catch (e: Exception) {
@@ -67,6 +73,7 @@ fun getSettings() = try {
                     }
 
                     "usertander" -> UserTander = it.childNodes.item(0).textContent
+                    "usermvideo" -> UserMvideo = it.childNodes.item(0).textContent
                     "passtander" -> PassTander = it.childNodes.item(0).textContent
                     "userdb" -> UserDb = it.childNodes.item(0).textContent
                     "passdb" -> PassDb = it.childNodes.item(0).textContent
@@ -88,6 +95,7 @@ fun init(args: Array<String>) {
             "tander" -> arg = Arguments.TANDER
             "safmarg" -> arg = Arguments.SAFMARG
             "talan" -> arg = Arguments.TALAN
+            "mvideo" -> arg = Arguments.MVIDEO
             else -> run { println("Неверно указаны аргументы, используйте $arguments, выходим из программы"); System.exit(0) }
 
         }
@@ -97,6 +105,7 @@ fun init(args: Array<String>) {
         Arguments.TANDER -> run { tempDirTenders = tempDirTendersTander; logDirTenders = logDirTendersTander }
         Arguments.SAFMARG -> run { tempDirTenders = tempDirTendersSafmarg; logDirTenders = logDirTendersSafmarg }
         Arguments.TALAN -> run { tempDirTenders = tempDirTendersTalan; logDirTenders = logDirTendersTalan }
+        Arguments.MVIDEO -> run { tempDirTenders = tempDirTendersMvideo; logDirTenders = logDirTendersMvideo }
     }
     if (tempDirTenders == null || tempDirTenders == "") {
         println("Не задана папка для временных файлов, выходим из программы")
