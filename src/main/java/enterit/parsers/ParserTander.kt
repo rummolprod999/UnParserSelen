@@ -26,7 +26,7 @@ class ParserTander : Iparser {
 
     companion object WebCl {
         const val BaseUrl = "https://srm.tander.ru/uniapp#app=srm&token=9934904"
-        const val timeoutB = 30000L
+        const val timeoutB = 120L
     }
 
     override fun parser() {
