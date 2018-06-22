@@ -8,7 +8,7 @@ import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 
 val executePath: String = File(Class.forName("enterit.AppKt").protectionDomain.codeSource.location.path).parentFile.toString()
-const val arguments = "tander, safmarg, talan, mvideo"
+const val arguments = "tander, safmarg, talan, mvideo, mosreg"
 lateinit var arg: Arguments
 var Database: String? = null
 var tempDirTenders: String? = null
@@ -21,6 +21,8 @@ var tempDirTendersTalan: String? = null
 var logDirTendersTalan: String? = null
 var tempDirTendersMvideo: String? = null
 var logDirTendersMvideo: String? = null
+var tempDirTendersMosreg: String? = null
+var logDirTendersMosreg: String? = null
 var UserTander: String? = null
 var UserMvideo: String? = null
 var PassTander: String? = null
@@ -35,6 +37,7 @@ var AddTenderTander: Int = 0
 var AddTenderSafmarg: Int = 0
 var AddTenderMvideo: Int = 0
 var AddTenderTalan: Int = 0
+var AddTenderMosreg: Int = 0
 var UrlConnect: String? = null
 var formatter: Format = SimpleDateFormat("dd.MM.yyyy kk:mm:ss")
 var formatterGpn: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy kk:mm")
@@ -66,6 +69,8 @@ fun getSettings() = try {
                     "logdir_tenders_talan" -> logDirTendersTalan = executePath + File.separator + it.childNodes.item(0).textContent
                     "tempdir_tenders_mvideo" -> tempDirTendersMvideo = executePath + File.separator + it.childNodes.item(0).textContent
                     "logdir_tenders_mvideo" -> logDirTendersMvideo = executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_mosreg" -> tempDirTendersMosreg = executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_mosreg" -> logDirTendersMosreg = executePath + File.separator + it.childNodes.item(0).textContent
                     "prefix" -> Prefix = try {
                         it.childNodes.item(0).textContent
                     } catch (e: Exception) {
@@ -96,6 +101,7 @@ fun init(args: Array<String>) {
             "safmarg" -> arg = Arguments.SAFMARG
             "talan" -> arg = Arguments.TALAN
             "mvideo" -> arg = Arguments.MVIDEO
+            "mosreg" -> arg = Arguments.MOSREG
             else -> run { println("Неверно указаны аргументы, используйте $arguments, выходим из программы"); System.exit(0) }
 
         }
@@ -106,6 +112,7 @@ fun init(args: Array<String>) {
         Arguments.SAFMARG -> run { tempDirTenders = tempDirTendersSafmarg; logDirTenders = logDirTendersSafmarg }
         Arguments.TALAN -> run { tempDirTenders = tempDirTendersTalan; logDirTenders = logDirTendersTalan }
         Arguments.MVIDEO -> run { tempDirTenders = tempDirTendersMvideo; logDirTenders = logDirTendersMvideo }
+        Arguments.MOSREG -> run { tempDirTenders = tempDirTendersMosreg; logDirTenders = logDirTendersMosreg }
     }
     if (tempDirTenders == null || tempDirTenders == "") {
         println("Не задана папка для временных файлов, выходим из программы")

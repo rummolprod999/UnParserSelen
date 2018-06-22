@@ -1,9 +1,6 @@
 package enterit
 
-import enterit.parsers.ParserMvideo
-import enterit.parsers.ParserSafmarg
-import enterit.parsers.ParserTalan
-import enterit.parsers.ParserTander
+import enterit.parsers.*
 import enterit.tools.logger
 
 fun main(args: Array<String>) {
@@ -13,6 +10,7 @@ fun main(args: Array<String>) {
         Arguments.SAFMARG -> parserSafmarg()
         Arguments.TALAN -> parserTalan()
         Arguments.MVIDEO -> parserMvideo()
+        Arguments.MOSREG -> parserMosreg()
     }
 
 }
@@ -102,5 +100,27 @@ fun parserMvideo() {
         }
     }
     logger("Добавили тендеров $AddTenderMvideo")
+    logger("Конец парсинга")
+}
+
+fun parserMosreg() {
+    logger("Начало парсинга")
+    val p = ParserMosreg()
+    var tr = 0
+    while (true) {
+        try {
+            p.parser()
+            break
+        } catch (e: Exception) {
+            tr++
+            if (tr > 4) {
+                logger("Количество попыток истекло, выходим из программы")
+                break
+            }
+            logger("Error in parserMosreg function", e.stackTrace, e)
+            e.printStackTrace()
+        }
+    }
+    logger("Добавили тендеров $AddTenderMosreg")
     logger("Конец парсинга")
 }
