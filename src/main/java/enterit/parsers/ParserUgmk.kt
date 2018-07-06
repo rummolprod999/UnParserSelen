@@ -12,6 +12,7 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
+import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
@@ -104,6 +105,10 @@ class ParserUgmk : Iparser {
             val dateEndTmp = it.findElementWithoutException(By.xpath("./div[5]"))?.text?.trim()?.trim { it <= ' ' }
                     ?: ""
             val dateEnd = getDateFromFormat(dateEndTmp, formatterOnlyDate)
+            if (dateEnd == Date(0L)) {
+                logger("can not find dateEnd on page", urlT, purNum)
+                return@forEach
+            }
             val status = it.findElementWithoutException(By.xpath("./div[6]"))?.text?.trim { it <= ' ' } ?: ""
             val pWay = it.findElementWithoutException(By.xpath("./div[3]"))?.text?.trim { it <= ' ' } ?: ""
             val cusName = it.findElementWithoutException(By.xpath("./div[7]"))?.text?.trim { it <= ' ' } ?: ""
