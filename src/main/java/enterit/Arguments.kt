@@ -5,5 +5,6 @@ enum class Arguments {
     SAFMARG,
     TALAN,
     MVIDEO,
-    MOSREG
+    MOSREG,
+    UGMK
 }

@@ -11,6 +11,7 @@ fun main(args: Array<String>) {
         Arguments.TALAN -> parserTalan()
         Arguments.MVIDEO -> parserMvideo()
         Arguments.MOSREG -> parserMosreg()
+        Arguments.UGMK -> parserUgmk()
     }
 
 }
@@ -122,5 +123,27 @@ fun parserMosreg() {
         }
     }
     logger("Добавили тендеров $AddTenderMosreg")
+    logger("Конец парсинга")
+}
+
+fun parserUgmk() {
+    logger("Начало парсинга")
+    val p = ParserUgmk()
+    var tr = 0
+    while (true) {
+        try {
+            p.parser()
+            break
+        } catch (e: Exception) {
+            tr++
+            if (tr > 4) {
+                logger("Количество попыток истекло, выходим из программы")
+                break
+            }
+            logger("Error in parserUgmk function", e.stackTrace, e)
+            e.printStackTrace()
+        }
+    }
+    logger("Добавили тендеров $AddTenderUgmk")
     logger("Конец парсинга")
 }
