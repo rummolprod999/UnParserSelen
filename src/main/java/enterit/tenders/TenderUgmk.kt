@@ -80,8 +80,8 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
             val delivTerm = driver.findElementWithoutException(By.xpath("//label[. = 'Срок заключения договора']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
             val docT = driver.findElements(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]"))
-            /*wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]")))
-            driver.switchTo().defaultContent()*/
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]")))
+            driver.switchTo().defaultContent()
             docT.forEach {
                 val docName = it.findElementWithoutException(By.xpath(".//a[@class = 'file-download-link']"))?.text?.trim { it <= ' ' }
                         ?: ""
@@ -191,6 +191,8 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
             rt.close()
             insertTender.close()
             AddTenderUgmk++
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]")))
+            driver.switchTo().defaultContent()
             val docL = driver.findElements(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]"))
             docL.forEach {
                 val docName = it.findElementWithoutException(By.xpath(".//a[@class = 'file-download-link']"))?.text?.trim { it <= ' ' }
