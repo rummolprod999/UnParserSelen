@@ -46,12 +46,15 @@ class ParserUgmk : Iparser {
             js.executeScript("""document.querySelectorAll('div[title*="Дата окончания приема заявок"]')[0].click()""")
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'grid-canvas']//div[contains(@class, 'slick-row')]")))
             js.executeScript("""document.querySelectorAll('div[title*="Дата окончания приема заявок"]')[0].click()""")
-            (1..5).forEach {
+            Thread.sleep(5000)
+            (1..50).forEach {
                 try {
                     //Thread.sleep(5000)
                     driver.switchTo().defaultContent()
                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'grid-canvas']//div[contains(@class, 'slick-row')][18]/div[7]")))
                     getListTenders(driver, wait)
+                    val jse = driver as JavascriptExecutor
+                    jse.executeScript("document.querySelectorAll('div.slick-viewport')[0].scrollTop += 10;")
                 } catch (e: Exception) {
                     logger("getListTenders", e.stackTrace, e)
                 }
@@ -80,6 +83,7 @@ class ParserUgmk : Iparser {
 
         val tenders = driver.findElements(By.xpath("//div[@class = 'grid-canvas']//div[contains(@class, 'slick-row')]"))
         tenders.forEach {
+            driver.switchTo().defaultContent()
             //Thread.sleep(2000)
             val purNum = it.findElementWithoutException(By.xpath("./div[1]"))?.text?.trim { it <= ' ' }
                     ?: ""
@@ -87,6 +91,7 @@ class ParserUgmk : Iparser {
                 logger("can not purNum in tender")
                 return@forEach
             }
+            //purNum = purNum.regExpTest("""(.+)/""")
             if (tendersS.any { it.purNum == purNum }) return@forEach
             val urlT = it.findElementWithoutException(By.xpath("./div[2]/a"))?.getAttribute("href")?.trim { it <= ' ' }
                     ?: ""
@@ -115,7 +120,6 @@ class ParserUgmk : Iparser {
             val tt = UgmkT(purNum, urlT, urlL, purObj, dateEnd, status, pWay, cusName)
             tendersS.add(tt)
         }
-        val jse = driver as JavascriptExecutor
-        jse.executeScript("document.querySelectorAll('div.slick-viewport')[0].scrollTop += 50;")
+
     }
 }
