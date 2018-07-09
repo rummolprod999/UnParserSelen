@@ -224,7 +224,7 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
                 nmck = nmck.regExpTest("""([\d\.]+)""")
             }
             if (currency != "") {
-                currency = nmck.regExpTest("""[\d\.]+(.+)""")
+                currency = currency.regExpTest("""[\d\.]+(.+)""")
             }
             val insertLot = con.prepareStatement("INSERT INTO ${Prefix}lot SET id_tender = ?, lot_number = ?, currency = ?, max_price = ?", Statement.RETURN_GENERATED_KEYS).apply {
                 setInt(1, idTender)
