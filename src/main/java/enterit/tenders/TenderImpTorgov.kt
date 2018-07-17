@@ -11,14 +11,14 @@ import java.sql.Statement
 import java.sql.Timestamp
 import java.util.*
 
-class TenderTalan(val tn: TalanT) : TenderAbstract(), ITender {
+class TenderImpTorgov(val tn: TalanT) : TenderAbstract(), ITender {
     companion object TypeFz {
-        val typeFz = 38
+        val typeFz = 66
     }
 
     init {
-        etpName = "ЭТП Талан"
-        etpUrl = "http://тендеры.талан.рф"
+        etpName = "ЭТП Империя торгов"
+        etpUrl = "http://imperia-torgov.ru"
     }
 
     override fun parsing() {
@@ -79,8 +79,6 @@ class TenderTalan(val tn: TalanT) : TenderAbstract(), ITender {
             var IdOrganizer = 0
             var inn = ""
             var fullnameOrg = ""
-            /*val urlOrgT = htmlTen.selectFirst("label:containsOwn(Организатор) + div > div > a")?.attr("href")?.trim { it <= ' ' }
-                    ?: ""*/
             val urlOrgT = tn.urlOrg
             if (urlOrgT != "") {
                 val pageOrg = downloadFromUrl(urlOrgT)
@@ -142,10 +140,10 @@ class TenderTalan(val tn: TalanT) : TenderAbstract(), ITender {
             if (tn.placingWayName != "") {
                 idPlacingWay = getPlacingWay(con, tn.placingWayName)
             }
-            var biddingDateT = htmlLot.selectFirst("label:containsOwn(Дата и время вскрытия конвертов) + div > div")?.ownText()?.trim { it <= ' ' }
+            var biddingDateT = htmlLot.selectFirst("label:containsOwn(Дата вскрытия конвертов) + div > div")?.ownText()?.trim { it <= ' ' }
                     ?: ""
             if (biddingDateT == "") {
-                biddingDateT = htmlLot.selectFirst("div:containsOwn(Дата и время вскрытия конвертов) + div")?.ownText()?.trim { it <= ' ' }
+                biddingDateT = htmlLot.selectFirst("div:containsOwn(Дата вскрытия конвертов) + div")?.ownText()?.trim { it <= ' ' }
                         ?: ""
             }
             val biddingDate = biddingDateT.getDateFromString(formatterGpn)
@@ -176,7 +174,7 @@ class TenderTalan(val tn: TalanT) : TenderAbstract(), ITender {
             }
             rt.close()
             insertTender.close()
-            AddTenderTalan++
+            AddTenderImpTorgov++
             val documents: Elements = htmlTen.select("div[id^=documentsContentBlock] a.file-download-link")
             documents.forEach { doc ->
                 val hrefT = doc?.attr("href")?.trim { it <= ' ' } ?: ""
@@ -201,7 +199,8 @@ class TenderTalan(val tn: TalanT) : TenderAbstract(), ITender {
                 maxPriceT = htmlLot.selectFirst("label:containsOwn(Начальная цена) + div > div")?.ownText()?.trim { it <= ' ' }
                         ?: ""
             }
-            val maxPrice = maxPriceT.replace("&nbsp;", "").replace(",", ".").replace(Regex("\\s+"), "")
+            var maxPrice = maxPriceT.replace("&nbsp;", "").replace(",", ".").replace(Regex("\\s+"), "")
+            maxPrice = extractNum(maxPrice)
             val insertLot = con.prepareStatement("INSERT INTO ${Prefix}lot SET id_tender = ?, lot_number = ?, currency = ?, max_price = ?", Statement.RETURN_GENERATED_KEYS).apply {
                 setInt(1, idTender)
                 setInt(2, LotNumber)
@@ -240,7 +239,7 @@ class TenderTalan(val tn: TalanT) : TenderAbstract(), ITender {
                     stmtins.close()
                 }
             }
-            val delivPlace = htmlLot.selectFirst("label:containsOwn(Регион) + div > div")?.ownText()?.trim { it <= ' ' }
+            val delivPlace = htmlLot.selectFirst("label:containsOwn(Место поставки) + div > div")?.ownText()?.trim { it <= ' ' }
                     ?: ""
             val delivTerm = htmlLot.selectFirst("label:containsOwn(Дополнительная информация) + div > div")?.ownText()?.trim { it <= ' ' }
                     ?: ""

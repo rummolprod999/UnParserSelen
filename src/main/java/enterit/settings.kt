@@ -8,7 +8,7 @@ import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 
 val executePath: String = File(Class.forName("enterit.AppKt").protectionDomain.codeSource.location.path).parentFile.toString()
-const val arguments = "tander, safmarg, talan, mvideo, mosreg, ugmk"
+const val arguments = "tander, safmarg, talan, mvideo, mosreg, ugmk, imptorgov"
 lateinit var arg: Arguments
 var Database: String? = null
 var tempDirTenders: String? = null
@@ -25,6 +25,8 @@ var tempDirTendersMosreg: String? = null
 var logDirTendersMosreg: String? = null
 var tempDirTendersUgmk: String? = null
 var logDirTendersUgmk: String? = null
+var tempDirTendersImpTorgov: String? = null
+var logDirTendersImpTorgov: String? = null
 var UserTander: String? = null
 var UserMvideo: String? = null
 var PassTander: String? = null
@@ -41,6 +43,7 @@ var AddTenderMvideo: Int = 0
 var AddTenderTalan: Int = 0
 var AddTenderMosreg: Int = 0
 var AddTenderUgmk: Int = 0
+var AddTenderImpTorgov: Int = 0
 var UrlConnect: String? = null
 var formatter: Format = SimpleDateFormat("dd.MM.yyyy kk:mm:ss")
 var formatterGpn: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy kk:mm")
@@ -76,6 +79,8 @@ fun getSettings() = try {
                     "logdir_tenders_mosreg" -> logDirTendersMosreg = executePath + File.separator + it.childNodes.item(0).textContent
                     "tempdir_tenders_ugmk" -> tempDirTendersUgmk = executePath + File.separator + it.childNodes.item(0).textContent
                     "logdir_tenders_ugmk" -> logDirTendersUgmk = executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_imptorgov" -> tempDirTendersImpTorgov = executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_imptorgov" -> logDirTendersImpTorgov = executePath + File.separator + it.childNodes.item(0).textContent
                     "prefix" -> Prefix = try {
                         it.childNodes.item(0).textContent
                     } catch (e: Exception) {
@@ -108,6 +113,8 @@ fun init(args: Array<String>) {
             "mvideo" -> arg = Arguments.MVIDEO
             "mosreg" -> arg = Arguments.MOSREG
             "ugmk" -> arg = Arguments.UGMK
+            "imptorgov" -> arg = Arguments.IMPTORGOV
+
             else -> run { println("Неверно указаны аргументы, используйте $arguments, выходим из программы"); System.exit(0) }
 
         }
@@ -120,6 +127,7 @@ fun init(args: Array<String>) {
         Arguments.MVIDEO -> run { tempDirTenders = tempDirTendersMvideo; logDirTenders = logDirTendersMvideo }
         Arguments.MOSREG -> run { tempDirTenders = tempDirTendersMosreg; logDirTenders = logDirTendersMosreg }
         Arguments.UGMK -> run { tempDirTenders = tempDirTendersUgmk; logDirTenders = logDirTendersUgmk }
+        Arguments.IMPTORGOV -> run { tempDirTenders = tempDirTendersImpTorgov; logDirTenders = logDirTendersImpTorgov }
     }
     if (tempDirTenders == null || tempDirTenders == "") {
         println("Не задана папка для временных файлов, выходим из программы")

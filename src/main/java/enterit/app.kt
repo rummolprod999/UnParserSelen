@@ -12,6 +12,7 @@ fun main(args: Array<String>) {
         Arguments.MVIDEO -> parserMvideo()
         Arguments.MOSREG -> parserMosreg()
         Arguments.UGMK -> parserUgmk()
+        Arguments.IMPTORGOV -> parserImpTorgov()
     }
 
 }
@@ -145,5 +146,27 @@ fun parserUgmk() {
         }
     }
     logger("Добавили тендеров $AddTenderUgmk")
+    logger("Конец парсинга")
+}
+
+fun parserImpTorgov() {
+    logger("Начало парсинга")
+    val p = ParserImpTorgov()
+    var tr = 0
+    while (true) {
+        try {
+            p.parser()
+            break
+        } catch (e: Exception) {
+            tr++
+            if (tr > 4) {
+                logger("Количество попыток истекло, выходим из программы")
+                break
+            }
+            logger("Error in parserImpTorgov function", e.stackTrace, e)
+            e.printStackTrace()
+        }
+    }
+    logger("Добавили тендеров $AddTenderImpTorgov")
     logger("Конец парсинга")
 }

@@ -6,5 +6,6 @@ enum class Arguments {
     TALAN,
     MVIDEO,
     MOSREG,
-    UGMK
+    UGMK,
+    IMPTORGOV
 }
