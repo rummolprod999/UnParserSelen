@@ -13,6 +13,7 @@ fun main(args: Array<String>) {
         Arguments.MOSREG -> parserMosreg()
         Arguments.UGMK -> parserUgmk()
         Arguments.IMPTORGOV -> parserImpTorgov()
+        Arguments.SIBPRIME -> parserSibPrime()
     }
 
 }
@@ -36,6 +37,7 @@ fun parserTander() {
         }
     }
     logger("Добавили тендеров $AddTenderTander")
+    logger("Обновили тендеров $UpdateTenderTander")
     logger("Конец парсинга")
 }
 
@@ -58,6 +60,7 @@ fun parserSafmarg() {
         }
     }
     logger("Добавили тендеров $AddTenderSafmarg")
+    logger("Обновили тендеров $UpdateTenderSafmarg")
     logger("Конец парсинга")
 }
 
@@ -80,6 +83,7 @@ fun parserTalan() {
         }
     }
     logger("Добавили тендеров $AddTenderTalan")
+    logger("Обновили тендеров $UpdateTenderTalan")
     logger("Конец парсинга")
 }
 
@@ -102,6 +106,7 @@ fun parserMvideo() {
         }
     }
     logger("Добавили тендеров $AddTenderMvideo")
+    logger("Обновили тендеров $UpdateTenderMvideo")
     logger("Конец парсинга")
 }
 
@@ -124,6 +129,7 @@ fun parserMosreg() {
         }
     }
     logger("Добавили тендеров $AddTenderMosreg")
+    logger("Обновили тендеров $UpdateTenderMosreg")
     logger("Конец парсинга")
 }
 
@@ -146,6 +152,7 @@ fun parserUgmk() {
         }
     }
     logger("Добавили тендеров $AddTenderUgmk")
+    logger("Обновили тендеров $UpdateTenderUgmk")
     logger("Конец парсинга")
 }
 
@@ -168,5 +175,29 @@ fun parserImpTorgov() {
         }
     }
     logger("Добавили тендеров $AddTenderImpTorgov")
+    logger("Обновили тендеров $UpdateTenderImpTorgov")
+    logger("Конец парсинга")
+}
+
+fun parserSibPrime() {
+    logger("Начало парсинга")
+    val p = ParserSibPrime()
+    var tr = 0
+    while (true) {
+        try {
+            p.parser()
+            break
+        } catch (e: Exception) {
+            tr++
+            if (tr > 4) {
+                logger("Количество попыток истекло, выходим из программы")
+                break
+            }
+            logger("Error in parserSibPrime function", e.stackTrace, e)
+            e.printStackTrace()
+        }
+    }
+    logger("Добавили тендеров $AddTenderSibPrime")
+    logger("Обновили тендеров $UpdateTenderSibPrime")
     logger("Конец парсинга")
 }

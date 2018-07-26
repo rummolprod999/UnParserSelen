@@ -7,5 +7,6 @@ enum class Arguments {
     MVIDEO,
     MOSREG,
     UGMK,
-    IMPTORGOV
+    IMPTORGOV,
+    SIBPRIME
 }

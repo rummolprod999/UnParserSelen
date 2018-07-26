@@ -65,12 +65,14 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
             r.close()
             stmt0.close()
             var cancelstatus = 0
+            var updated = false
             val stmt = con.prepareStatement("SELECT id_tender, date_version FROM ${Prefix}tender WHERE purchase_number = ? AND cancel=0 AND type_fz = ?").apply {
                 setString(1, tn.purNum)
                 setInt(2, typeFz)
             }
             val rs = stmt.executeQuery()
             while (rs.next()) {
+                updated = true
                 val idT = rs.getInt(1)
                 val dateB: Timestamp = rs.getTimestamp(2)
                 if (dateVer.after(dateB) || dateB == Timestamp(dateVer.time)) {
@@ -165,7 +167,11 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
             }
             rt.close()
             insertTender.close()
-            AddTenderSafmarg++
+            if (updated) {
+                UpdateTenderSafmarg++
+            } else {
+                AddTenderSafmarg++
+            }
             var idLot = 0
             val LotNumber = 1
             val currency = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Валюта')]//div[contains(@class, 'translate-text-')]"))?.text?.trim({ it <= ' ' })

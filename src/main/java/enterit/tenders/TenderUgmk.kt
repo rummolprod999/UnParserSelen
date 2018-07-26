@@ -137,12 +137,14 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
             r.close()
             stmt0.close()
             var cancelstatus = 0
+            var updated = false
             val stmt = con.prepareStatement("SELECT id_tender, date_version FROM ${Prefix}tender WHERE purchase_number = ? AND cancel=0 AND type_fz = ?").apply {
                 setString(1, tt.purNum)
                 setInt(2, typeFz)
             }
             val rs = stmt.executeQuery()
             while (rs.next()) {
+                updated = true
                 val idT = rs.getInt(1)
                 val dateB: Timestamp = rs.getTimestamp(2)
                 if (dateVer.after(dateB) || dateB == Timestamp(dateVer.time)) {

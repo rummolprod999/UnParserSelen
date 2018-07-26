@@ -8,7 +8,7 @@ import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 
 val executePath: String = File(Class.forName("enterit.AppKt").protectionDomain.codeSource.location.path).parentFile.toString()
-const val arguments = "tander, safmarg, talan, mvideo, mosreg, ugmk, imptorgov"
+const val arguments = "tander, safmarg, talan, mvideo, mosreg, ugmk, imptorgov, sibprime"
 lateinit var arg: Arguments
 var Database: String? = null
 var tempDirTenders: String? = null
@@ -27,6 +27,8 @@ var tempDirTendersUgmk: String? = null
 var logDirTendersUgmk: String? = null
 var tempDirTendersImpTorgov: String? = null
 var logDirTendersImpTorgov: String? = null
+var tempDirTendersSibPrime: String? = null
+var logDirTendersSibPrime: String? = null
 var UserTander: String? = null
 var UserMvideo: String? = null
 var PassTander: String? = null
@@ -38,12 +40,21 @@ var Port: Int = 0
 var logPath: String? = null
 val DateNow = Date()
 var AddTenderTander: Int = 0
+var UpdateTenderTander: Int = 0
 var AddTenderSafmarg: Int = 0
+var UpdateTenderSafmarg: Int = 0
 var AddTenderMvideo: Int = 0
+var UpdateTenderMvideo: Int = 0
 var AddTenderTalan: Int = 0
+var UpdateTenderTalan: Int = 0
 var AddTenderMosreg: Int = 0
+var UpdateTenderMosreg: Int = 0
 var AddTenderUgmk: Int = 0
+var UpdateTenderUgmk: Int = 0
 var AddTenderImpTorgov: Int = 0
+var UpdateTenderImpTorgov: Int = 0
+var AddTenderSibPrime: Int = 0
+var UpdateTenderSibPrime: Int = 0
 var UrlConnect: String? = null
 var formatter: Format = SimpleDateFormat("dd.MM.yyyy kk:mm:ss")
 var formatterGpn: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy kk:mm")
@@ -81,6 +92,8 @@ fun getSettings() = try {
                     "logdir_tenders_ugmk" -> logDirTendersUgmk = executePath + File.separator + it.childNodes.item(0).textContent
                     "tempdir_tenders_imptorgov" -> tempDirTendersImpTorgov = executePath + File.separator + it.childNodes.item(0).textContent
                     "logdir_tenders_imptorgov" -> logDirTendersImpTorgov = executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_sibprime" -> tempDirTendersSibPrime = executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_sibprime" -> logDirTendersSibPrime = executePath + File.separator + it.childNodes.item(0).textContent
                     "prefix" -> Prefix = try {
                         it.childNodes.item(0).textContent
                     } catch (e: Exception) {
@@ -114,7 +127,7 @@ fun init(args: Array<String>) {
             "mosreg" -> arg = Arguments.MOSREG
             "ugmk" -> arg = Arguments.UGMK
             "imptorgov" -> arg = Arguments.IMPTORGOV
-
+            "sibprime" -> arg = Arguments.SIBPRIME
             else -> run { println("Неверно указаны аргументы, используйте $arguments, выходим из программы"); System.exit(0) }
 
         }
@@ -128,6 +141,7 @@ fun init(args: Array<String>) {
         Arguments.MOSREG -> run { tempDirTenders = tempDirTendersMosreg; logDirTenders = logDirTendersMosreg }
         Arguments.UGMK -> run { tempDirTenders = tempDirTendersUgmk; logDirTenders = logDirTendersUgmk }
         Arguments.IMPTORGOV -> run { tempDirTenders = tempDirTendersImpTorgov; logDirTenders = logDirTendersImpTorgov }
+        Arguments.SIBPRIME -> run { tempDirTenders = tempDirTendersSibPrime; logDirTenders = logDirTendersSibPrime }
     }
     if (tempDirTenders == null || tempDirTenders == "") {
         println("Не задана папка для временных файлов, выходим из программы")

@@ -38,12 +38,14 @@ data class TenderMosreg(val status: String, var purNum: String, val purObj: Stri
             r.close()
             stmt0.close()
             var cancelstatus = 0
+            var updated = false
             val stmt = con.prepareStatement("SELECT id_tender, date_version FROM ${Prefix}tender WHERE purchase_number = ? AND cancel=0 AND type_fz = ?").apply {
                 setString(1, purNum)
                 setInt(2, typeFz)
             }
             val rs = stmt.executeQuery()
             while (rs.next()) {
+                updated = true
                 val idT = rs.getInt(1)
                 val dateB: Timestamp = rs.getTimestamp(2)
                 if (dateVer.after(dateB) || dateB == Timestamp(dateVer.time)) {
@@ -136,7 +138,11 @@ data class TenderMosreg(val status: String, var purNum: String, val purObj: Stri
             }
             rt.close()
             insertTender.close()
-            AddTenderMosreg++
+            if (updated) {
+                UpdateTenderMosreg++
+            } else {
+                AddTenderMosreg++
+            }
             //val documents: Elements = htmlTen.select("h1:containsOwn(Документы закупки) + div ")
             var idLot = 0
             val LotNumber = 1

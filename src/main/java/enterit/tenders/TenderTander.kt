@@ -37,11 +37,13 @@ class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, p
             r.close()
             stmt0.close()
             var cancelstatus = 0
+            var updated = false
             val stmt = con.prepareStatement("SELECT id_tender, date_version FROM ${Prefix}tender WHERE purchase_number = ? AND cancel=0 AND type_fz = ?")
             stmt.setString(1, purNum)
             stmt.setInt(2, typeFz)
             val rs = stmt.executeQuery()
             while (rs.next()) {
+                updated = true
                 val idT = rs.getInt(1)
                 val dateB: Timestamp = rs.getTimestamp(2)
                 if (dateVer.after(dateB) || dateB == Timestamp(dateVer.time)) {
@@ -118,7 +120,11 @@ class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, p
             }
             rt.close()
             insertTender.close()
-            AddTenderTander++
+            if (updated) {
+                UpdateTenderTander++
+            } else {
+                AddTenderTander++
+            }
             val insertDoc = con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?")
             insertDoc.setInt(1, idTender)
             insertDoc.setString(2, "Скачать файл")

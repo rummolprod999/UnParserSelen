@@ -1,7 +1,7 @@
 package enterit.tenders
 
 import enterit.*
-import enterit.dataclasses.TalanT
+import enterit.dataclasses.SibPrimeT
 import enterit.tools.*
 import org.jsoup.Jsoup
 import org.jsoup.select.Elements
@@ -11,14 +11,14 @@ import java.sql.Statement
 import java.sql.Timestamp
 import java.util.*
 
-class TenderImpTorgov(val tn: TalanT) : TenderAbstract(), ITender {
+class TenderSibPrime(val tn: SibPrimeT) : TenderAbstract(), ITender {
     companion object TypeFz {
-        val typeFz = 66
+        val typeFz = 70
     }
 
     init {
-        etpName = "ЭТП Империя торгов"
-        etpUrl = "http://imperia-torgov.ru"
+        etpName = "ООО «Агрохолдинг Сибирский Премьер»"
+        etpUrl = "http://sibprime.ru/Tenders"
     }
 
     override fun parsing() {
@@ -35,10 +35,18 @@ class TenderImpTorgov(val tn: TalanT) : TenderAbstract(), ITender {
         }
         val htmlTen = Jsoup.parse(pageTen)
         val dateVer = Date()
-        tn.status = htmlLot.selectFirst("label:containsOwn(Статус) + div > div")?.ownText()?.trim { it <= ' ' }
-                ?: ""
-        tn.placingWayName = htmlLot.selectFirst("div:containsOwn(Способ проведения) + div")?.ownText()?.trim { it <= ' ' }
-                ?: ""
+        if (tn.status == "") {
+            tn.status = htmlLot.selectFirst("label:containsOwn(Статус) + div > div")?.ownText()?.trim { it <= ' ' }
+                    ?: ""
+        }
+        if (tn.placingWayName == "") {
+            tn.placingWayName = htmlLot.selectFirst("div:containsOwn(Способ проведения) + div")?.ownText()?.trim { it <= ' ' }
+                    ?: ""
+        }
+        if (tn.nameCus == "") {
+            tn.nameCus = htmlLot.selectFirst("div:containsOwn(Заказчик) + div > div")?.ownText()?.trim { it <= ' ' }
+                    ?: ""
+        }
         DriverManager.getConnection(UrlConnect, UserDb, PassDb).use(fun(con: Connection) {
             val stmt0 = con.prepareStatement("SELECT id_tender FROM ${Prefix}tender WHERE purchase_number = ? AND doc_publish_date = ? AND type_fz = ? AND end_date = ? AND notice_version = ?").apply {
                 setString(1, tn.purNum)
@@ -81,8 +89,10 @@ class TenderImpTorgov(val tn: TalanT) : TenderAbstract(), ITender {
             var IdOrganizer = 0
             var inn = ""
             var fullnameOrg = ""
-            val urlOrgT = tn.urlOrg
+            var urlOrgT = htmlTen.selectFirst("label:containsOwn(Организатор) + div > div a")?.attr("href")?.trim { it <= ' ' }
+                    ?: ""
             if (urlOrgT != "") {
+                urlOrgT = "http://sibprime.ru$urlOrgT"
                 val pageOrg = downloadFromUrl(urlOrgT)
                 if (pageOrg == "") {
                     logger("Gets empty string ${this::class.simpleName}", urlOrgT)
@@ -142,10 +152,10 @@ class TenderImpTorgov(val tn: TalanT) : TenderAbstract(), ITender {
             if (tn.placingWayName != "") {
                 idPlacingWay = getPlacingWay(con, tn.placingWayName)
             }
-            var biddingDateT = htmlLot.selectFirst("label:containsOwn(Дата вскрытия конвертов) + div > div")?.ownText()?.trim { it <= ' ' }
+            var biddingDateT = htmlLot.selectFirst("label:containsOwn(Дата и время начала торгов) + div > div")?.ownText()?.trim { it <= ' ' }
                     ?: ""
             if (biddingDateT == "") {
-                biddingDateT = htmlLot.selectFirst("div:containsOwn(Дата вскрытия конвертов) + div")?.ownText()?.trim { it <= ' ' }
+                biddingDateT = htmlLot.selectFirst("div:containsOwn(Дата и время начала торгов) + div")?.ownText()?.trim { it <= ' ' }
                         ?: ""
             }
             val biddingDate = biddingDateT.getDateFromString(formatterGpn)
@@ -177,9 +187,9 @@ class TenderImpTorgov(val tn: TalanT) : TenderAbstract(), ITender {
             rt.close()
             insertTender.close()
             if (updated) {
-                UpdateTenderImpTorgov++
+                UpdateTenderSibPrime++
             } else {
-                AddTenderImpTorgov++
+                AddTenderSibPrime++
             }
             val documents: Elements = htmlTen.select("div[id^=documentsContentBlock] a.file-download-link")
             documents.forEach { doc ->
@@ -221,9 +231,9 @@ class TenderImpTorgov(val tn: TalanT) : TenderAbstract(), ITender {
             rl.close()
             insertLot.close()
             var idCustomer = 0
-            if (fullnameOrg != "") {
+            if (tn.nameCus != "") {
                 val stmtoc = con.prepareStatement("SELECT id_customer FROM ${Prefix}customer WHERE full_name = ? LIMIT 1")
-                stmtoc.setString(1, fullnameOrg)
+                stmtoc.setString(1, tn.nameCus)
                 val rsoc = stmtoc.executeQuery()
                 if (rsoc.next()) {
                     idCustomer = rsoc.getInt(1)
@@ -233,7 +243,7 @@ class TenderImpTorgov(val tn: TalanT) : TenderAbstract(), ITender {
                     rsoc.close()
                     stmtoc.close()
                     val stmtins = con.prepareStatement("INSERT INTO ${Prefix}customer SET full_name = ?, is223=1, reg_num = ?, inn = ?", Statement.RETURN_GENERATED_KEYS)
-                    stmtins.setString(1, fullnameOrg)
+                    stmtins.setString(1, tn.nameCus)
                     stmtins.setString(2, java.util.UUID.randomUUID().toString())
                     stmtins.setString(3, inn)
                     stmtins.executeUpdate()

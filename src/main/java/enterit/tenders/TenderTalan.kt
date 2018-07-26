@@ -56,12 +56,14 @@ class TenderTalan(val tn: TalanT) : TenderAbstract(), ITender {
             r.close()
             stmt0.close()
             var cancelstatus = 0
+            var updated = false
             val stmt = con.prepareStatement("SELECT id_tender, date_version FROM ${Prefix}tender WHERE purchase_number = ? AND cancel=0 AND type_fz = ?").apply {
                 setString(1, tn.purNum)
                 setInt(2, typeFz)
             }
             val rs = stmt.executeQuery()
             while (rs.next()) {
+                updated = true
                 val idT = rs.getInt(1)
                 val dateB: Timestamp = rs.getTimestamp(2)
                 if (dateVer.after(dateB) || dateB == Timestamp(dateVer.time)) {
@@ -176,7 +178,11 @@ class TenderTalan(val tn: TalanT) : TenderAbstract(), ITender {
             }
             rt.close()
             insertTender.close()
-            AddTenderTalan++
+            if (updated) {
+                UpdateTenderTalan++
+            } else {
+                AddTenderTalan++
+            }
             val documents: Elements = htmlTen.select("div[id^=documentsContentBlock] a.file-download-link")
             documents.forEach { doc ->
                 val hrefT = doc?.attr("href")?.trim { it <= ' ' } ?: ""
