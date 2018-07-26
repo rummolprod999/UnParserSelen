@@ -44,7 +44,7 @@ class TenderSibPrime(val tn: SibPrimeT) : TenderAbstract(), ITender {
                     ?: ""
         }
         if (tn.nameCus == "") {
-            tn.nameCus = htmlLot.selectFirst("div:containsOwn(Заказчик) + div > div")?.ownText()?.trim { it <= ' ' }
+            tn.nameCus = htmlLot.selectFirst("label:containsOwn(Заказчик) + div > div")?.ownText()?.trim { it <= ' ' }
                     ?: ""
         }
         DriverManager.getConnection(UrlConnect, UserDb, PassDb).use(fun(con: Connection) {
