@@ -245,7 +245,7 @@ class TenderSibPrime(val tn: SibPrimeT) : TenderAbstract(), ITender {
                     val stmtins = con.prepareStatement("INSERT INTO ${Prefix}customer SET full_name = ?, is223=1, reg_num = ?, inn = ?", Statement.RETURN_GENERATED_KEYS)
                     stmtins.setString(1, tn.nameCus)
                     stmtins.setString(2, java.util.UUID.randomUUID().toString())
-                    stmtins.setString(3, inn)
+                    stmtins.setString(3, "")
                     stmtins.executeUpdate()
                     val rsoi = stmtins.generatedKeys
                     if (rsoi.next()) {
