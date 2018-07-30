@@ -192,7 +192,11 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
             }
             rt.close()
             insertTender.close()
-            AddTenderUgmk++
+            if (updated) {
+                UpdateTenderUgmk++
+            } else {
+                AddTenderUgmk++
+            }
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]")))
             driver.switchTo().defaultContent()
             val docL = driver.findElements(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]"))
