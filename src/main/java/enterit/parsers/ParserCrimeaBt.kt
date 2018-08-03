@@ -9,10 +9,10 @@ import org.jsoup.nodes.Element
 import java.util.*
 
 class ParserCrimeaBt : Iparser {
-    val BaseUrl = "http://crimea.bt.su"
-    val StartUrl = "http://crimea.bt.su/catalogue.html"
-    val listUrls = mutableListOf<String>()
-    private val CountPage = 5
+    private val BaseUrl = "http://crimea.bt.su"
+    private val StartUrl = "http://crimea.bt.su/catalogue.html"
+    private val listUrls = mutableListOf<String>()
+    private val countPage = 5
 
     override fun parser() {
         try {
@@ -46,7 +46,7 @@ class ParserCrimeaBt : Iparser {
 
     private fun parserListTenders() {
         listUrls.forEach {
-            (1..CountPage).forEach ret@{ c ->
+            (1..countPage).forEach ret@{ c ->
                 try {
                     val size = parserList("$it?page=$c")
                     if (size == 0) return@ret
