@@ -8,5 +8,6 @@ enum class Arguments {
     MOSREG,
     UGMK,
     IMPTORGOV,
-    SIBPRIME
+    SIBPRIME,
+    CRIMEABT
 }

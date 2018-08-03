@@ -14,6 +14,7 @@ fun main(args: Array<String>) {
         Arguments.UGMK -> parserUgmk()
         Arguments.IMPTORGOV -> parserImpTorgov()
         Arguments.SIBPRIME -> parserSibPrime()
+        Arguments.CRIMEABT -> parserCrimeaBt()
     }
 
 }
@@ -199,5 +200,14 @@ fun parserSibPrime() {
     }
     logger("Добавили тендеров $AddTenderSibPrime")
     logger("Обновили тендеров $UpdateTenderSibPrime")
+    logger("Конец парсинга")
+}
+
+fun parserCrimeaBt() {
+    logger("Начало парсинга")
+    val p = ParserCrimeaBt()
+    p.parser()
+    logger("Добавили тендеров $AddTenderCrimeaBt")
+    logger("Обновили тендеров $UpdateTenderCrimeaBt")
     logger("Конец парсинга")
 }
