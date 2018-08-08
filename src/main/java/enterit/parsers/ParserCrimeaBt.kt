@@ -28,7 +28,7 @@ class ParserCrimeaBt : Iparser {
     }
 
     private fun getUrlsFromStartPage() {
-        val stPage = downloadFromUrl(StartUrl)
+        val stPage = downloadFromUrl(StartUrl, i = 5, wt = 3000)
         if (stPage == "") {
             logger("Gets empty string ${this::class.simpleName}", StartUrl)
             return
