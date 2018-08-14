@@ -15,6 +15,7 @@ fun main(args: Array<String>) {
         Arguments.IMPTORGOV -> parserImpTorgov()
         Arguments.SIBPRIME -> parserSibPrime()
         Arguments.CRIMEABT -> parserCrimeaBt()
+        Arguments.BELMARKET -> parserBelMarket()
     }
 
 }
@@ -209,5 +210,28 @@ fun parserCrimeaBt() {
     p.parser()
     logger("Добавили тендеров $AddTenderCrimeaBt")
     logger("Обновили тендеров $UpdateTenderCrimeaBt")
+    logger("Конец парсинга")
+}
+
+fun parserBelMarket() {
+    logger("Начало парсинга")
+    val p = ParserBelMarket()
+    var tr = 0
+    while (true) {
+        try {
+            p.parser()
+            break
+        } catch (e: Exception) {
+            tr++
+            if (tr > 4) {
+                logger("Количество попыток истекло, выходим из программы")
+                break
+            }
+            logger("Error in parserBelMarket function", e.stackTrace, e)
+            e.printStackTrace()
+        }
+    }
+    logger("Добавили тендеров $AddTenderBelMarket")
+    logger("Обновили тендеров $UpdateTenderBelMarket")
     logger("Конец парсинга")
 }

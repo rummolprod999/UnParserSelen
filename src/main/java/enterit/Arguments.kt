@@ -9,5 +9,6 @@ enum class Arguments {
     UGMK,
     IMPTORGOV,
     SIBPRIME,
-    CRIMEABT
+    CRIMEABT,
+    BELMARKET
 }
