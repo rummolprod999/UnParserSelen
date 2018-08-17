@@ -10,5 +10,6 @@ enum class Arguments {
     IMPTORGOV,
     SIBPRIME,
     CRIMEABT,
-    BELMARKET
+    BELMARKET,
+    BICO
 }

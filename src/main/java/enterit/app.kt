@@ -16,6 +16,7 @@ fun main(args: Array<String>) {
         Arguments.SIBPRIME -> parserSibPrime()
         Arguments.CRIMEABT -> parserCrimeaBt()
         Arguments.BELMARKET -> parserBelMarket()
+        Arguments.BICO -> parserBico()
     }
 
 }
@@ -233,5 +234,14 @@ fun parserBelMarket() {
     }
     logger("Добавили тендеров $AddTenderBelMarket")
     logger("Обновили тендеров $UpdateTenderBelMarket")
+    logger("Конец парсинга")
+}
+
+fun parserBico() {
+    logger("Начало парсинга")
+    val p = ParserBico()
+    p.parser()
+    logger("Добавили тендеров $AddTenderBico")
+    logger("Обновили тендеров $UpdateTenderBico")
     logger("Конец парсинга")
 }
