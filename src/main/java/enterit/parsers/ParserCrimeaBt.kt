@@ -59,7 +59,7 @@ class ParserCrimeaBt : Iparser {
     }
 
     private fun parserList(url: String): Int {
-        val stPage = downloadFromUrl(url)
+        val stPage = downloadFromUrl(url, i = 3, wt = 3000)
         if (stPage == "") {
             logger("Gets empty string ${this::class.simpleName}.parserList()", url)
             return 0
