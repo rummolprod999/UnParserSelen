@@ -5,6 +5,7 @@ import java.io.FileWriter
 import java.io.IOException
 import java.util.*
 
+@Synchronized
 fun <T : Any> logger(vararg parametrs: T) {
     val s = StringBuilder()
     s.append(Date())

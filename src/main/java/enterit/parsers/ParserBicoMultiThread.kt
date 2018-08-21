@@ -61,7 +61,7 @@ class ParserBicoMultiThread : Iparser {
     private val BaseUrl = "https://www.bicotender.ru"
     private val StartUrl = "https://www.bicotender.ru/katalog/otrasly.html"
     private val listUrls = mutableListOf<String>()
-    private val countPage = 2
+    private val countPage = 500
     val commonDequePages = ArrayDeque<PageBico>()
 
     override fun parser() {
