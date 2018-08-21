@@ -155,10 +155,11 @@ class ParserBicoMultiThread : Iparser {
                 ?: ""
         val tn = BicoT(purNum, urlTend, purObj, datePub, dateEnd, pwName, price, currency, region, otr)
         try {
+            Thread.sleep(3)
             val t = TenderBico(tn)
             t.parsing()
         } catch (e: Exception) {
-            logger("error in TenderBico.parsing()", e.stackTrace, e, urlT)
+            logger("error in TenderBico.parsing()", e.stackTrace, e, urlTend)
         }
     }
 }

@@ -239,7 +239,7 @@ fun parserBelMarket() {
 
 fun parserBico() {
     logger("Начало парсинга")
-    val p = ParserBicoMultiThread() //TODO change class to singleThread
+    val p = ParserBicoMultiThread()
     p.parser()
     logger("Добавили тендеров $AddTenderBico")
     logger("Обновили тендеров $UpdateTenderBico")
