@@ -17,6 +17,7 @@ fun main(args: Array<String>) {
         Arguments.CRIMEABT -> parserCrimeaBt()
         Arguments.BELMARKET -> parserBelMarket()
         Arguments.BICO -> parserBico()
+        Arguments.ROSTOV -> parserRostov()
     }
 
 }
@@ -243,5 +244,28 @@ fun parserBico() {
     p.parser()
     logger("Добавили тендеров $AddTenderBico")
     logger("Обновили тендеров $UpdateTenderBico")
+    logger("Конец парсинга")
+}
+
+fun parserRostov() {
+    logger("Начало парсинга")
+    val p = ParserRostov()
+    var tr = 0
+    while (true) {
+        try {
+            p.parser()
+            break
+        } catch (e: Exception) {
+            tr++
+            if (tr > 4) {
+                logger("Количество попыток истекло, выходим из программы")
+                break
+            }
+            logger("Error in parserRostov function", e.stackTrace, e)
+            e.printStackTrace()
+        }
+    }
+    logger("Добавили тендеров $AddTenderRostov")
+    logger("Обновили тендеров $UpdateTenderRostov")
     logger("Конец парсинга")
 }
