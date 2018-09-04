@@ -82,7 +82,11 @@ class ParserTomsk : Iparser {
 
     private fun getListTenders(driver: ChromeDriver, wait: WebDriverWait) {
         Thread.sleep(5000)
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id = 'jqGrid']/tbody/tr[not(@class = 'jqgfirstrow')][10]")))
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id = 'jqGrid']/tbody/tr[not(@class = 'jqgfirstrow')][10]")))
+        } catch (e: Exception) {
+            logger("Error in wait tender table function")
+        }
         val tenders = driver.findElements(By.xpath("//table[@id = 'jqGrid']/tbody/tr[not(@class = 'jqgfirstrow')]"))
         tenders.forEach {
             try {
