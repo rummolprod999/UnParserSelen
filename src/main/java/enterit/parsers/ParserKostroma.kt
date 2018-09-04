@@ -82,7 +82,7 @@ class ParserKostroma : Iparser {
 
     private fun getListTenders(driver: ChromeDriver, wait: WebDriverWait) {
         Thread.sleep(5000)
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id = 'jqGrid']/tbody/tr[not(@class = 'jqgfirstrow')][10]")))
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id = 'jqGrid']/tbody/tr[not(@class = 'jqgfirstrow')][1]")))
         val tenders = driver.findElements(By.xpath("//table[@id = 'jqGrid']/tbody/tr[not(@class = 'jqgfirstrow')]"))
         tenders.forEach {
             try {
