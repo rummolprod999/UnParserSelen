@@ -13,7 +13,7 @@ import java.util.*
 
 class TenderSibPrime(val tn: SibPrimeT) : TenderAbstract(), ITender {
     companion object TypeFz {
-        val typeFz = 70
+        const val typeFz = 70
     }
 
     init {

@@ -13,7 +13,7 @@ import java.util.*
 
 class TenderImpTorgov(val tn: TalanT) : TenderAbstract(), ITender {
     companion object TypeFz {
-        val typeFz = 66
+        const val typeFz = 66
     }
 
     init {

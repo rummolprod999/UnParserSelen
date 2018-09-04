@@ -12,5 +12,8 @@ enum class Arguments {
     CRIMEABT,
     BELMARKET,
     BICO,
-    ROSTOV
+    ROSTOV,
+    SIMFEROP,
+    KOSTROMA,
+    TOMSK
 }

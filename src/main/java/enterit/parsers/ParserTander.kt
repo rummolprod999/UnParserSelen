@@ -74,7 +74,7 @@ class ParserTander : Iparser {
 
     private fun parserList(periods: List<WebElement>, titles: List<WebElement>, hrefs: List<WebElement>) {
         for (i in 0..periods.lastIndex) {
-            val purName = titles[i].text.trim({ it <= ' ' })
+            val purName = titles[i].text.trim { it <= ' ' }
             val datePubT = periods[i].text.trim({ it <= ' ' }).regExpTest("""с.*?(\d{2}.\d{2}.\d{4})""")
             val pubDate = datePubT.getDateFromString(formatterOnlyDate)
             val dateEndT = periods[i].text.trim({ it <= ' ' }).regExpTest("""по.*?(\d{2}.\d{2}.\d{4})""")

@@ -11,7 +11,7 @@ import java.util.*
 
 class TenderBelMarket(val status: String, var purNum: String, val purObj: String, val nmck: String, val pubDate: Date, val endDate: Date, val url: String) : TenderAbstract(), ITender {
     companion object TypeFz {
-        val typeFz = 78
+        const val typeFz = 78
     }
 
     init {
@@ -110,7 +110,7 @@ class TenderBelMarket(val status: String, var purNum: String, val purObj: String
                 }
             }
             val idEtp = getEtp(con)
-            var idPlacingWay = 0
+            val idPlacingWay = 0
             var idTender = 0
             val idRegion = 0
             val insertTender = con.prepareStatement("INSERT INTO ${Prefix}tender SET id_xml = ?, purchase_number = ?, doc_publish_date = ?, href = ?, purchase_object_info = ?, type_fz = ?, id_organizer = ?, id_placing_way = ?, id_etp = ?, end_date = ?, cancel = ?, date_version = ?, num_version = ?, notice_version = ?, xml = ?, print_form = ?, id_region = ?", Statement.RETURN_GENERATED_KEYS)

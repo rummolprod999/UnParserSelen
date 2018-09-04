@@ -12,7 +12,7 @@ import java.util.*
 
 class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, private val pubDate: Date, private val endDate: Date) : TenderAbstract(), ITender {
     companion object TypeFz {
-        val typeFz = 32
+        const val typeFz = 32
     }
 
     init {

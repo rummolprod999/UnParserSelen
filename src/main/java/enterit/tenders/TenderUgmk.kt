@@ -21,7 +21,7 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
     val docList = mutableListOf<Doc>()
 
     companion object TypeFz {
-        val typeFz = 62
+        const val typeFz = 62
     }
 
     init {

@@ -9,14 +9,14 @@ import java.sql.Statement
 import java.sql.Timestamp
 import java.util.*
 
-class TenderRostov(val status: String, var purNum: String, val purObj: String, val nmck: String, val pubDate: Date, val endDate: Date, val url: String) : TenderAbstract(), ITender {
+class TenderSimferop(val status: String, var purNum: String, val purObj: String, val nmck: String, val pubDate: Date, val endDate: Date, val url: String) : TenderAbstract(), ITender {
     companion object TypeFz {
-        const val typeFz = 91
+        const val typeFz = 92
     }
 
     init {
-        etpName = "РЕГИОНАЛЬНЫЙ ПОРТАЛ ЗАКУПОК МАЛОГО ОБЪЁМА РОСТОВСКОЙ ОБЛАСТИ"
-        etpUrl = "https://rostovoblzmo.rts-tender.ru/"
+        etpName = "ЗАКУПКИ МАЛОГО ОБЪЁМА Г.СИМФЕРОПОЛЬ"
+        etpUrl = "https://zakupki-simferopol.rts-tender.ru/"
     }
 
     override fun parsing() {
@@ -112,7 +112,7 @@ class TenderRostov(val status: String, var purNum: String, val purObj: String, v
             val idEtp = getEtp(con)
             val idPlacingWay = 0
             var idTender = 0
-            val idRegion = getIdRegion(con, "ростов")
+            val idRegion = getIdRegion(con, "крым")
             val insertTender = con.prepareStatement("INSERT INTO ${Prefix}tender SET id_xml = ?, purchase_number = ?, doc_publish_date = ?, href = ?, purchase_object_info = ?, type_fz = ?, id_organizer = ?, id_placing_way = ?, id_etp = ?, end_date = ?, cancel = ?, date_version = ?, num_version = ?, notice_version = ?, xml = ?, print_form = ?, id_region = ?", Statement.RETURN_GENERATED_KEYS)
             insertTender.setString(1, purNum)
             insertTender.setString(2, purNum)
@@ -139,9 +139,9 @@ class TenderRostov(val status: String, var purNum: String, val purObj: String, v
             rt.close()
             insertTender.close()
             if (updated) {
-                UpdateTenderRostov++
+                UpdateTenderSimferop++
             } else {
-                AddTenderRostov++
+                AddTenderSimferop++
             }
             //val documents: Elements = htmlTen.select("h1:containsOwn(Документы закупки) + div ")
             var idLot = 0

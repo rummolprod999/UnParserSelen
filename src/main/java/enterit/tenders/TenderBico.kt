@@ -13,7 +13,7 @@ import java.util.*
 
 class TenderBico(val tn: BicoT) : TenderAbstract(), ITender {
     companion object TypeFz {
-        val typeFz = 81
+        const val typeFz = 81
     }
 
     init {

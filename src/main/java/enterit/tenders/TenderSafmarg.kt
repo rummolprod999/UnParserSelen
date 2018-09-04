@@ -17,7 +17,7 @@ import java.util.*
 
 class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbstract(), ITender {
     companion object TypeFz {
-        val typeFz = 37
+        const val typeFz = 37
     }
 
     init {
@@ -34,7 +34,7 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]")))
         //Thread.sleep(10000)
         //driver.switchTo().frame(0)
-        val datePubT = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]"))?.text?.trim({ it <= ' ' })
+        val datePubT = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         val pubDate = datePubT.getDateFromString(formatterGpn)
         var endDateT = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Окончание приема предложений')]//div[contains(@class, 'translate-text-')]"))?.text?.trim({ it <= ' ' })

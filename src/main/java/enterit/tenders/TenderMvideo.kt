@@ -14,7 +14,7 @@ import java.util.*
 
 class TenderMvideo(val tn: DTGetProcListResponse.Tenders.Item, val comp: DTGetProcListResponse.Header.Company) : TenderAbstract(), ITender {
     companion object TypeFz {
-        val typeFz = 39
+        const val typeFz = 39
     }
 
     init {

@@ -53,13 +53,13 @@ class ParserSafmarg : Iparser {
     }
 
     private fun addToList(el: WebElement) {
-        val purNum = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'registered-number')]"))?.text?.trim({ it <= ' ' })
+        val purNum = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'registered-number')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         if (purNum == "") {
             logger("can not find dates or purNum in tender")
             return
         }
-        val href = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))?.getAttribute("href")?.trim({ it <= ' ' })
+        val href = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))?.getAttribute("href")?.trim { it <= ' ' }
                 ?: ""
         val tn = SafmargT(purNum, href)
         tendersS.add(tn)

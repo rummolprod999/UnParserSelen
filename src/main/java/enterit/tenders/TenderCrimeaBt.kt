@@ -13,7 +13,7 @@ import java.util.*
 
 class TenderCrimeaBt(val tn: CrimeaBT) : TenderAbstract(), ITender {
     companion object TypeFz {
-        val typeFz = 74
+        const val typeFz = 74
     }
 
     init {

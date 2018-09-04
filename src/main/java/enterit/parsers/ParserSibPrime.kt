@@ -68,7 +68,7 @@ class ParserSibPrime : Iparser {
     }
 
     private fun parserTender(el: WebElement, ind: Int) {
-        var purNum = el.findElementWithoutException(By.xpath(".//td[2]"))?.text?.trim { it <= ' ' }
+        val purNum = el.findElementWithoutException(By.xpath(".//td[2]"))?.text?.trim { it <= ' ' }
                 ?: ""
         if (purNum == "") {
             logger("can not find purNum in tender")
