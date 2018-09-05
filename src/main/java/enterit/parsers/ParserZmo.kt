@@ -89,15 +89,23 @@ class ParserZmo : Iparser {
             logger("Error in wait tender table function")
             return false
         }
-        val tenders = driver.findElements(By.xpath("//table[@id = 'jqGrid']/tbody/tr[not(@class = 'jqgfirstrow')]"))
-        tenders.forEach {
-            try {
-                parserTender(it)
-            } catch (e: Exception) {
-                logger("error in parserTender", e.stackTrace, e)
+        var st = 2
+        while (true) {
+            val tenders = driver.findElements(By.xpath("//table[@id = 'jqGrid']/tbody/tr[not(@class = 'jqgfirstrow')]"))
+            tenders.forEach {
+                try {
+                    parserTender(it)
+                    return true
+                } catch (e: Exception) {
+                    st--
+                    if (st == 0) {
+                        logger("error in parserTender", e.stackTrace, e)
+                        return true
+                    }
+                    return@forEach
+                }
             }
         }
-        return true
     }
 
     private fun parserPageN(driver: ChromeDriver, wait: WebDriverWait): Boolean {
