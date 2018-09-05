@@ -128,13 +128,13 @@ class ParserZmo : Iparser {
                 ?: ""
         if (purNum == "") {
             logger("can not purNum in tender")
-            return
+            throw Exception("can not purNum in tender")
         }
         val urlT = el.findElementWithoutException(By.xpath("./td[4]/a"))?.getAttribute("href")?.trim { it <= ' ' }
                 ?: ""
         if (urlT == "") {
             logger("can not urlT in tender", purNum)
-            return
+            throw Exception("can not urlT in tender")
         }
         val url = urlT
         val purObj = el.findElementWithoutException(By.xpath("./td[4]/a"))?.text?.trim { it <= ' ' }
