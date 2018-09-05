@@ -15,5 +15,6 @@ enum class Arguments {
     ROSTOV,
     SIMFEROP,
     KOSTROMA,
-    TOMSK
+    TOMSK,
+    ZMO
 }

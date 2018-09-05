@@ -60,7 +60,8 @@ class ParserTomsk : Iparser {
             getListTenders(driver, wait)
             (1..CountPage).forEach {
                 try {
-                    parserPageN(driver, wait)
+                    val res = parserPageN(driver, wait)
+                    if (!res) return@forEach
                 } catch (e: Exception) {
                     logger("Error in parserE function", e.stackTrace, e)
                 }
@@ -80,12 +81,13 @@ class ParserTomsk : Iparser {
         }
     }
 
-    private fun getListTenders(driver: ChromeDriver, wait: WebDriverWait) {
+    private fun getListTenders(driver: ChromeDriver, wait: WebDriverWait): Boolean {
         Thread.sleep(5000)
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id = 'jqGrid']/tbody/tr[not(@class = 'jqgfirstrow')][10]")))
         } catch (e: Exception) {
             logger("Error in wait tender table function")
+            return false
         }
         val tenders = driver.findElements(By.xpath("//table[@id = 'jqGrid']/tbody/tr[not(@class = 'jqgfirstrow')]"))
         tenders.forEach {
@@ -95,9 +97,10 @@ class ParserTomsk : Iparser {
                 logger("error in parserTender", e.stackTrace, e)
             }
         }
+        return true
     }
 
-    private fun parserPageN(driver: ChromeDriver, wait: WebDriverWait) {
+    private fun parserPageN(driver: ChromeDriver, wait: WebDriverWait): Boolean {
         driver.switchTo().defaultContent()
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'paginator__page-selector']/a[contains(@class, 'paginator__next')]")))
         //val pageNum = driver.findElement(By.xpath("//div[@class = 'paginator__page-selector']/a[contains(@class, 'paginator__next')]"))
@@ -105,7 +108,7 @@ class ParserTomsk : Iparser {
         val js = driver as JavascriptExecutor
         js.executeScript("document.getElementsByClassName('paginator__next')[0].click()")
         driver.switchTo().defaultContent()
-        getListTenders(driver, wait)
+        return getListTenders(driver, wait)
     }
 
     private fun parserTender(el: WebElement) {

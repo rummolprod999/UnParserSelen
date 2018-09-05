@@ -2,7 +2,7 @@ package enterit.parsers
 
 import enterit.formatterGpn
 import enterit.formatterOnlyDate
-import enterit.tenders.TenderKostroma
+import enterit.tenders.TenderZmo
 import enterit.tools.deleteAllWhiteSpace
 import enterit.tools.findElementWithoutException
 import enterit.tools.getDateFromFormat
@@ -18,7 +18,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.logging.Level
 
-class ParserKostroma : Iparser {
+class ParserZmo : Iparser {
     init {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog")
         java.util.logging.Logger.getLogger("org.openqa.selenium").level = Level.OFF
@@ -26,12 +26,12 @@ class ParserKostroma : Iparser {
     }
 
     companion object WebCl {
-        const val BaseUrl = "https://kostromarket.rts-tender.ru/"
+        const val BaseUrl = "https://zmo.rts-tender.ru/"
         const val timeoutB = 30L
         const val CountPage = 20
     }
 
-    private val tendersS = mutableListOf<TenderKostroma>()
+    private val tendersS = mutableListOf<TenderZmo>()
 
     override fun parser() {
         val options = ChromeOptions()
@@ -71,7 +71,7 @@ class ParserKostroma : Iparser {
                     //println(it)
                     it.parsing()
                 } catch (e: Exception) {
-                    logger("error in TenderKostroma.parsing()", e.stackTrace, e, it.url)
+                    logger("error in TenderZmo.parsing()", e.stackTrace, e, it.url)
                 }
             }
         } catch (e: Exception) {
@@ -141,7 +141,7 @@ class ParserKostroma : Iparser {
             logger("can not find pubDate or dateEnd on page", urlT, purNum)
             return
         }
-        val tt = TenderKostroma(status, purNum, purObj, nmck, datePub, dateEnd, url)
+        val tt = TenderZmo(status, purNum, purObj, nmck, datePub, dateEnd, url)
         tendersS.add(tt)
     }
 }

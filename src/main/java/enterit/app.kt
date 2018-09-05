@@ -21,6 +21,7 @@ fun main(args: Array<String>) {
         Arguments.SIMFEROP -> parserSimferop()
         Arguments.KOSTROMA -> parserKostroma()
         Arguments.TOMSK -> parserTomsk()
+        Arguments.ZMO -> parserZmo()
     }
 
 }
@@ -339,5 +340,28 @@ fun parserTomsk() {
     }
     logger("Добавили тендеров $AddTenderTomsk")
     logger("Обновили тендеров $UpdateTenderTomsk")
+    logger("Конец парсинга")
+}
+
+fun parserZmo() {
+    logger("Начало парсинга")
+    val p = ParserZmo()
+    var tr = 0
+    while (true) {
+        try {
+            p.parser()
+            break
+        } catch (e: Exception) {
+            tr++
+            if (tr > 4) {
+                logger("Количество попыток истекло, выходим из программы")
+                break
+            }
+            logger("Error in parserZmo function", e.stackTrace, e)
+            e.printStackTrace()
+        }
+    }
+    logger("Добавили тендеров $AddTenderZmo")
+    logger("Обновили тендеров $UpdateTenderZmo")
     logger("Конец парсинга")
 }
