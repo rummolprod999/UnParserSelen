@@ -36,6 +36,8 @@ class ParserMosreg : Iparser {
         options.addArguments("headless")
         options.addArguments("disable-gpu")
         options.addArguments("no-sandbox")
+        options.addArguments("ignore-certificate-errors")
+        options.setAcceptInsecureCerts(true)
         val driver = ChromeDriver(options)
         try {
             driver.manage().timeouts().pageLoadTimeout(timeoutB, TimeUnit.SECONDS)
