@@ -5,10 +5,12 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.lang.Thread.sleep
 import java.net.URL
+import java.security.cert.X509Certificate
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import javax.net.ssl.*
 
 
 fun downloadFromUrl(urls: String, i: Int = 3, wt: Long = 5000): String {
@@ -48,6 +50,43 @@ fun downloadFromUrl(urls: String, i: Int = 3, wt: Long = 5000): String {
     return ""
 }
 
+fun downloadFromUrlMosreg(urls: String, i: Int = 3, wt: Long = 5000): String {
+    var count = 0
+    while (true) {
+        //val i = 50
+        if (count >= i) {
+            logger(String.format("Не скачали строку за %d попыток", count), urls)
+            break
+        }
+        try {
+            var s: String
+            val executor = Executors.newCachedThreadPool()
+            val task = { downloadWaitWithRefMosreg(urls) }
+            val future = executor.submit(task)
+            try {
+                s = future.get(60, TimeUnit.SECONDS)
+            } catch (ex: TimeoutException) {
+                throw ex
+            } catch (ex: InterruptedException) {
+                throw ex
+            } catch (ex: ExecutionException) {
+                throw ex
+            } finally {
+                future.cancel(true)
+                executor.shutdown()
+            }
+            return s
+
+        } catch (e: Exception) {
+            logger(e, e.stackTrace)
+            count++
+            sleep(wt)
+        }
+
+    }
+    return ""
+}
+
 fun downloadWait(urls: String): String {
     val s = StringBuilder()
     val url = URL(urls)
@@ -71,6 +110,44 @@ fun downloadWait(urls: String): String {
 
 fun downloadWaitWithRef(urls: String): String {
     val s = StringBuilder()
+    val url = URL(urls)
+    val uc = url.openConnection()
+    uc.connectTimeout = 30000
+    uc.addRequestProperty("User-Agent", RandomUserAgent.randomUserAgent)
+    uc.connect()
+    val `is`: InputStream = uc.getInputStream()
+    val br = BufferedReader(InputStreamReader(`is`))
+    var inputLine: String?
+    var value = true
+    while (value) {
+        inputLine = br.readLine()
+        if (inputLine == null) {
+            value = false
+        } else {
+            s.append(inputLine)
+        }
+
+    }
+    br.close()
+    `is`.close()
+    return s.toString()
+}
+
+fun downloadWaitWithRefMosreg(urls: String): String {
+    val s = StringBuilder()
+    val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+        override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate>? {
+            return null
+        }
+
+        override fun checkClientTrusted(certs: Array<X509Certificate>, authType: String) {}
+        override fun checkServerTrusted(certs: Array<X509Certificate>, authType: String) {}
+    })
+    val sc = SSLContext.getInstance("SSL")
+    sc.init(null, trustAllCerts, java.security.SecureRandom())
+    HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
+    val allHostsValid = HostnameVerifier { hostname, session -> true }
+    HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid)
     val url = URL(urls)
     val uc = url.openConnection()
     uc.connectTimeout = 30000

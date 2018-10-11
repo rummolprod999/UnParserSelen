@@ -60,7 +60,7 @@ data class TenderMosreg(val status: String, var purNum: String, val purObj: Stri
             }
             rs.close()
             stmt.close()
-            val pageTen = downloadFromUrl(url)
+            val pageTen = downloadFromUrlMosreg(url)
             if (pageTen == "") {
                 logger("Gets empty string ${this::class.simpleName}", url)
                 return
