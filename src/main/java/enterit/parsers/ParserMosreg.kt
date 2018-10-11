@@ -27,7 +27,7 @@ class ParserMosreg : Iparser {
     companion object WebCl {
         const val BaseUrl = "https://market.mosreg.ru"
         const val timeoutB = 120L
-        const val CountPage = 1
+        const val CountPage = 20
     }
 
     private val tendersS = mutableListOf<TenderMosreg>()
@@ -60,7 +60,7 @@ class ParserMosreg : Iparser {
             getListTenders(driver, wait)
             (1..CountPage).forEach {
                 try {
-                    //parserPageN(driver, wait)
+                    parserPageN(driver, wait)
                 } catch (e: Exception) {
                     logger("Error in parserE function", e.stackTrace, e)
                 }
