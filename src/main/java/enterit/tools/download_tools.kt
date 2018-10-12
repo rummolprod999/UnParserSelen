@@ -34,6 +34,8 @@ fun downloadFromUrl(urls: String, i: Int = 3, wt: Long = 5000): String {
                 throw ex
             } catch (ex: ExecutionException) {
                 throw ex
+            } catch (ex: Exception) {
+                throw ex
             } finally {
                 future.cancel(true)
                 executor.shutdown()
@@ -70,6 +72,8 @@ fun downloadFromUrlMosreg(urls: String, i: Int = 3, wt: Long = 5000): String {
             } catch (ex: InterruptedException) {
                 throw ex
             } catch (ex: ExecutionException) {
+                throw ex
+            } catch (ex: Exception) {
                 throw ex
             } finally {
                 future.cancel(true)
@@ -112,7 +116,8 @@ fun downloadWaitWithRef(urls: String): String {
     val s = StringBuilder()
     val url = URL(urls)
     val uc = url.openConnection()
-    uc.connectTimeout = 30000
+    uc.connectTimeout = 30_000
+    uc.readTimeout = 600_000
     uc.addRequestProperty("User-Agent", RandomUserAgent.randomUserAgent)
     uc.connect()
     val `is`: InputStream = uc.getInputStream()
@@ -150,7 +155,8 @@ fun downloadWaitWithRefMosreg(urls: String): String {
     HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid)
     val url = URL(urls)
     val uc = url.openConnection()
-    uc.connectTimeout = 30000
+    uc.connectTimeout = 30_000
+    uc.readTimeout = 600_000
     uc.addRequestProperty("User-Agent", RandomUserAgent.randomUserAgent)
     uc.connect()
     val `is`: InputStream = uc.getInputStream()
@@ -192,6 +198,8 @@ fun downloadFromUrl1251(urls: String, i: Int = 3): String {
                 throw ex
             } catch (ex: ExecutionException) {
                 throw ex
+            } catch (ex: Exception) {
+                throw ex
             } finally {
                 future.cancel(true)
                 executor.shutdown()
@@ -212,7 +220,8 @@ fun downloadWaitWithRef1251(urls: String): String {
     val s = StringBuilder()
     val url = URL(urls)
     val uc = url.openConnection()
-    uc.connectTimeout = 30000
+    uc.connectTimeout = 30_000
+    uc.readTimeout = 600_000
     uc.addRequestProperty("User-Agent", "Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727) 3gpp-gba UNTRUSTED/1.0")
     uc.connect()
     val `is`: InputStream = uc.getInputStream()
