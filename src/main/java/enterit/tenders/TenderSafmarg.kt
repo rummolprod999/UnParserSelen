@@ -30,10 +30,15 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
 
         driver.get(tn.href)
         val wait = WebDriverWait(driver, ParserSafmarg.timeoutB)
-        wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.xpath("//iframe")))
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]")))
-        //Thread.sleep(10000)
-        //driver.switchTo().frame(0)
+        /*wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.xpath("//iframe")))*/
+        Thread.sleep(10000)
+        driver.switchTo().frame(0)
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]")))
+        } catch (e: Exception) {
+            logger("can not find expected startDate", driver.pageSource)
+            return
+        }
         val datePubT = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         val pubDate = datePubT.getDateFromString(formatterGpn)
