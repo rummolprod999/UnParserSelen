@@ -16,9 +16,6 @@ import java.sql.Timestamp
 import java.util.*
 
 class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbstract(), ITender {
-    companion object TypeFz {
-        const val typeFz = 37
-    }
 
     init {
         etpName = "ЭТП ФГ САФМАР"
@@ -333,5 +330,9 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
         })
 
 
+    }
+
+    companion object TypeFz {
+        const val typeFz = 37
     }
 }
