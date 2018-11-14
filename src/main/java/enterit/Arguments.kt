@@ -16,5 +16,6 @@ enum class Arguments {
     SIMFEROP,
     KOSTROMA,
     TOMSK,
-    ZMO
+    ZMO,
+    GOSZAKAZ
 }

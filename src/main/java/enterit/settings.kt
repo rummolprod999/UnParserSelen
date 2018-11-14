@@ -8,7 +8,7 @@ import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 
 val executePath: String = File(Class.forName("enterit.AppKt").protectionDomain.codeSource.location.path).parentFile.toString()
-const val arguments = "tander, safmarg, talan, mvideo, mosreg, ugmk, imptorgov, sibprime, crimeabt, belmarket, bico, rostov, simferop, kostroma, tomsk, zmo"
+const val arguments = "tander, safmarg, talan, mvideo, mosreg, ugmk, imptorgov, sibprime, crimeabt, belmarket, bico, rostov, simferop, kostroma, tomsk, zmo, goszakaz"
 lateinit var arg: Arguments
 var Database: String? = null
 var tempDirTenders: String? = null
@@ -45,6 +45,8 @@ var tempDirTendersTomsk: String? = null
 var logDirTendersTomsk: String? = null
 var tempDirTendersZmo: String? = null
 var logDirTendersZmo: String? = null
+var tempDirTendersGosZakaz: String? = null
+var logDirTendersGosZakaz: String? = null
 var UserTander: String? = null
 var UserMvideo: String? = null
 var PassTander: String? = null
@@ -87,6 +89,8 @@ var AddTenderTomsk: Int = 0
 var UpdateTenderTomsk: Int = 0
 var AddTenderZmo: Int = 0
 var UpdateTenderZmo: Int = 0
+var AddTenderGosZakaz: Int = 0
+var UpdateTenderGosZakaz: Int = 0
 var UrlConnect: String? = null
 var formatter: Format = SimpleDateFormat("dd.MM.yyyy kk:mm:ss")
 var formatterGpn: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy kk:mm")
@@ -142,6 +146,8 @@ fun getSettings() = try {
                     "logdir_tenders_tomsk" -> logDirTendersTomsk = executePath + File.separator + it.childNodes.item(0).textContent
                     "tempdir_tenders_zmo" -> tempDirTendersZmo = executePath + File.separator + it.childNodes.item(0).textContent
                     "logdir_tenders_zmo" -> logDirTendersZmo = executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_goszakaz" -> tempDirTendersGosZakaz = executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_goszakaz" -> logDirTendersGosZakaz = executePath + File.separator + it.childNodes.item(0).textContent
                     "prefix" -> Prefix = try {
                         it.childNodes.item(0).textContent
                     } catch (e: Exception) {
@@ -184,6 +190,7 @@ fun init(args: Array<String>) {
             "kostroma" -> arg = Arguments.KOSTROMA
             "tomsk" -> arg = Arguments.TOMSK
             "zmo" -> arg = Arguments.ZMO
+            "goszakaz" -> arg = Arguments.GOSZAKAZ
             else -> run { println("Неверно указаны аргументы, используйте $arguments, выходим из программы"); System.exit(0) }
 
         }
@@ -206,6 +213,7 @@ fun init(args: Array<String>) {
         Arguments.KOSTROMA -> run { tempDirTenders = tempDirTendersKostroma; logDirTenders = logDirTendersKostroma }
         Arguments.TOMSK -> run { tempDirTenders = tempDirTendersTomsk; logDirTenders = logDirTendersTomsk }
         Arguments.ZMO -> run { tempDirTenders = tempDirTendersZmo; logDirTenders = logDirTendersZmo }
+        Arguments.GOSZAKAZ -> run { tempDirTenders = tempDirTendersGosZakaz; logDirTenders = logDirTendersGosZakaz }
     }
     if (tempDirTenders == null || tempDirTenders == "") {
         println("Не задана папка для временных файлов, выходим из программы")

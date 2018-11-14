@@ -22,6 +22,7 @@ fun main(args: Array<String>) {
         Arguments.KOSTROMA -> parserKostroma()
         Arguments.TOMSK -> parserTomsk()
         Arguments.ZMO -> parserZmo()
+        Arguments.GOSZAKAZ -> parserGosZakaz()
     }
 
 }
@@ -363,5 +364,14 @@ fun parserZmo() {
     }
     logger("Добавили тендеров $AddTenderZmo")
     logger("Обновили тендеров $UpdateTenderZmo")
+    logger("Конец парсинга")
+}
+
+fun parserGosZakaz() {
+    logger("Начало парсинга")
+    val p = ParserGosZakaz()
+    p.parser()
+    logger("Добавили тендеров $AddTenderGosZakaz")
+    logger("Обновили тендеров $UpdateTenderGosZakaz")
     logger("Конец парсинга")
 }
