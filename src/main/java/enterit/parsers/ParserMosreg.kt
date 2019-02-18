@@ -25,7 +25,7 @@ class ParserMosreg : Iparser {
     }
 
     companion object WebCl {
-        const val BaseUrl = "https://market.mosreg.ru"
+        const val BaseUrl = "https://market.mosreg.ru/Trade"
         const val timeoutB = 120L
         const val CountPage = 20
     }
