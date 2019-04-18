@@ -15,6 +15,20 @@ fun <T> T.findElementWithoutException(by: By): WebElement?
     }
 }
 
+fun <T> T.clickertWithoutException(by: By, count: Int = 5)
+        where T : SearchContext {
+    (1 until count).forEach { _ ->
+        try {
+            val el = this.findElement(by)
+            el.click()
+            return@forEach
+        } catch (e: Exception) {
+
+        }
+    }
+
+}
+
 fun String.getDataFromRegexp(reg: String): String {
     var st = ""
     try {

@@ -1,7 +1,10 @@
 package enterit.tenders
 
 import enterit.*
-import enterit.tools.*
+import enterit.tools.addVNum
+import enterit.tools.downloadFromUrlMosreg
+import enterit.tools.logger
+import enterit.tools.tenderKwords
 import org.jsoup.Jsoup
 import java.sql.Connection
 import java.sql.DriverManager
@@ -68,7 +71,7 @@ data class TenderMosreg(val status: String, var purNum: String, val purObj: Stri
             val htmlTen = Jsoup.parse(pageTen)
             var IdOrganizer = 0
             var inn = ""
-            val fullnameOrg = htmlTen.selectFirst("td:contains(Полное наименование) + td > a")?.ownText()?.trim { it <= ' ' }
+            val fullnameOrg = htmlTen.selectFirst("span:contains(Полное наименование:) + a")?.ownText()?.trim { it <= ' ' }
                     ?: ""
             if (fullnameOrg != "") {
                 val stmto = con.prepareStatement("SELECT id_organizer FROM ${Prefix}organizer WHERE full_name = ?")
@@ -81,10 +84,10 @@ data class TenderMosreg(val status: String, var purNum: String, val purObj: Stri
                 } else {
                     rso.close()
                     stmto.close()
-                    val postalAdr = htmlTen.selectFirst("td:contains(Адрес места нахождения) + td")?.ownText()?.trim { it <= ' ' }
+                    val postalAdr = htmlTen.selectFirst("span:contains(Адрес места нахождения:) + p")?.ownText()?.trim { it <= ' ' }
                             ?: ""
                     val factAdr = ""
-                    inn = htmlTen.selectFirst("td:contains(ИНН) + td")?.ownText()?.trim { it <= ' ' }
+                    inn = htmlTen.selectFirst("span:contains(ИНН:) + p")?.ownText()?.trim { it <= ' ' }
                             ?: ""
                     val kpp = ""
                     val email = ""
@@ -185,9 +188,9 @@ data class TenderMosreg(val status: String, var purNum: String, val purObj: Stri
                     stmtins.close()
                 }
             }
-            val delivPlace = htmlTen.selectFirst("td:contains(Место поставки) + td")?.ownText()?.trim { it <= ' ' }
+            val delivPlace = htmlTen.selectFirst("span:contains(Место поставки:) + p")?.ownText()?.trim { it <= ' ' }
                     ?: ""
-            val delivTerm = htmlTen.selectFirst("td:contains(Сроки поставки) + td")?.ownText()?.trim { it <= ' ' }
+            val delivTerm = htmlTen.selectFirst("span:contains(Сроки поставки:) + p")?.ownText()?.trim { it <= ' ' }
                     ?: ""
             if (delivPlace != "" || delivTerm != "") {
                 val insertCusRec = con.prepareStatement("INSERT INTO ${Prefix}customer_requirement SET id_lot = ?, id_customer = ?, delivery_place = ?, delivery_term = ?").apply {
@@ -199,24 +202,24 @@ data class TenderMosreg(val status: String, var purNum: String, val purObj: Stri
                     close()
                 }
             }
-            val purobj1 = htmlTen.select("table:contains(Код классификатора) + div table tbody tr")
+            val purobj1 = htmlTen.select("div.outputResults__oneResult")
             purobj1.forEach {
-                val name = it.selectFirst("td:eq(1)")?.text()?.trim { it <= ' ' }
+                val name = it.selectFirst("div.leftPart > p:eq(0)")?.ownText()?.trim { it <= ' ' }
                         ?: ""
                 val s = it.selectFirst("td:eq(1)")
                 val p = it.selectFirst("td:eq(0)")
-                val okei = it.selectFirst("td:eq(3)")?.ownText()?.trim { it <= ' ' }
+                val okei = it.selectFirst("div.centerPart > div > p:eq(0)")?.ownText()?.trim { it <= ' ' }
                         ?: ""
-                val quantity = it.selectFirst("td:eq(4)")?.ownText()?.replace(',', '.')?.trim { it <= ' ' }
+                val quantity = it.selectFirst("div.centerPart > div > p:eq(1)")?.ownText()?.replace(',', '.')?.trim { it <= ' ' }
                         ?: ""
-                val price = it.selectFirst("td:eq(5)")?.ownText()?.replace(',', '.')?.trim { it <= ' ' }
+                val price = it.selectFirst("div.rightPart > div > p:eq(0)")?.ownText()?.replace(',', '.')?.trim { it <= ' ' }
                         ?: ""
-                val sum = it.selectFirst("td:eq(6)")?.ownText()?.replace(',', '.')?.trim { it <= ' ' }
+                val sum = it.selectFirst("div.rightPart > div > p:eq(1)")?.ownText()?.replace(',', '.')?.trim { it <= ' ' }
                         ?: ""
-                val fullOkpd = it.selectFirst("td:eq(2) > a")?.ownText()?.replace(',', '.')?.trim { it <= ' ' }
+                val fullOkpd = it.selectFirst("div.leftPart a")?.ownText()?.trim { it <= ' ' }
                         ?: ""
-                val okpd2 = fullOkpd.regExpTest("^(.+)\\s+/")
-                val okpdName = fullOkpd.regExpTest("/\\s*(.*)\$")
+                val okpd2 = fullOkpd
+                val okpdName = ""
                 con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?, price = ?, sum = ?, okpd2_code = ?, okpd_name = ?").apply {
                     setInt(1, idLot)
                     setInt(2, idCustomer)

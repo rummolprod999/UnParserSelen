@@ -3,6 +3,7 @@ package enterit.parsers
 import enterit.formatterGpn
 import enterit.formatterOnlyDate
 import enterit.tenders.TenderMosreg
+import enterit.tools.deleteAllWhiteSpace
 import enterit.tools.findElementWithoutException
 import enterit.tools.getDateFromFormat
 import enterit.tools.logger
@@ -26,8 +27,8 @@ class ParserMosreg : Iparser {
 
     companion object WebCl {
         const val BaseUrl = "https://market.mosreg.ru/Trade"
-        const val timeoutB = 120L
-        const val CountPage = 20
+        const val timeoutB = 30L
+        const val CountPage = 200
     }
 
     private val tendersS = mutableListOf<TenderMosreg>()
@@ -46,19 +47,14 @@ class ParserMosreg : Iparser {
             driver.switchTo().defaultContent()
             //driver.manage().window().maximize()
             val wait = WebDriverWait(driver, timeoutB)
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'wg-selectbox']/div[@class = 'select']")))
-            /*val paginator = driver.findElement(By.xpath("//div[@class = 'wg-selectbox']/div[@class = 'select']"))
-            paginator.click()
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'wg-selectbox']/ul/li[. = '100']")))
-            val count100 = driver.findElement(By.xpath("//div[@class = 'wg-selectbox']/div[@class = 'select']"))
-            count100.click()
-            driver.switchTo().defaultContent()*/
-            val js = driver as JavascriptExecutor
-            js.executeScript("document.querySelectorAll('div.wg-selectbox div.select')[0].click()")
-            js.executeScript("document.querySelectorAll('div.wg-selectbox ul li:last-child')[0].click()")
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(@class, 'paginator_last')  and  .  =  '>>']")))
+            //driver.clickertWithoutException(By.xpath("(//span[contains(@class, 'select2-container--default') and @dir = 'ltr'])[2]"))
+            /*val js = driver as JavascriptExecutor
+            js.executeScript("document.querySelectorAll('span.select2-selection__rendered')[0].click()")
+            js.executeScript("document.querySelectorAll('#select2-selectPagination-result-ai2a-100')[0].click()")*/
             driver.switchTo().defaultContent()
             getListTenders(driver, wait)
-            (1..CountPage).forEach {
+            (1..CountPage).forEach { _ ->
                 try {
                     parserPageN(driver, wait)
                 } catch (e: Exception) {
@@ -82,19 +78,17 @@ class ParserMosreg : Iparser {
 
     private fun parserPageN(driver: ChromeDriver, wait: WebDriverWait) {
         driver.switchTo().defaultContent()
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'paginator__page-selector']/a[contains(@class, 'paginator__next')]")))
-        //val pageNum = driver.findElement(By.xpath("//div[@class = 'paginator__page-selector']/a[contains(@class, 'paginator__next')]"))
-        //pageNum.click()
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(@class, 'paginator_last')  and  .  =  '>>']")))
         val js = driver as JavascriptExecutor
-        js.executeScript("document.getElementsByClassName('paginator__next')[0].click()")
+        js.executeScript("document.querySelectorAll('a.paginator_next')[0].click()")
         driver.switchTo().defaultContent()
         getListTenders(driver, wait)
     }
 
     private fun getListTenders(driver: ChromeDriver, wait: WebDriverWait) {
-        Thread.sleep(5000)
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id = 'jqGrid']/tbody/tr[not(@class = 'jqgfirstrow')][10]")))
-        val tenders = driver.findElements(By.xpath("//table[@id = 'jqGrid']/tbody/tr[not(@class = 'jqgfirstrow')]"))
+        Thread.sleep(2000)
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(@class, 'registerProcurement__resultSearch-blockResult')][10]")))
+        val tenders = driver.findElements(By.xpath("//div[contains(@class, 'registerProcurement__resultSearch-blockResult')]"))
         tenders.forEach {
             try {
                 parserTender(it)
@@ -106,29 +100,30 @@ class ParserMosreg : Iparser {
 
     private fun parserTender(el: WebElement) {
         //driver.switchTo().defaultContent()
-        val purNum = el.findElementWithoutException(By.xpath("./td[2]"))?.text?.trim { it <= ' ' }
+        val purNum = el.findElementWithoutException(By.xpath(".//h4[contains(@class, 'blockResult__leftContent-topLotNumber')]/span[@data-bind = 'text: Id']"))?.text?.trim { it <= ' ' }
                 ?: ""
         if (purNum == "") {
             logger("can not purNum in tender")
             return
         }
-        val urlT = el.findElementWithoutException(By.xpath("./td[4]/a"))?.getAttribute("href")?.trim { it <= ' ' }
+        val urlT = el.findElementWithoutException(By.xpath(".//a[contains(@data-bind , 'text: TradeName')]"))?.getAttribute("href")?.trim { it <= ' ' }
                 ?: ""
         if (urlT == "") {
             logger("can not urlT in tender", purNum)
             return
         }
         val url = urlT
-        val purObj = el.findElementWithoutException(By.xpath("./td[4]/a"))?.text?.trim { it <= ' ' }
+        val purObj = el.findElementWithoutException(By.xpath(".//a[contains(@data-bind , 'text: TradeName')]"))?.text?.trim { it <= ' ' }
                 ?: ""
-        val datePubTmp = el.findElementWithoutException(By.xpath("./td[6]/span"))?.text?.trim()?.trim { it <= ' ' }
+        val datePubTmp = el.findElementWithoutException(By.xpath(".//span[. = 'Начало приема заявок:']/following-sibling::span"))?.text?.trim()?.trim { it <= ' ' }
                 ?: ""
-        val dateEndTmp = el.findElementWithoutException(By.xpath("./td[7]/span"))?.text?.trim()?.trim { it <= ' ' }
+        val dateEndTmp = el.findElementWithoutException(By.xpath("..//span[. = 'Окончание приема заявок:']/following-sibling::span"))?.text?.trim()?.trim { it <= ' ' }
                 ?: ""
         val datePub = getDateFromFormat(datePubTmp, formatterOnlyDate)
         val dateEnd = getDateFromFormat(dateEndTmp, formatterGpn)
-        val status = el.findElementWithoutException(By.xpath("./td[9]"))?.text?.trim { it <= ' ' } ?: ""
-        val nmck = el.findElementWithoutException(By.xpath("./td[5]"))?.text?.replace(',', '.')?.trim { it <= ' ' }
+        val status = el.findElementWithoutException(By.xpath(".//span[@data-bind = 'text: TradeStateName']"))?.text?.trim { it <= ' ' }
+                ?: ""
+        val nmck = el.findElementWithoutException(By.xpath(".//p[@class = 'blockResult__rightContent-price']"))?.text?.replace(',', '.')?.replace("\u20BD", "")?.deleteAllWhiteSpace()?.trim { it <= ' ' }
                 ?: ""
         if (datePub == Date(0L) || dateEnd == Date(0L)) {
             logger("can not find pubDate or dateEnd on page", urlT, purNum)
