@@ -38,7 +38,7 @@ class ParserBico : Iparser {
         if (urls.isEmpty()) logger("Gets empty list urls ${this::class.simpleName}", StartUrl)
         urls.forEach<Element> ret@{
             var tmp = it.attr("href").trim { gg -> gg <= ' ' }
-            if (!tmp.contains("fields")) return@ret
+            if (!tmp.contains("by-field")) return@ret
             if (!tmp.startsWith("/")) tmp = "/$tmp"
             tmp = tmp.replace(".html", "")
             val u = "$BaseUrl$tmp"

@@ -41,7 +41,7 @@ class BicoStore(val dec: ArrayDeque<PageBico>) {
 
     fun put(url: String, countPage: Int) {
         (1..countPage).forEach { c ->
-            val url = "$url/page/$c//?page=1"
+            val url = "$url?page=$c"
             val stPage = downloadFromUrl(url, i = 5, wt = 3000)
             if (stPage == "") {
                 logger("Gets empty string ${this::class.simpleName}", url)
@@ -88,7 +88,7 @@ class ParserBicoMultiThread : Iparser {
         if (urls.isEmpty()) logger("Gets empty list urls ${this::class.simpleName}", StartUrl)
         urls.forEach<Element> ret@{
             var tmp = it.attr("href").trim { gg -> gg <= ' ' }
-            if (!tmp.contains("fields")) return@ret
+            if (!tmp.contains("by-field")) return@ret
             if (!tmp.startsWith("/")) tmp = "/$tmp"
             tmp = tmp.replace(".html", "")
             val u = "$BaseUrl$tmp"
