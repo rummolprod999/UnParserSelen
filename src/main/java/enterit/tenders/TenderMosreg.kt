@@ -5,6 +5,7 @@ import enterit.tools.addVNum
 import enterit.tools.downloadFromUrlMosreg
 import enterit.tools.logger
 import enterit.tools.tenderKwords
+import org.json.JSONArray
 import org.jsoup.Jsoup
 import java.sql.Connection
 import java.sql.DriverManager
@@ -235,6 +236,12 @@ data class TenderMosreg(val status: String, var purNum: String, val purObj: Stri
                     close()
                 }
             }
+            /*try {
+                addAttachments(con, idTender)
+            } catch (e: Exception) {
+                logger("Ошибка добавления attachments", e.stackTrace, e)
+            }*/
+
             try {
                 tenderKwords(idTender, con)
             } catch (e: Exception) {
@@ -248,5 +255,28 @@ data class TenderMosreg(val status: String, var purNum: String, val purObj: Stri
             }
         })
 
+    }
+
+    private fun addAttachments(con: Connection, idTender: Int) {
+        val urlDoc = "https://api.market.mosreg.ru/api/Trade/$purNum/GetTradeDocuments"
+        val docString = downloadFromUrlMosreg(urlDoc, 1, 5000, url)
+        if (docString == "") {
+            logger("Gets empty docString ${this::class.simpleName}", url)
+            return
+        }
+        val jsonArray = JSONArray(docString)
+        for (i in 0 until jsonArray.length()) {
+            val fName = jsonArray.getJSONObject(i).getString("FileName")
+            val Url = jsonArray.getJSONObject(i).getString("Url")
+            if (fName != "" && Url != "") {
+                con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?").apply {
+                    setInt(1, idTender)
+                    setString(2, fName)
+                    setString(3, Url)
+                    executeUpdate()
+                    close()
+                }
+            }
+        }
     }
 }

@@ -52,7 +52,7 @@ fun downloadFromUrl(urls: String, i: Int = 3, wt: Long = 5000): String {
     return ""
 }
 
-fun downloadFromUrlMosreg(urls: String, i: Int = 3, wt: Long = 5000): String {
+fun downloadFromUrlMosreg(urls: String, i: Int = 3, wt: Long = 5000, refferer: String = ""): String {
     var count = 0
     while (true) {
         //val i = 50
@@ -63,7 +63,7 @@ fun downloadFromUrlMosreg(urls: String, i: Int = 3, wt: Long = 5000): String {
         try {
             var s: String
             val executor = Executors.newCachedThreadPool()
-            val task = { downloadWaitWithRefMosreg(urls) }
+            val task = { downloadWaitWithRefMosreg(urls, refferer) }
             val future = executor.submit(task)
             try {
                 s = future.get(60, TimeUnit.SECONDS)
@@ -138,7 +138,7 @@ fun downloadWaitWithRef(urls: String): String {
     return s.toString()
 }
 
-fun downloadWaitWithRefMosreg(urls: String): String {
+fun downloadWaitWithRefMosreg(urls: String, refferer: String = ""): String {
     val s = StringBuilder()
     val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
         override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate>? {
@@ -158,6 +158,9 @@ fun downloadWaitWithRefMosreg(urls: String): String {
     uc.connectTimeout = 30_000
     uc.readTimeout = 600_000
     uc.addRequestProperty("User-Agent", RandomUserAgent.randomUserAgent)
+    if (refferer != "") {
+        uc.addRequestProperty("Referer", refferer)
+    }
     uc.connect()
     val `is`: InputStream = uc.getInputStream()
     val br = BufferedReader(InputStreamReader(`is`))

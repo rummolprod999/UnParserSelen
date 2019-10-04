@@ -8,6 +8,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$APPLICATION_CONFIG_DIR$/consoles/db/4b6fb7df-65b2-406f-906e-1c2478262f0a/console_3.sql">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/pom.xml">
           <value>
             <set />
@@ -19,6 +24,21 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/src/main/java/enterit/parsers/ParserBicoMultiThread.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/enterit/parsers/ParserMosreg.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/enterit/tenders/TenderMosreg.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/enterit/tools/download_tools.kt">
           <value>
             <set />
           </value>
