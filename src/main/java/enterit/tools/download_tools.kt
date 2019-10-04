@@ -160,6 +160,9 @@ fun downloadWaitWithRefMosreg(urls: String, refferer: String = ""): String {
     uc.addRequestProperty("User-Agent", RandomUserAgent.randomUserAgent)
     if (refferer != "") {
         uc.addRequestProperty("Referer", refferer)
+        uc.addRequestProperty("Accept", "*/*")
+        uc.addRequestProperty("XXX-TenantId-Header", "2")
+        uc.addRequestProperty("Sec-Fetch-Mode", "cors")
     }
     uc.connect()
     val `is`: InputStream = uc.getInputStream()

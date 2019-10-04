@@ -236,11 +236,11 @@ data class TenderMosreg(val status: String, var purNum: String, val purObj: Stri
                     close()
                 }
             }
-            /*try {
+            try {
                 addAttachments(con, idTender)
             } catch (e: Exception) {
                 logger("Ошибка добавления attachments", e.stackTrace, e)
-            }*/
+            }
 
             try {
                 tenderKwords(idTender, con)
