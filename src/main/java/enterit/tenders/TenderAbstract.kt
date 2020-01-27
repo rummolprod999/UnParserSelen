@@ -1,8 +1,12 @@
 package enterit.tenders
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import enterit.Prefix
+import enterit.tools.downloadFromUrl
 import enterit.tools.getConformity
 import enterit.tools.getRegion
+import java.lang.reflect.Type
 import java.sql.Connection
 import java.sql.Statement
 
@@ -34,6 +38,28 @@ abstract class TenderAbstract {
             stmtins.close()
         }
         return IdEtp
+    }
+
+    fun getAttachments(idTender: Int, con: Connection, purNum: String) {
+        val page = downloadFromUrl("https://zmo-new-webapi.rts-tender.ru/api/Trade/$purNum/GetTradeDocuments")
+        if (page == "") {
+            return
+        }
+        val gson = Gson()
+        val listType: Type = object : TypeToken<List<RtsAtt?>?>() {}.type
+        val docs: List<RtsAtt> = gson.fromJson(page, listType)
+        docs.forEach {
+            if (it.FileName != null && it.Url != null) {
+                con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?").apply {
+                    setInt(1, idTender)
+                    setString(2, it.FileName)
+                    setString(3, it.Url)
+                    executeUpdate()
+                    close()
+                }
+            }
+        }
+
     }
 
     fun getPlacingWay(con: Connection, placingWay: String): Int {
@@ -82,5 +108,10 @@ abstract class TenderAbstract {
         }
         return idReg
 
+    }
+
+    class RtsAtt {
+        var FileName: String? = null
+        var Url: String? = null
     }
 }

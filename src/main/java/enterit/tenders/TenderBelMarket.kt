@@ -143,6 +143,11 @@ class TenderBelMarket(val status: String, var purNum: String, val purObj: String
             } else {
                 AddTenderBelMarket++
             }
+            try {
+                getAttachments(idTender, con, purNum)
+            } catch (e: Exception) {
+                logger("Ошибка добавления документации", e.stackTrace, e)
+            }
             var idLot = 0
             val LotNumber = 1
             val currency = ""

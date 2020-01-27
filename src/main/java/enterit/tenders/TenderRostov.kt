@@ -144,6 +144,11 @@ class TenderRostov(val status: String, var purNum: String, val purObj: String, v
                 AddTenderRostov++
             }
             //val documents: Elements = htmlTen.select("h1:containsOwn(Документы закупки) + div ")
+            try {
+                getAttachments(idTender, con, purNum)
+            } catch (e: Exception) {
+                logger("Ошибка добавления документации", e.stackTrace, e)
+            }
             var idLot = 0
             val LotNumber = 1
             val currency = ""
