@@ -25,14 +25,14 @@ class ParserTander : Iparser {
     }
 
     companion object WebCl {
-        const val BaseUrl = "https://srm.tander.ru/uniapp#app=srm&token=9934904"
+        const val BaseUrl = "https://srm.tander.ru/uniapp#app=srm&token=1440293391"
         const val timeoutB = 120L
     }
 
     override fun parser() {
 
         val options = ChromeOptions()
-        options.addArguments("headless")
+        //options.addArguments("headless")
         options.addArguments("disable-gpu")
         options.addArguments("no-sandbox")
         val driver = ChromeDriver(options)
