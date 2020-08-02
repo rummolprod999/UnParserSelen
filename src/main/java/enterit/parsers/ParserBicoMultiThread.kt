@@ -31,10 +31,10 @@ class BicoStore(val dec: ArrayDeque<PageBico>) {
     fun get(): PageBico {
         synchronized(this) {
             while (dec.size < 1) {
-                (this as java.lang.Object).wait()
+                (this as Object).wait()
             }
             val d = dec.pop()
-            (this as java.lang.Object).notify()
+            (this as Object).notify()
             return d
         }
     }
@@ -48,10 +48,10 @@ class BicoStore(val dec: ArrayDeque<PageBico>) {
             }
             synchronized(this) {
                 while (dec.size >= 5) {
-                    (this as java.lang.Object).wait()
+                    (this as Object).wait()
                 }
                 dec.add(PageBico(stPage, url))
-                (this as java.lang.Object).notify()
+                (this as Object).notify()
             }
         }
     }
