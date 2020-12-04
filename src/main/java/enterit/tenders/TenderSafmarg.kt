@@ -13,6 +13,9 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.Statement
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.*
 
 class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbstract(), ITender {
@@ -28,17 +31,35 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
         val wait = WebDriverWait(driver, ParserSafmarg.timeoutB)
         /*wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.xpath("//iframe")))*/
         Thread.sleep(10000)
-        driver.switchTo().frame(0)
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]")))
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[. = 'Начало подтверждения участия']/following-sibling::div/div")))
         } catch (e: Exception) {
             logger("can not find expected startDate", driver.pageSource)
             return
         }
-        val datePubT = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+        var datePubT =
+            driver.findElementWithoutException(By.xpath("//div[. = 'Начало подтверждения участия']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                 ?: ""
-        val pubDate = datePubT.getDateFromString(formatterGpn)
-        var endDateT = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Окончание приема предложений')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+        var pubDate = Date()
+        if (datePubT.contains("Вчера в")) {
+            datePubT = datePubT.replace(
+                "Вчера в", SimpleDateFormat("dd.MM.yyyy").format(
+                    Date.from(
+                        LocalDate.now().minusDays(1).atStartOfDay(
+                            ZoneId.systemDefault()
+                        ).toInstant()
+                    )
+                )
+            )
+        }
+        if (datePubT.contains("Сегодня в")) {
+            datePubT = datePubT.replace(
+                "Сегодня в", SimpleDateFormat("dd.MM.yyyy").format(Date())
+            )
+        }
+        pubDate = datePubT.getDateFromString(formatterGpn)
+        var endDateT =
+            driver.findElementWithoutException(By.xpath("//div[. = 'Окончание представления предложений']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                 ?: ""
         endDateT = endDateT.regExpTest("""(\d{2}.\d{2}.\d{4} \d{2}:\d{2})""")
         val endDate = endDateT.getDateFromString(formatterGpn)
@@ -46,17 +67,20 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
             logger("can not find dates in tender", tn.href, datePubT, endDateT)
             return
         }
-        val status = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Статус торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+        val status =
+            driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Статус торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         DriverManager.getConnection(UrlConnect, UserDb, PassDb).use(fun(con: Connection) {
             val dateVer = Date()
-            val stmt0 = con.prepareStatement("SELECT id_tender FROM ${Prefix}tender WHERE purchase_number = ? AND doc_publish_date = ? AND type_fz = ? AND end_date = ? AND notice_version = ?").apply {
-                setString(1, tn.purNum)
-                setTimestamp(2, Timestamp(pubDate.time))
-                setInt(3, typeFz)
-                setTimestamp(4, Timestamp(endDate.time))
-                setString(5, status)
-            }
+            val stmt0 =
+                con.prepareStatement("SELECT id_tender FROM ${Prefix}tender WHERE purchase_number = ? AND doc_publish_date = ? AND type_fz = ? AND end_date = ? AND notice_version = ?")
+                    .apply {
+                        setString(1, tn.purNum)
+                        setTimestamp(2, Timestamp(pubDate.time))
+                        setInt(3, typeFz)
+                        setTimestamp(4, Timestamp(endDate.time))
+                        setString(5, status)
+                    }
             val r = stmt0.executeQuery()
             if (r.next()) {
                 r.close()
@@ -67,21 +91,24 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
             stmt0.close()
             var cancelstatus = 0
             var updated = false
-            val stmt = con.prepareStatement("SELECT id_tender, date_version FROM ${Prefix}tender WHERE purchase_number = ? AND cancel=0 AND type_fz = ?").apply {
-                setString(1, tn.purNum)
-                setInt(2, typeFz)
-            }
+            val stmt =
+                con.prepareStatement("SELECT id_tender, date_version FROM ${Prefix}tender WHERE purchase_number = ? AND cancel=0 AND type_fz = ?")
+                    .apply {
+                        setString(1, tn.purNum)
+                        setInt(2, typeFz)
+                    }
             val rs = stmt.executeQuery()
             while (rs.next()) {
                 updated = true
                 val idT = rs.getInt(1)
                 val dateB: Timestamp = rs.getTimestamp(2)
                 if (dateVer.after(dateB) || dateB == Timestamp(dateVer.time)) {
-                    val preparedStatement = con.prepareStatement("UPDATE ${Prefix}tender SET cancel=1 WHERE id_tender = ?").apply {
-                        setInt(1, idT)
-                        execute()
-                        close()
-                    }
+                    val preparedStatement =
+                        con.prepareStatement("UPDATE ${Prefix}tender SET cancel=1 WHERE id_tender = ?").apply {
+                            setInt(1, idT)
+                            execute()
+                            close()
+                        }
                 } else {
                     cancelstatus = 1
                 }
@@ -89,7 +116,8 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
             rs.close()
             stmt.close()
             var IdOrganizer = 0
-            val fullnameOrg = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Наименование')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            val fullnameOrg =
+                driver.findElementWithoutException(By.xpath("//div[. = 'Организатор']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (fullnameOrg != "") {
                 val stmto = con.prepareStatement("SELECT id_organizer FROM ${Prefix}organizer WHERE full_name = ?")
@@ -102,17 +130,21 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
                 } else {
                     rso.close()
                     stmto.close()
-                    val postalAdr = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Почтовый адрес')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                    val postalAdr = ""
+                    val factAdr = ""
+                    val email =
+                        driver.findElementWithoutException(By.xpath("//div[. = 'Адрес электронной почты']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                             ?: ""
-                    val factAdr = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Юридический адрес (место нахождения)')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                    val phone =
+                        driver.findElementWithoutException(By.xpath("//div[. = 'Номер контактного телефона']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                             ?: ""
-                    val email = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Адрес электронной почты')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                    val contactPerson =
+                        driver.findElementWithoutException(By.xpath("//div[. = 'Контактное лицо']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                             ?: ""
-                    val phone = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Номер контактного телефона')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
-                            ?: ""
-                    val contactPerson = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Контактное лицо')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
-                            ?: ""
-                    val stmtins = con.prepareStatement("INSERT INTO ${Prefix}organizer SET full_name = ?, post_address = ?, contact_email = ?, contact_phone = ?, fact_address = ?, contact_person = ?", Statement.RETURN_GENERATED_KEYS).apply {
+                    val stmtins = con.prepareStatement(
+                        "INSERT INTO ${Prefix}organizer SET full_name = ?, post_address = ?, contact_email = ?, contact_phone = ?, fact_address = ?, contact_person = ?",
+                        Statement.RETURN_GENERATED_KEYS
+                    ).apply {
                         setString(1, fullnameOrg)
                         setString(2, postalAdr)
                         setString(3, email)
@@ -132,18 +164,18 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
             val idEtp = getEtp(con)
             var idPlacingWay = 0
             var idTender = 0
-            val placingWayName = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Форма проведения торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            val placingWayName =
+                driver.findElementWithoutException(By.xpath("//div[. = 'Способ закупки']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (placingWayName != "") {
                 idPlacingWay = getPlacingWay(con, placingWayName)
             }
             val idRegion = 0
-            val purObj1 = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Предмет торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
-                    ?: ""
-            val purObj2 = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Описание предмета договора')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
-                    ?: ""
-            val purObj = "$purObj1 $purObj2".trim { it <= ' ' }
-            val insertTender = con.prepareStatement("INSERT INTO ${Prefix}tender SET id_xml = ?, purchase_number = ?, doc_publish_date = ?, href = ?, purchase_object_info = ?, type_fz = ?, id_organizer = ?, id_placing_way = ?, id_etp = ?, end_date = ?, cancel = ?, date_version = ?, num_version = ?, notice_version = ?, xml = ?, print_form = ?, id_region = ?", Statement.RETURN_GENERATED_KEYS)
+            val purObj = tn.purName
+            val insertTender = con.prepareStatement(
+                "INSERT INTO ${Prefix}tender SET id_xml = ?, purchase_number = ?, doc_publish_date = ?, href = ?, purchase_object_info = ?, type_fz = ?, id_organizer = ?, id_placing_way = ?, id_etp = ?, end_date = ?, cancel = ?, date_version = ?, num_version = ?, notice_version = ?, xml = ?, print_form = ?, id_region = ?",
+                Statement.RETURN_GENERATED_KEYS
+            )
             insertTender.setString(1, tn.purNum)
             insertTender.setString(2, tn.purNum)
             insertTender.setTimestamp(3, Timestamp(pubDate.time))
@@ -175,12 +207,21 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
             }
             var idLot = 0
             val LotNumber = 1
-            val currency = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Валюта')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            val currency =
+                driver.findElementWithoutException(By.xpath("//div[. = 'Валюта']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
-            val insertLot = con.prepareStatement("INSERT INTO ${Prefix}lot SET id_tender = ?, lot_number = ?, currency = ?", Statement.RETURN_GENERATED_KEYS).apply {
+            val nmck =
+                driver.findElementWithoutException(By.xpath("//div[. = 'Начальная стоимость']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
+                    ?.replace("₽", "")?.deleteAllWhiteSpace()?.replace(",", "")
+                    ?: ""
+            val insertLot = con.prepareStatement(
+                "INSERT INTO ${Prefix}lot SET id_tender = ?, lot_number = ?, currency = ?, max_price = ?",
+                Statement.RETURN_GENERATED_KEYS
+            ).apply {
                 setInt(1, idTender)
                 setInt(2, LotNumber)
                 setString(3, currency)
+                setString(4, nmck)
                 executeUpdate()
             }
             val rl = insertLot.generatedKeys
@@ -190,10 +231,12 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
             rl.close()
             insertLot.close()
             val requareList = mutableListOf<String>()
-            val rec1 = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Требования к участникам торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            val rec1 =
+                driver.findElementWithoutException(By.xpath("//div[. = 'Требования к участникам']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (rec1 != "") requareList.add(rec1)
-            val rec2 = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Перечень представляемых участниками торгов документов и требования к их оформлению')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            val rec2 =
+                driver.findElementWithoutException(By.xpath("//div[. = 'Перечень представляемых участниками закупки документов и требования к их оформлению']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (rec2 != "") requareList.add(rec2)
             requareList.forEach {
@@ -207,7 +250,8 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
             }
             var idCustomer = 0
             if (fullnameOrg != "") {
-                val stmtoc = con.prepareStatement("SELECT id_customer FROM ${Prefix}customer WHERE full_name = ? LIMIT 1")
+                val stmtoc =
+                    con.prepareStatement("SELECT id_customer FROM ${Prefix}customer WHERE full_name = ? LIMIT 1")
                 stmtoc.setString(1, fullnameOrg)
                 val rsoc = stmtoc.executeQuery()
                 if (rsoc.next()) {
@@ -217,7 +261,10 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
                 } else {
                     rsoc.close()
                     stmtoc.close()
-                    val stmtins = con.prepareStatement("INSERT INTO ${Prefix}customer SET full_name = ?, is223=1, reg_num = ?", Statement.RETURN_GENERATED_KEYS)
+                    val stmtins = con.prepareStatement(
+                        "INSERT INTO ${Prefix}customer SET full_name = ?, is223=1, reg_num = ?",
+                        Statement.RETURN_GENERATED_KEYS
+                    )
                     stmtins.setString(1, fullnameOrg)
                     stmtins.setString(2, java.util.UUID.randomUUID().toString())
                     stmtins.executeUpdate()
@@ -229,21 +276,28 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
                     stmtins.close()
                 }
             }
-            val delivPlace1 = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Регион поставки товаров, выполнения работ, оказания услуг')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            val delivPlace1 =
+                driver.findElementWithoutException(By.xpath("//div[. = 'Регион поставки, выполнения работ']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
-            val delivPlace2 = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Место (адрес) поставки товаров, выполнения работ, оказания услуг')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            val delivPlace2 =
+                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Место (адрес) поставки товаров, выполнения работ, оказания услуг')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             val delivPlace = "$delivPlace1 $delivPlace2".trim { it <= ' ' }
-            var delivTerm1 = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Условия поставки товаров')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            var delivTerm1 =
+                driver.findElementWithoutException(By.xpath("//div[. = 'Условия оплаты']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
-            if (delivTerm1 != "") delivTerm1 = "Условия поставки товаров: $delivTerm1"
-            var delivTerm2 = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Пояснение условий поставки')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            if (delivTerm1 != "") delivTerm1 = "Условия оплаты: $delivTerm1"
+            var delivTerm2 =
+                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Пояснение условий поставки')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (delivTerm2 != "") delivTerm2 = "Пояснение условий поставки: $delivTerm2"
-            var delivTerm3 = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Требования к сроку и объему представления гарантий качества товара, работ, услуг, к обслуживанию товара, к расходам на эксплуатацию товара')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            var delivTerm3 =
+                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Требования к сроку и объему представления гарантий качества товара, работ, услуг, к обслуживанию товара, к расходам на эксплуатацию товара')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
                     ?: ""
-            if (delivTerm3 != "") delivTerm3 = "Требования к сроку и объему представления гарантий качества товара, работ, услуг, к обслуживанию товара, к расходам на эксплуатацию товара: $delivTerm3"
-            var delivTerm4 = driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Сроки поставки товаров, выполнения работ, оказания услуг')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            if (delivTerm3 != "") delivTerm3 =
+                "Требования к сроку и объему представления гарантий качества товара, работ, услуг, к обслуживанию товара, к расходам на эксплуатацию товара: $delivTerm3"
+            var delivTerm4 =
+                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Сроки поставки товаров, выполнения работ, оказания услуг')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (delivTerm4 != "") delivTerm4 = "Сроки поставки товаров, выполнения работ, оказания услуг: $delivTerm4"
             var delivTerm = ""
@@ -251,65 +305,75 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
                 delivTerm = "$delivTerm1\n $delivTerm2\n $delivTerm3\n $delivTerm4".trim { it <= ' ' }
             }
             if (delivPlace != "" || delivTerm != "") {
-                val insertCusRec = con.prepareStatement("INSERT INTO ${Prefix}customer_requirement SET id_lot = ?, id_customer = ?, delivery_place = ?, delivery_term = ?").apply {
-                    setInt(1, idLot)
-                    setInt(2, idCustomer)
-                    setString(3, delivPlace)
-                    setString(4, delivTerm)
-                    executeUpdate()
-                    close()
-                }
+                val insertCusRec =
+                    con.prepareStatement("INSERT INTO ${Prefix}customer_requirement SET id_lot = ?, id_customer = ?, delivery_place = ?, delivery_term = ?")
+                        .apply {
+                            setInt(1, idLot)
+                            setInt(2, idCustomer)
+                            setString(3, delivPlace)
+                            setString(4, delivTerm)
+                            executeUpdate()
+                            close()
+                        }
             }
-            val purobj1 = driver.findElements(By.xpath("//table[preceding-sibling::div[contains(., 'Позиции спецификации:')] and  contains(@class, 'competitive-table-data')]//tr[position() > 1]"))
+            val purobj1 =
+                driver.findElements(By.xpath("//table[preceding-sibling::div[contains(., 'Позиции спецификации:')] and  contains(@class, 'competitive-table-data')]//tr[position() > 1]"))
             purobj1.forEach {
                 val name = it.findElementWithoutException(By.xpath(".//td[3]"))?.text?.trim { it <= ' ' }
-                        ?: ""
+                    ?: ""
                 val okei = it.findElementWithoutException(By.xpath(".//td[4]"))?.text?.trim { it <= ' ' }
-                        ?: ""
+                    ?: ""
                 val quantity = it.findElementWithoutException(By.xpath(".//td[5]"))?.text?.trim { it <= ' ' }
-                        ?: ""
-                val insertPurObj = con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?").apply {
-                    setInt(1, idLot)
-                    setInt(2, idCustomer)
-                    setString(3, name)
-                    setString(4, okei)
-                    setString(5, quantity)
-                    setString(6, quantity)
-                    executeUpdate()
-                    close()
-                }
+                    ?: ""
+                val insertPurObj =
+                    con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?")
+                        .apply {
+                            setInt(1, idLot)
+                            setInt(2, idCustomer)
+                            setString(3, name)
+                            setString(4, okei)
+                            setString(5, quantity)
+                            setString(6, quantity)
+                            executeUpdate()
+                            close()
+                        }
             }
             var purobj2 = mutableListOf<WebElement>()
-            val toggler = driver.findElementWithoutException(By.xpath("//tr[@class = 'purchase-items-toggler-row' and @onclick]"))
+            val toggler =
+                driver.findElementWithoutException(By.xpath("//tr[@class = 'purchase-items-toggler-row' and @onclick]"))
             if (toggler != null) {
                 toggler.click()
                 Thread.sleep(3000)
-                purobj2 = driver.findElements(By.xpath("//tr[contains(@class, 'purchase-items-table')]//table/tbody/tr[position() > 1]"))
+                purobj2 =
+                    driver.findElements(By.xpath("//tr[contains(@class, 'purchase-items-table')]//table/tbody/tr[position() > 1]"))
             }
 
             purobj2.forEach {
                 val name1 = it.findElementWithoutException(By.xpath(".//td[2]"))?.text?.trim { it <= ' ' }
-                        ?: ""
+                    ?: ""
                 val name2 = it.findElementWithoutException(By.xpath(".//td[6]"))?.text?.trim { it <= ' ' }
-                        ?: ""
+                    ?: ""
                 val name = "$name1 $name2".trim { it <= ' ' }
                 val okei = it.findElementWithoutException(By.xpath(".//td[5]"))?.text?.trim { it <= ' ' }
-                        ?: ""
+                    ?: ""
                 val quantity = it.findElementWithoutException(By.xpath(".//td[4]"))?.text?.trim { it <= ' ' }
-                        ?: ""
-                val insertPurObj = con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?").apply {
-                    setInt(1, idLot)
-                    setInt(2, idCustomer)
-                    setString(3, name)
-                    setString(4, okei)
-                    setString(5, quantity)
-                    setString(6, quantity)
-                    executeUpdate()
-                    close()
-                }
+                    ?: ""
+                val insertPurObj =
+                    con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?")
+                        .apply {
+                            setInt(1, idLot)
+                            setInt(2, idCustomer)
+                            setString(3, name)
+                            setString(4, okei)
+                            setString(5, quantity)
+                            setString(6, quantity)
+                            executeUpdate()
+                            close()
+                        }
             }
             if (purobj1.isEmpty() && purobj2.isEmpty()) {
-                val insertPurObj = con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?")
+                val insertPurObj =
+                    con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?")
                 insertPurObj.setInt(1, idLot)
                 insertPurObj.setInt(2, idCustomer)
                 insertPurObj.setString(3, purObj)

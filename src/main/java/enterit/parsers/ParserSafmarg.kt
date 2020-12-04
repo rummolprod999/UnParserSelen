@@ -36,8 +36,8 @@ class ParserSafmarg : Iparser {
         try {
             driver.get(BaseUrl)
             val wait = WebDriverWait(driver, timeoutB)
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@ng-transclude = 'tradeListItem']")))
-            val tenders = driver.findElements(By.xpath("//div[@ng-transclude = 'tradeListItem']"))
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-list-item")))
+            val tenders = driver.findElements(By.xpath("//um-trade-list-item"))
             tenders.forEach { addToList(it) }
             tendersS.forEach {
                 try {
@@ -55,15 +55,20 @@ class ParserSafmarg : Iparser {
     }
 
     private fun addToList(el: WebElement) {
-        val purNum = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'registered-number')]"))?.text?.trim { it <= ' ' }
+        val purNum =
+            el.findElementWithoutException(By.xpath(".//span[contains(@class, 'registered-number')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         if (purNum == "") {
             logger("can not find dates or purNum in tender")
             return
         }
-        val href = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))?.getAttribute("href")?.trim { it <= ' ' }
+        val purName =
+            el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))?.text?.trim { it <= ' ' }
                 ?: ""
-        val tn = SafmargT(purNum, href)
+        val href = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))
+            ?.getAttribute("href")?.trim { it <= ' ' }
+            ?: ""
+        val tn = SafmargT(purNum, href, purName)
         tendersS.add(tn)
     }
 }
