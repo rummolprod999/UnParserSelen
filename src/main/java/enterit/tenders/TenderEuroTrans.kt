@@ -216,6 +216,20 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
             }
             rl.close()
             insertLot.close()
+            val attachments = driver.findElements(By.xpath("//a[. = 'Скачать все приложенные файлы']"))
+            attachments.forEach {
+                val urlAtt = it.getAttribute("href")?.trim { it <= ' ' } ?: ""
+                if (urlAtt != "") {
+                    con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?")
+                        .apply {
+                            setInt(1, idTender)
+                            setString(2, "Скачать все приложенные файлы")
+                            setString(3, urlAtt)
+                            executeUpdate()
+                            close()
+                        }
+                }
+            }
             val requareList = mutableListOf<String>()
             val rec1 =
                 driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Требования к участникам торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }

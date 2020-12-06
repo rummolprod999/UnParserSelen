@@ -21,7 +21,7 @@ class ParserEuroTrans : Iparser {
 
     companion object WebCl {
         const val BaseUrl = "http://tender.eurotransstroy.ru/trades?page=trades"
-        const val timeoutB = 120L
+        const val timeoutB = 60L
     }
 
     private val tendersS = mutableListOf<SafmargT<String>>()
@@ -36,8 +36,8 @@ class ParserEuroTrans : Iparser {
         try {
             driver.get(BaseUrl)
             val wait = WebDriverWait(driver, timeoutB)
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@ng-transclude = 'tradeListItem']")))
-            val tenders = driver.findElements(By.xpath("//div[@ng-transclude = 'tradeListItem']"))
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'trade-wrap ng-scope']")))
+            val tenders = driver.findElements(By.xpath("//div[@class = 'trade-wrap ng-scope']"))
             tenders.forEach { addToList(it) }
             tendersS.forEach {
                 try {
@@ -62,7 +62,7 @@ class ParserEuroTrans : Iparser {
             logger("can not find dates or purNum in tender")
             return
         }
-        val href = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))
+        val href = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-block title')]//a"))
             ?.getAttribute("href")?.trim { it <= ' ' }
             ?: ""
         val tn = SafmargT(purNum, href, "")
