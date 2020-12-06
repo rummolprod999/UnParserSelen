@@ -10,7 +10,13 @@ import java.sql.Statement
 import java.sql.Timestamp
 import java.util.*
 
-class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, private val pubDate: Date, private val endDate: Date) : TenderAbstract(), ITender {
+class TenderTander(
+    val purNum: String,
+    var urlDoc: String,
+    val purObj: String,
+    private val pubDate: Date,
+    private val endDate: Date
+) : TenderAbstract(), ITender {
     companion object TypeFz {
         const val typeFz = 32
     }
@@ -23,7 +29,8 @@ class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, p
     override fun parsing() {
         val dateVer = Date()
         DriverManager.getConnection(UrlConnect, UserDb, PassDb).use(fun(con: Connection) {
-            val stmt0 = con.prepareStatement("SELECT id_tender FROM ${Prefix}tender WHERE purchase_number = ? AND doc_publish_date = ? AND type_fz = ? AND end_date = ?")
+            val stmt0 =
+                con.prepareStatement("SELECT id_tender FROM ${Prefix}tender WHERE purchase_number = ? AND doc_publish_date = ? AND type_fz = ? AND end_date = ?")
             stmt0.setString(1, purNum)
             stmt0.setTimestamp(2, Timestamp(pubDate.time))
             stmt0.setInt(3, typeFz)
@@ -38,7 +45,8 @@ class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, p
             stmt0.close()
             var cancelstatus = 0
             var updated = false
-            val stmt = con.prepareStatement("SELECT id_tender, date_version FROM ${Prefix}tender WHERE purchase_number = ? AND cancel=0 AND type_fz = ?")
+            val stmt =
+                con.prepareStatement("SELECT id_tender, date_version FROM ${Prefix}tender WHERE purchase_number = ? AND cancel=0 AND type_fz = ?")
             stmt.setString(1, purNum)
             stmt.setInt(2, typeFz)
             val rs = stmt.executeQuery()
@@ -47,7 +55,8 @@ class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, p
                 val idT = rs.getInt(1)
                 val dateB: Timestamp = rs.getTimestamp(2)
                 if (dateVer.after(dateB) || dateB == Timestamp(dateVer.time)) {
-                    val preparedStatement = con.prepareStatement("UPDATE ${Prefix}tender SET cancel=1 WHERE id_tender = ?")
+                    val preparedStatement =
+                        con.prepareStatement("UPDATE ${Prefix}tender SET cancel=1 WHERE id_tender = ?")
                     preparedStatement.setInt(1, idT)
                     preparedStatement.execute()
                     preparedStatement.close()
@@ -75,7 +84,10 @@ class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, p
                 val email = "barmotina_ob@magnit.ru"
                 val phone = "8 (800) 200-90-02"
                 val fax = ""
-                val stmtins = con.prepareStatement("INSERT INTO ${Prefix}organizer SET full_name = ?, inn = ?, kpp = ?, post_address = ?, contact_email = ?, contact_phone = ?, contact_fax = ?", Statement.RETURN_GENERATED_KEYS)
+                val stmtins = con.prepareStatement(
+                    "INSERT INTO ${Prefix}organizer SET full_name = ?, inn = ?, kpp = ?, post_address = ?, contact_email = ?, contact_phone = ?, contact_fax = ?",
+                    Statement.RETURN_GENERATED_KEYS
+                )
                 stmtins.setString(1, fullnameOrg)
                 stmtins.setString(2, innOrg)
                 stmtins.setString(3, kppOrg)
@@ -95,7 +107,10 @@ class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, p
             val idPlacingWay = 0
             var idTender = 0
             val idRegion = 0
-            val insertTender = con.prepareStatement("INSERT INTO ${Prefix}tender SET id_xml = ?, purchase_number = ?, doc_publish_date = ?, href = ?, purchase_object_info = ?, type_fz = ?, id_organizer = ?, id_placing_way = ?, id_etp = ?, end_date = ?, cancel = ?, date_version = ?, num_version = ?, notice_version = ?, xml = ?, print_form = ?, id_region = ?", Statement.RETURN_GENERATED_KEYS)
+            val insertTender = con.prepareStatement(
+                "INSERT INTO ${Prefix}tender SET id_xml = ?, purchase_number = ?, doc_publish_date = ?, href = ?, purchase_object_info = ?, type_fz = ?, id_organizer = ?, id_placing_way = ?, id_etp = ?, end_date = ?, cancel = ?, date_version = ?, num_version = ?, notice_version = ?, xml = ?, print_form = ?, id_region = ?",
+                Statement.RETURN_GENERATED_KEYS
+            )
             insertTender.setString(1, purNum)
             insertTender.setString(2, purNum)
             insertTender.setTimestamp(3, Timestamp(pubDate.time))
@@ -125,7 +140,8 @@ class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, p
             } else {
                 AddTenderTander++
             }
-            val insertDoc = con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?")
+            val insertDoc =
+                con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?")
             insertDoc.setInt(1, idTender)
             insertDoc.setString(2, "Скачать файл")
             insertDoc.setString(3, urlDoc)
@@ -133,7 +149,10 @@ class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, p
             insertDoc.close()
             var idLot = 0
             val LotNumber = 1
-            val insertLot = con.prepareStatement("INSERT INTO ${Prefix}lot SET id_tender = ?, lot_number = ?", Statement.RETURN_GENERATED_KEYS)
+            val insertLot = con.prepareStatement(
+                "INSERT INTO ${Prefix}lot SET id_tender = ?, lot_number = ?",
+                Statement.RETURN_GENERATED_KEYS
+            )
             insertLot.setInt(1, idTender)
             insertLot.setInt(2, LotNumber)
             insertLot.executeUpdate()
@@ -154,7 +173,10 @@ class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, p
             } else {
                 rsoc.close()
                 stmtoc.close()
-                val stmtins = con.prepareStatement("INSERT INTO ${Prefix}customer SET full_name = ?, is223=1, reg_num = ?, inn = ?", Statement.RETURN_GENERATED_KEYS)
+                val stmtins = con.prepareStatement(
+                    "INSERT INTO ${Prefix}customer SET full_name = ?, is223=1, reg_num = ?, inn = ?",
+                    Statement.RETURN_GENERATED_KEYS
+                )
                 stmtins.setString(1, fullnameOrg)
                 stmtins.setString(2, java.util.UUID.randomUUID().toString())
                 stmtins.setString(3, innOrg)
@@ -166,7 +188,8 @@ class TenderTander(val purNum: String, var urlDoc: String, val purObj: String, p
                 rsoi.close()
                 stmtins.close()
             }
-            val insertPurObj = con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?")
+            val insertPurObj =
+                con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?")
             insertPurObj.setInt(1, idLot)
             insertPurObj.setInt(2, idCustomer)
             insertPurObj.setString(3, purObj)

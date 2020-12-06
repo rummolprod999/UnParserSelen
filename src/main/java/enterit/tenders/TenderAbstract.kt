@@ -26,7 +26,10 @@ abstract class TenderAbstract {
         } else {
             rso.close()
             stmto.close()
-            val stmtins = con.prepareStatement("INSERT INTO ${Prefix}etp SET name = ?, url = ?, conf=0", Statement.RETURN_GENERATED_KEYS)
+            val stmtins = con.prepareStatement(
+                "INSERT INTO ${Prefix}etp SET name = ?, url = ?, conf=0",
+                Statement.RETURN_GENERATED_KEYS
+            )
             stmtins.setString(1, etpName)
             stmtins.setString(2, etpUrl)
             stmtins.executeUpdate()
@@ -50,13 +53,14 @@ abstract class TenderAbstract {
         val docs: List<RtsAtt> = gson.fromJson(page, listType)
         docs.forEach {
             if (it.FileName != null && it.Url != null) {
-                con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?").apply {
-                    setInt(1, idTender)
-                    setString(2, it.FileName)
-                    setString(3, it.Url)
-                    executeUpdate()
-                    close()
-                }
+                con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?")
+                    .apply {
+                        setInt(1, idTender)
+                        setString(2, it.FileName)
+                        setString(3, it.Url)
+                        executeUpdate()
+                        close()
+                    }
             }
         }
 
@@ -75,7 +79,10 @@ abstract class TenderAbstract {
             rso.close()
             stmto.close()
             val conf = getConformity(placingWay)
-            val stmtins = con.prepareStatement("INSERT INTO ${Prefix}placing_way SET name = ?, conformity = ?", Statement.RETURN_GENERATED_KEYS)
+            val stmtins = con.prepareStatement(
+                "INSERT INTO ${Prefix}placing_way SET name = ?, conformity = ?",
+                Statement.RETURN_GENERATED_KEYS
+            )
             stmtins.setString(1, placingWay)
             stmtins.setInt(2, conf)
             stmtins.executeUpdate()

@@ -56,7 +56,8 @@ class ParserTalan : Iparser {
         val wait = WebDriverWait(driver, timeoutB)
         Thread.sleep(15000)
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@aria-describedby = 'grid_TenderGridViewModel_info']/tbody/tr[contains(@class, 'notoggle') and @id][10]")))
-        val tenders = driver.findElements(By.xpath("//table[@aria-describedby = 'grid_TenderGridViewModel_info']/tbody/tr[contains(@class, 'notoggle') and @id]"))
+        val tenders =
+            driver.findElements(By.xpath("//table[@aria-describedby = 'grid_TenderGridViewModel_info']/tbody/tr[contains(@class, 'notoggle') and @id]"))
         tenders.forEach {
             try {
                 parserTender(it)
@@ -68,38 +69,38 @@ class ParserTalan : Iparser {
 
     private fun parserTender(el: WebElement) {
         val purNum = el.findElementWithoutException(By.xpath(".//td[1]/a"))?.text?.trim { it <= ' ' }
-                ?: ""
+            ?: ""
         //println(purNum)
         if (purNum == "") {
             logger("can not find purNum in tender")
             return
         }
         val hrefL = el.findElementWithoutException(By.xpath(".//td[1]/a"))?.getAttribute("href")?.trim({ it <= ' ' })
-                ?: ""
+            ?: ""
         val hrefT = el.findElementWithoutException(By.xpath(".//td[2]/a"))?.getAttribute("href")?.trim({ it <= ' ' })
-                ?: ""
+            ?: ""
         if (hrefL == "" || hrefT == "") {
             logger("can not find hrefs in tender", purNum)
             return
         }
         val purName = el.findElementWithoutException(By.xpath(".//td[2]/a"))?.text?.trim({ it <= ' ' })
-                ?: ""
+            ?: ""
         val datePubT = el.findElementWithoutException(By.xpath(".//td[5]"))?.text?.trim({ it <= ' ' })
-                ?: ""
+            ?: ""
         val pubDate = datePubT.getDateFromString(formatterGpn)
         val endDateT = el.findElementWithoutException(By.xpath(".//td[6]"))?.text?.trim({ it <= ' ' })
-                ?: ""
+            ?: ""
         val endDate = endDateT.getDateFromString(formatterGpn)
         if (pubDate == Date(0L) && endDate == Date(0L)) {
             logger("can not find dates in tender", hrefL, datePubT, endDateT)
             return
         }
         val status = el.findElementWithoutException(By.xpath(".//td[8]"))?.text?.trim({ it <= ' ' })
-                ?: ""
+            ?: ""
         val placingWayName = el.findElementWithoutException(By.xpath(".//td[9]"))?.text?.trim({ it <= ' ' })
-                ?: ""
+            ?: ""
         val urlOrg = el.findElementWithoutException(By.xpath(".//td[7]/a"))?.getAttribute("href")?.trim({ it <= ' ' })
-                ?: ""
+            ?: ""
         val tn = TalanT(purNum, hrefT, hrefL, purName, pubDate, endDate, status, placingWayName, urlOrg)
         try {
             val t = TenderTalan(tn)

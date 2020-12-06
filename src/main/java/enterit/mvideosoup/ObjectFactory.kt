@@ -91,7 +91,12 @@ class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://mvideo.ru/SRM/GetProcList", name = "MT_GetProcList_Response")
     fun createMTGetProcListResponse(value: DTGetProcListResponse): JAXBElement<DTGetProcListResponse> {
-        return JAXBElement<DTGetProcListResponse>(_MTGetProcListResponse_QNAME, DTGetProcListResponse::class.java!!, null, value)
+        return JAXBElement<DTGetProcListResponse>(
+            _MTGetProcListResponse_QNAME,
+            DTGetProcListResponse::class.java!!,
+            null,
+            value
+        )
     }
 
     companion object {

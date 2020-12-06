@@ -125,24 +125,24 @@ class ParserBicoMultiThread : Iparser {
 
     private fun parsingTender(el: Element, url: String) {
         val purObj = el.selectFirst("td:eq(0) a")?.ownText()?.trim { it <= ' ' }
-                ?: throw IllegalArgumentException("purObj required $url")
+            ?: throw IllegalArgumentException("purObj required $url")
         val urlT = el.selectFirst("td:eq(0) a")?.attr("href")?.trim { it <= ' ' }
-                ?: ""
+            ?: ""
         if (urlT == "") run { logger("get empty urlT"); return }
         val urlTend = "$BaseUrl$urlT"
         val typeT = el.selectFirst("td:eq(1)")?.ownText()?.trim { it <= ' ' }
-                ?: ""
+            ?: ""
         val purNum = typeT.getDataFromRegexp("#(\\d+)")
         if (purNum == "") {
             run { logger("get empty purNum $urlTend"); return }
         }
         val pwName = typeT.getDataFromRegexp("^(.+)#").deleteDoubleWhiteSpace()
         val priceT = el.selectFirst("td:eq(2)")?.text()?.trim { it <= ' ' }
-                ?: ""
+            ?: ""
         val currency = priceT.getDataFromRegexp("(\\w+)\$").deleteDoubleWhiteSpace()
         val price = priceT.extractPrice()
         val dateS = el.selectFirst("td:eq(3)")?.text()?.deleteDoubleWhiteSpace()?.trim { it <= ' ' }
-                ?: ""
+            ?: ""
         val pubDateT = dateS.getDataFromRegexp("(\\d{2}\\.\\d{2}\\.\\d{4})")
         val endDateT = dateS.getDataFromRegexp("(\\d{2}\\.\\d{2}\\.\\d{4})$")
         val datePub = getDateFromFormat(pubDateT, formatterOnlyDate)
@@ -150,9 +150,9 @@ class ParserBicoMultiThread : Iparser {
         if (dateEnd == Date(0L)) dateEnd = datePub
         if (datePub == Date(0L)) run { logger("bad datePub", urlTend, dateS); return }
         val region = el.selectFirst("td:eq(4)")?.text()?.deleteDoubleWhiteSpace()?.trim { it <= ' ' }
-                ?: ""
+            ?: ""
         val otr = el.selectFirst("td:eq(5)")?.text()?.deleteDoubleWhiteSpace()?.trim { it <= ' ' }
-                ?: ""
+            ?: ""
         val tn = BicoT(purNum, urlTend, purObj, datePub, dateEnd, pwName, price, currency, region, otr)
         try {
             Thread.sleep(3)

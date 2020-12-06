@@ -27,9 +27,18 @@ interface SIGetProcList2SRMSO {
      * returns mvideosoap.DTGetProcListResponse
      */
     @WebMethod(operationName = "SI_GetProcList_2_SRM_SO", action = "http://sap.com/xi/WebService/soap1.1")
-    @WebResult(name = "MT_GetProcList_Response", targetNamespace = "http://mvideo.ru/SRM/GetProcList", partName = "MT_GetProcList_Response")
+    @WebResult(
+        name = "MT_GetProcList_Response",
+        targetNamespace = "http://mvideo.ru/SRM/GetProcList",
+        partName = "MT_GetProcList_Response"
+    )
     fun siGetProcList2SRMSO(
-            @WebParam(name = "MT_GetProcList_Request", targetNamespace = "http://mvideo.ru/SRM/GetProcList", partName = "MT_GetProcList_Request")
-            mtGetProcListRequest: String): DTGetProcListResponse
+        @WebParam(
+            name = "MT_GetProcList_Request",
+            targetNamespace = "http://mvideo.ru/SRM/GetProcList",
+            partName = "MT_GetProcList_Request"
+        )
+        mtGetProcListRequest: String
+    ): DTGetProcListResponse
 
 }

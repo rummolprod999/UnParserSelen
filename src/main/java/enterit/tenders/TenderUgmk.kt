@@ -38,7 +38,8 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
         DriverManager.getConnection(UrlConnect, UserDb, PassDb).use(fun(con: Connection) {
             var IdOrganizer = 0
             var inn = ""
-            val fullnameOrg = driver.findElementWithoutException(By.xpath("//label[. = 'Организатор']/following-sibling::div//a"))?.text?.trim { it <= ' ' }
+            val fullnameOrg =
+                driver.findElementWithoutException(By.xpath("//label[. = 'Организатор']/following-sibling::div//a"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (fullnameOrg != "") {
                 val stmto = con.prepareStatement("SELECT id_organizer FROM ${Prefix}organizer WHERE full_name = ?")
@@ -58,7 +59,10 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
                     val email = ""
                     val phone = ""
                     val contactPerson = ""
-                    val stmtins = con.prepareStatement("INSERT INTO ${Prefix}organizer SET full_name = ?, post_address = ?, contact_email = ?, contact_phone = ?, fact_address = ?, contact_person = ?, inn = ?, kpp = ?", Statement.RETURN_GENERATED_KEYS).apply {
+                    val stmtins = con.prepareStatement(
+                        "INSERT INTO ${Prefix}organizer SET full_name = ?, post_address = ?, contact_email = ?, contact_phone = ?, fact_address = ?, contact_person = ?, inn = ?, kpp = ?",
+                        Statement.RETURN_GENERATED_KEYS
+                    ).apply {
                         setString(1, fullnameOrg)
                         setString(2, postalAdr)
                         setString(3, email)
@@ -77,16 +81,20 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
                     stmtins.close()
                 }
             }
-            val delivTerm = driver.findElementWithoutException(By.xpath("//label[. = 'Срок заключения договора']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
+            val delivTerm =
+                driver.findElementWithoutException(By.xpath("//label[. = 'Срок заключения договора']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
-            val docT = driver.findElements(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]"))
+            val docT =
+                driver.findElements(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]"))
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]")))
             driver.switchTo().defaultContent()
             docT.forEach {
-                val docName = it.findElementWithoutException(By.xpath(".//a[@class = 'file-download-link']"))?.text?.trim { it <= ' ' }
+                val docName =
+                    it.findElementWithoutException(By.xpath(".//a[@class = 'file-download-link']"))?.text?.trim { it <= ' ' }
                         ?: ""
-                val docUrl = it.findElementWithoutException(By.xpath(".//a[@class = 'file-download-link']"))?.getAttribute("href")?.trim { it <= ' ' }
-                        ?: ""
+                val docUrl = it.findElementWithoutException(By.xpath(".//a[@class = 'file-download-link']"))
+                    ?.getAttribute("href")?.trim { it <= ' ' }
+                    ?: ""
                 if (docUrl != "") {
                     docList.add(Doc(docName, docUrl))
                 }
@@ -96,7 +104,9 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[. = 'Дата начала приема заявок']/following-sibling::div/div")))
             driver.switchTo().defaultContent()
 
-            val dateEndTmp = driver.findElementWithoutException(By.xpath("//label[. = 'Дата окончания приема заявок']/following-sibling::div/div"))?.text?.trim()?.trim { it <= ' ' }
+            val dateEndTmp =
+                driver.findElementWithoutException(By.xpath("//label[. = 'Дата окончания приема заявок']/following-sibling::div/div"))?.text?.trim()
+                    ?.trim { it <= ' ' }
                     ?: ""
             var dateEnd = getDateFromFormat(dateEndTmp, formatterGpn)
             if (dateEnd == Date(0L)) {
@@ -104,7 +114,9 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
                 return
             }
 
-            val datePubTmp = driver.findElementWithoutException(By.xpath("//label[. = 'Дата начала приема заявок']/following-sibling::div/div"))?.text?.trim()?.trim { it <= ' ' }
+            val datePubTmp =
+                driver.findElementWithoutException(By.xpath("//label[. = 'Дата начала приема заявок']/following-sibling::div/div"))?.text?.trim()
+                    ?.trim { it <= ' ' }
                     ?: ""
             var datePub = getDateFromFormat(datePubTmp, formatterGpn)
             if (datePub == Date(0L)) {
@@ -114,20 +126,24 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
             datePub = Date(datePub.time - 2 * 3600 * 1000)
             dateEnd = Date(dateEnd.time - 2 * 3600 * 1000)
 
-            val dateScorTmp = driver.findElementWithoutException(By.xpath("//label[. = 'Дата и время вскрытия конвертов']/following-sibling::div/div"))?.text?.trim()?.trim { it <= ' ' }
+            val dateScorTmp =
+                driver.findElementWithoutException(By.xpath("//label[. = 'Дата и время вскрытия конвертов']/following-sibling::div/div"))?.text?.trim()
+                    ?.trim { it <= ' ' }
                     ?: ""
             var dateScor = getDateFromFormat(dateScorTmp, formatterGpn)
             if (dateScor != Date(0L)) {
                 dateScor = Date(dateScor.time - 2 * 3600 * 1000)
             }
-            val stmt0 = con.prepareStatement("SELECT id_tender FROM ${Prefix}tender WHERE purchase_number = ? AND type_fz = ? AND end_date = ? AND notice_version = ? AND doc_publish_date = ? AND scoring_date = ? ").apply {
-                setString(1, tt.purNum)
-                setInt(2, typeFz)
-                setTimestamp(3, Timestamp(dateEnd.time))
-                setString(4, tt.status)
-                setTimestamp(5, Timestamp(datePub.time))
-                setTimestamp(6, Timestamp(dateScor.time))
-            }
+            val stmt0 =
+                con.prepareStatement("SELECT id_tender FROM ${Prefix}tender WHERE purchase_number = ? AND type_fz = ? AND end_date = ? AND notice_version = ? AND doc_publish_date = ? AND scoring_date = ? ")
+                    .apply {
+                        setString(1, tt.purNum)
+                        setInt(2, typeFz)
+                        setTimestamp(3, Timestamp(dateEnd.time))
+                        setString(4, tt.status)
+                        setTimestamp(5, Timestamp(datePub.time))
+                        setTimestamp(6, Timestamp(dateScor.time))
+                    }
             val r = stmt0.executeQuery()
             if (r.next()) {
                 r.close()
@@ -138,10 +154,12 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
             stmt0.close()
             var cancelstatus = 0
             var updated = false
-            val stmt = con.prepareStatement("SELECT id_tender, date_version FROM ${Prefix}tender WHERE purchase_number = ? AND cancel=0 AND type_fz = ?").apply {
-                setString(1, tt.purNum)
-                setInt(2, typeFz)
-            }
+            val stmt =
+                con.prepareStatement("SELECT id_tender, date_version FROM ${Prefix}tender WHERE purchase_number = ? AND cancel=0 AND type_fz = ?")
+                    .apply {
+                        setString(1, tt.purNum)
+                        setInt(2, typeFz)
+                    }
             val rs = stmt.executeQuery()
             while (rs.next()) {
                 updated = true
@@ -166,7 +184,10 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
             }
             var idTender = 0
             val idRegion = 0
-            val insertTender = con.prepareStatement("INSERT INTO ${Prefix}tender SET id_xml = ?, purchase_number = ?, doc_publish_date = ?, href = ?, purchase_object_info = ?, type_fz = ?, id_organizer = ?, id_placing_way = ?, id_etp = ?, end_date = ?, cancel = ?, date_version = ?, num_version = ?, notice_version = ?, xml = ?, print_form = ?, id_region = ?, scoring_date = ?", Statement.RETURN_GENERATED_KEYS)
+            val insertTender = con.prepareStatement(
+                "INSERT INTO ${Prefix}tender SET id_xml = ?, purchase_number = ?, doc_publish_date = ?, href = ?, purchase_object_info = ?, type_fz = ?, id_organizer = ?, id_placing_way = ?, id_etp = ?, end_date = ?, cancel = ?, date_version = ?, num_version = ?, notice_version = ?, xml = ?, print_form = ?, id_region = ?, scoring_date = ?",
+                Statement.RETURN_GENERATED_KEYS
+            )
             insertTender.setString(1, tt.purNum)
             insertTender.setString(2, tt.purNum)
             insertTender.setTimestamp(3, Timestamp(datePub.time))
@@ -199,18 +220,22 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
             }
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]")))
             driver.switchTo().defaultContent()
-            val docL = driver.findElements(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]"))
+            val docL =
+                driver.findElements(By.xpath("//div[@class = 'doc-group-block']//div[contains(@class, 'doc-block')]"))
             docL.forEach {
-                val docName = it.findElementWithoutException(By.xpath(".//a[@class = 'file-download-link']"))?.text?.trim { it <= ' ' }
+                val docName =
+                    it.findElementWithoutException(By.xpath(".//a[@class = 'file-download-link']"))?.text?.trim { it <= ' ' }
                         ?: ""
-                val docUrl = it.findElementWithoutException(By.xpath(".//a[@class = 'file-download-link']"))?.getAttribute("href")?.trim { it <= ' ' }
-                        ?: ""
+                val docUrl = it.findElementWithoutException(By.xpath(".//a[@class = 'file-download-link']"))
+                    ?.getAttribute("href")?.trim { it <= ' ' }
+                    ?: ""
                 if (docUrl != "") {
                     docList.add(Doc(docName, docUrl))
                 }
             }
             docList.forEach {
-                val insertDoc = con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?")
+                val insertDoc =
+                    con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?")
                 insertDoc.setInt(1, idTender)
                 insertDoc.setString(2, it.DocName)
                 insertDoc.setString(3, it.Href)
@@ -220,7 +245,9 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
             var idLot = 0
             var LotNumber = tt.purNum.regExpTest("""/0*(.+)""")
             if (LotNumber == "") LotNumber = "1"
-            var nmck = driver.findElementWithoutException(By.xpath("//label[. = 'Начальная цена (без НДС)']/following-sibling::div/div"))?.text?.trim()?.trim { it <= ' ' }
+            var nmck =
+                driver.findElementWithoutException(By.xpath("//label[. = 'Начальная цена (без НДС)']/following-sibling::div/div"))?.text?.trim()
+                    ?.trim { it <= ' ' }
                     ?: ""
             var currency = ""
             if (!nmck.contains("Цена не определена")) {
@@ -234,7 +261,10 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
             if (currency != "") {
                 currency = currency.regExpTest("""[\d\.]+(.+)""")
             }
-            val insertLot = con.prepareStatement("INSERT INTO ${Prefix}lot SET id_tender = ?, lot_number = ?, currency = ?, max_price = ?", Statement.RETURN_GENERATED_KEYS).apply {
+            val insertLot = con.prepareStatement(
+                "INSERT INTO ${Prefix}lot SET id_tender = ?, lot_number = ?, currency = ?, max_price = ?",
+                Statement.RETURN_GENERATED_KEYS
+            ).apply {
                 setInt(1, idTender)
                 setString(2, LotNumber)
                 setString(3, currency)
@@ -249,7 +279,8 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
             insertLot.close()
             var idCustomer = 0
             if (tt.nameCus != "") {
-                val stmtoc = con.prepareStatement("SELECT id_customer FROM ${Prefix}customer WHERE full_name = ? LIMIT 1")
+                val stmtoc =
+                    con.prepareStatement("SELECT id_customer FROM ${Prefix}customer WHERE full_name = ? LIMIT 1")
                 stmtoc.setString(1, tt.nameCus)
                 val rsoc = stmtoc.executeQuery()
                 if (rsoc.next()) {
@@ -259,7 +290,10 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
                 } else {
                     rsoc.close()
                     stmtoc.close()
-                    val stmtins = con.prepareStatement("INSERT INTO ${Prefix}customer SET full_name = ?, is223=1, reg_num = ?, inn = ?", Statement.RETURN_GENERATED_KEYS)
+                    val stmtins = con.prepareStatement(
+                        "INSERT INTO ${Prefix}customer SET full_name = ?, is223=1, reg_num = ?, inn = ?",
+                        Statement.RETURN_GENERATED_KEYS
+                    )
                     stmtins.setString(1, tt.nameCus)
                     stmtins.setString(2, java.util.UUID.randomUUID().toString())
                     stmtins.setString(3, inn)
@@ -272,23 +306,27 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
                     stmtins.close()
                 }
             }
-            val name = driver.findElementWithoutException(By.xpath("//label[. = 'Лот']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
+            val name =
+                driver.findElementWithoutException(By.xpath("//label[. = 'Лот']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
-            con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?").apply {
-                setInt(1, idLot)
-                setInt(2, idCustomer)
-                setString(3, name)
-                executeUpdate()
-                close()
-            }
-            if (delivTerm != "") {
-                val insertCusRec = con.prepareStatement("INSERT INTO ${Prefix}customer_requirement SET id_lot = ?, id_customer = ?, delivery_term = ?").apply {
+            con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?")
+                .apply {
                     setInt(1, idLot)
                     setInt(2, idCustomer)
-                    setString(3, delivTerm)
+                    setString(3, name)
                     executeUpdate()
                     close()
                 }
+            if (delivTerm != "") {
+                val insertCusRec =
+                    con.prepareStatement("INSERT INTO ${Prefix}customer_requirement SET id_lot = ?, id_customer = ?, delivery_term = ?")
+                        .apply {
+                            setInt(1, idLot)
+                            setInt(2, idCustomer)
+                            setString(3, delivTerm)
+                            executeUpdate()
+                            close()
+                        }
             }
             try {
                 tenderKwords(idTender, con)

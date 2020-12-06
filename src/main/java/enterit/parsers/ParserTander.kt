@@ -48,11 +48,14 @@ class ParserTander : Iparser {
             pass.sendKeys(PassTander)
             inp.submit()
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(self::node(), 'Период проведения')]")))
-            val periods = driver.findElements(By.xpath("//tr[@height = '20']/td[@class = 'xs-table-cell']//div[contains(self::node(), 'Период проведения')]"))
+            val periods =
+                driver.findElements(By.xpath("//tr[@height = '20']/td[@class = 'xs-table-cell']//div[contains(self::node(), 'Период проведения')]"))
 
-            val titles = driver.findElements(By.xpath("//tr[@height = '20']/td[@class = 'xs-table-cell']//div[contains(self::node(), 'Сбор коммерческих предложений')]"))
+            val titles =
+                driver.findElements(By.xpath("//tr[@height = '20']/td[@class = 'xs-table-cell']//div[contains(self::node(), 'Сбор коммерческих предложений')]"))
 
-            val hrefs = driver.findElements(By.xpath("//tr[@height = '1']/td[@class = 'xs-table-cell']//a[contains(self::node(), 'Скачать файл')]"))
+            val hrefs =
+                driver.findElements(By.xpath("//tr[@height = '1']/td[@class = 'xs-table-cell']//a[contains(self::node(), 'Скачать файл')]"))
             if (periods.size != titles.size || titles.size != hrefs.size) {
                 logger("can not compare 3 list with data")
                 return

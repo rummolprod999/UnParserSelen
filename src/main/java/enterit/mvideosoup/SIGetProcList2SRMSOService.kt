@@ -12,7 +12,11 @@ import javax.xml.ws.*
  * Generated source version: 2.2
  *
  */
-@WebServiceClient(name = "SI_GetProcList_2_SRM_SOService", targetNamespace = "http://mvideo.ru/SRM/GetProcList", wsdlLocation = "https://ep.mvideo.ru/srm/api/etender/wsdl")
+@WebServiceClient(
+    name = "SI_GetProcList_2_SRM_SOService",
+    targetNamespace = "http://mvideo.ru/SRM/GetProcList",
+    wsdlLocation = "https://ep.mvideo.ru/srm/api/etender/wsdl"
+)
 class SIGetProcList2SRMSOService : Service {
 
     /**
@@ -26,15 +30,30 @@ class SIGetProcList2SRMSOService : Service {
 
     constructor() : super(__getWsdlLocation(), SIGETPROCLIST2SRMSOSERVICE_QNAME) {}
 
-    constructor(vararg features: WebServiceFeature) : super(__getWsdlLocation(), SIGETPROCLIST2SRMSOSERVICE_QNAME, *features) {}
+    constructor(vararg features: WebServiceFeature) : super(
+        __getWsdlLocation(),
+        SIGETPROCLIST2SRMSOSERVICE_QNAME,
+        *features
+    ) {
+    }
 
     constructor(wsdlLocation: URL) : super(wsdlLocation, SIGETPROCLIST2SRMSOSERVICE_QNAME) {}
 
-    constructor(wsdlLocation: URL, vararg features: WebServiceFeature) : super(wsdlLocation, SIGETPROCLIST2SRMSOSERVICE_QNAME, *features) {}
+    constructor(wsdlLocation: URL, vararg features: WebServiceFeature) : super(
+        wsdlLocation,
+        SIGETPROCLIST2SRMSOSERVICE_QNAME,
+        *features
+    ) {
+    }
 
     constructor(wsdlLocation: URL, serviceName: QName) : super(wsdlLocation, serviceName) {}
 
-    constructor(wsdlLocation: URL, serviceName: QName, vararg features: WebServiceFeature) : super(wsdlLocation, serviceName, *features) {}
+    constructor(wsdlLocation: URL, serviceName: QName, vararg features: WebServiceFeature) : super(
+        wsdlLocation,
+        serviceName,
+        *features
+    ) {
+    }
 
     /**
      *
@@ -45,14 +64,19 @@ class SIGetProcList2SRMSOService : Service {
      */
     @WebEndpoint(name = "HTTPS_Port")
     fun getHTTPSPort(vararg features: WebServiceFeature): SIGetProcList2SRMSO {
-        return super.getPort(QName("http://mvideo.ru/SRM/GetProcList", "HTTPS_Port"), SIGetProcList2SRMSO::class.java, *features)
+        return super.getPort(
+            QName("http://mvideo.ru/SRM/GetProcList", "HTTPS_Port"),
+            SIGetProcList2SRMSO::class.java,
+            *features
+        )
     }
 
     companion object {
 
         private val SIGETPROCLIST2SRMSOSERVICE_WSDL_LOCATION: URL?
         private val SIGETPROCLIST2SRMSOSERVICE_EXCEPTION: WebServiceException?
-        private val SIGETPROCLIST2SRMSOSERVICE_QNAME = QName("http://mvideo.ru/SRM/GetProcList", "SI_GetProcList_2_SRM_SOService")
+        private val SIGETPROCLIST2SRMSOSERVICE_QNAME =
+            QName("http://mvideo.ru/SRM/GetProcList", "SI_GetProcList_2_SRM_SOService")
 
         init {
             var url: URL? = null

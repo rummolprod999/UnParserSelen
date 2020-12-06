@@ -509,7 +509,22 @@ class DTGetProcListResponse {
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = arrayOf("id", "processTypeCode", "processTypeText", "changeDate", "purchaseStartDate", "purchaseEndDate", "contractDate", "price", "comment", "link", "text"))
+        @XmlType(
+            name = "",
+            propOrder = arrayOf(
+                "id",
+                "processTypeCode",
+                "processTypeText",
+                "changeDate",
+                "purchaseStartDate",
+                "purchaseEndDate",
+                "contractDate",
+                "price",
+                "comment",
+                "link",
+                "text"
+            )
+        )
         class Item {
 
             /**

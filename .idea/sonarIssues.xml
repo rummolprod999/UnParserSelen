@@ -23,6 +23,16 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/enterit/Arguments.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/enterit/app.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/main/java/enterit/parsers/Iparser.kt">
           <value>
             <set />
@@ -43,6 +53,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/enterit/parsers/ParserEuroTrans.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/main/java/enterit/parsers/ParserMosreg.kt">
           <value>
             <set />
@@ -53,12 +68,22 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/enterit/settings.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/main/java/enterit/tenders/TenderAbstract.kt">
           <value>
             <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/src/main/java/enterit/tenders/TenderBelMarket.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/enterit/tenders/TenderEuroTrans.kt">
           <value>
             <set />
           </value>
@@ -74,6 +99,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/src/main/java/enterit/tenders/TenderRostov.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/enterit/tenders/TenderSafmarg.kt">
           <value>
             <set />
           </value>

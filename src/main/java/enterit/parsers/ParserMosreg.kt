@@ -88,7 +88,8 @@ class ParserMosreg : Iparser {
     private fun getListTenders(driver: ChromeDriver, wait: WebDriverWait) {
         Thread.sleep(2000)
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(@class, 'registerProcurement__resultSearch-blockResult')][10]")))
-        val tenders = driver.findElements(By.xpath("//div[contains(@class, 'registerProcurement__resultSearch-blockResult')]"))
+        val tenders =
+            driver.findElements(By.xpath("//div[contains(@class, 'registerProcurement__resultSearch-blockResult')]"))
         tenders.forEach {
             try {
                 parserTender(it)
@@ -100,30 +101,42 @@ class ParserMosreg : Iparser {
 
     private fun parserTender(el: WebElement) {
         //driver.switchTo().defaultContent()
-        val purNum = el.findElementWithoutException(By.xpath(".//h4[contains(@class, 'blockResult__leftContent-topLotNumber')]/span[@data-bind = 'text: Id']"))?.text?.trim { it <= ' ' }
+        val purNum =
+            el.findElementWithoutException(By.xpath(".//h4[contains(@class, 'blockResult__leftContent-topLotNumber')]/span[@data-bind = 'text: Id']"))?.text?.trim { it <= ' ' }
                 ?: ""
         if (purNum == "") {
             logger("can not purNum in tender")
             return
         }
-        val urlT = el.findElementWithoutException(By.xpath(".//a[contains(@data-bind , 'text: TradeName')]"))?.getAttribute("href")?.trim { it <= ' ' }
-                ?: ""
+        val urlT = el.findElementWithoutException(By.xpath(".//a[contains(@data-bind , 'text: TradeName')]"))
+            ?.getAttribute("href")?.trim { it <= ' ' }
+            ?: ""
         if (urlT == "") {
             logger("can not urlT in tender", purNum)
             return
         }
         val url = urlT
-        val purObj = el.findElementWithoutException(By.xpath(".//a[contains(@data-bind , 'text: TradeName')]"))?.text?.trim { it <= ' ' }
+        val purObj =
+            el.findElementWithoutException(By.xpath(".//a[contains(@data-bind , 'text: TradeName')]"))?.text?.trim { it <= ' ' }
                 ?: ""
-        val datePubTmp = el.findElementWithoutException(By.xpath(".//span[. = 'Начало приема заявок:']/following-sibling::span"))?.text?.trim()?.trim { it <= ' ' }
+        val datePubTmp =
+            el.findElementWithoutException(By.xpath(".//span[. = 'Начало приема заявок:']/following-sibling::span"))?.text?.trim()
+                ?.trim { it <= ' ' }
                 ?: ""
-        val dateEndTmp = el.findElementWithoutException(By.xpath("..//span[. = 'Окончание приема заявок:']/following-sibling::span"))?.text?.trim()?.trim { it <= ' ' }
+        val dateEndTmp =
+            el.findElementWithoutException(By.xpath("..//span[. = 'Окончание приема заявок:']/following-sibling::span"))?.text?.trim()
+                ?.trim { it <= ' ' }
                 ?: ""
         val datePub = getDateFromFormat(datePubTmp, formatterOnlyDate)
         val dateEnd = getDateFromFormat(dateEndTmp, formatterGpn)
-        val status = el.findElementWithoutException(By.xpath(".//span[@data-bind = 'text: TradeStateName']"))?.text?.trim { it <= ' ' }
+        val status =
+            el.findElementWithoutException(By.xpath(".//span[@data-bind = 'text: TradeStateName']"))?.text?.trim { it <= ' ' }
                 ?: ""
-        val nmck = el.findElementWithoutException(By.xpath(".//p[@class = 'blockResult__rightContent-price']"))?.text?.replace(',', '.')?.replace("\u20BD", "")?.deleteAllWhiteSpace()?.trim { it <= ' ' }
+        val nmck =
+            el.findElementWithoutException(By.xpath(".//p[@class = 'blockResult__rightContent-price']"))?.text?.replace(
+                ',',
+                '.'
+            )?.replace("\u20BD", "")?.deleteAllWhiteSpace()?.trim { it <= ' ' }
                 ?: ""
         if (datePub == Date(0L) || dateEnd == Date(0L)) {
             logger("can not find pubDate or dateEnd on page", urlT, purNum)

@@ -17,5 +17,6 @@ enum class Arguments {
     KOSTROMA,
     TOMSK,
     ZMO,
-    GOSZAKAZ
+    GOSZAKAZ,
+    EUROTRANS,
 }

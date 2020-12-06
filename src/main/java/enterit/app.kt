@@ -23,6 +23,7 @@ fun main(args: Array<String>) {
         Arguments.TOMSK -> parserTomsk()
         Arguments.ZMO -> parserZmo()
         Arguments.GOSZAKAZ -> parserGosZakaz()
+        Arguments.EUROTRANS -> ParserEuroTrans()
     }
 
 }
@@ -373,5 +374,14 @@ fun parserGosZakaz() {
     p.parser()
     logger("Добавили тендеров $AddTenderGosZakaz")
     logger("Обновили тендеров $UpdateTenderGosZakaz")
+    logger("Конец парсинга")
+}
+
+fun parserEuroTrans() {
+    logger("Начало парсинга")
+    val p = ParserEuroTrans()
+    p.parser()
+    logger("Добавили тендеров $AddTenderEuroTrans")
+    logger("Обновили тендеров $UpdateTenderEuroTrans")
     logger("Конец парсинга")
 }

@@ -78,24 +78,24 @@ class ParserCrimeaBt : Iparser {
 
     private fun parsingTender(el: Element, url: String) {
         val purObj = el.selectFirst("td:eq(0) a")?.ownText()?.trim { it <= ' ' }
-                ?: throw IllegalArgumentException("purObj required $url")
+            ?: throw IllegalArgumentException("purObj required $url")
         val urlT = el.selectFirst("td:eq(0) a")?.attr("href")?.trim { it <= ' ' }
-                ?: ""
+            ?: ""
         if (urlT == "") run { logger("get empty urlT"); return }
         val urlTend = "$BaseUrl$urlT"
         val typeT = el.selectFirst("td:eq(1)")?.ownText()?.trim { it <= ' ' }
-                ?: ""
+            ?: ""
         val purNum = typeT.getDataFromRegexp("#(\\d+)")
         if (purNum == "") {
             run { logger("get empty purNum $urlTend"); return }
         }
         val pwName = typeT.getDataFromRegexp("^(.+)#").deleteDoubleWhiteSpace()
         val priceT = el.selectFirst("td:eq(2) span")?.text()?.trim { it <= ' ' }
-                ?: ""
+            ?: ""
         val currency = priceT.getDataFromRegexp("(\\w+)\$").deleteDoubleWhiteSpace()
         val price = priceT.extractPrice()
         val dateS = el.selectFirst("td:eq(3)")?.text()?.deleteDoubleWhiteSpace()?.trim { it <= ' ' }
-                ?: ""
+            ?: ""
         val pubDateT = dateS.getDataFromRegexp("^(\\d{2}\\.\\d{2}\\.\\d{4})")
         val endDateT = dateS.getDataFromRegexp("(\\d{2}\\.\\d{2}\\.\\d{4})$")
         val datePub = getDateFromFormat(pubDateT, formatterOnlyDate)
