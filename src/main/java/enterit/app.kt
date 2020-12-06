@@ -23,7 +23,7 @@ fun main(args: Array<String>) {
         Arguments.TOMSK -> parserTomsk()
         Arguments.ZMO -> parserZmo()
         Arguments.GOSZAKAZ -> parserGosZakaz()
-        Arguments.EUROTRANS -> ParserEuroTrans()
+        Arguments.EUROTRANS -> parserEuroTrans()
     }
 
 }
