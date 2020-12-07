@@ -65,7 +65,10 @@ class ParserRhTorg : Iparser {
         val href = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))
             ?.getAttribute("href")?.trim { it <= ' ' }
             ?: ""
-        val tn = SafmargT(purNum, href, "")
+        val purName =
+            el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))?.text?.trim { it <= ' ' }
+                ?: ""
+        val tn = SafmargT(purNum, href, purName)
         tendersS.add(tn)
     }
 }

@@ -162,7 +162,7 @@ class TenderRhTorg(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderA
             val purObj2 =
                 driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Описание предмета договора')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
                     ?: ""
-            val purObj = "$purObj1 $purObj2".trim { it <= ' ' }
+            var purObj = "${tn.purName} $purObj1 $purObj2".trim { it <= ' ' }
             val insertTender = con.prepareStatement(
                 "INSERT INTO ${Prefix}tender SET id_xml = ?, purchase_number = ?, doc_publish_date = ?, href = ?, purchase_object_info = ?, type_fz = ?, id_organizer = ?, id_placing_way = ?, id_etp = ?, end_date = ?, cancel = ?, date_version = ?, num_version = ?, notice_version = ?, xml = ?, print_form = ?, id_region = ?",
                 Statement.RETURN_GENERATED_KEYS
