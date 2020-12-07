@@ -24,6 +24,7 @@ fun main(args: Array<String>) {
         Arguments.ZMO -> parserZmo()
         Arguments.GOSZAKAZ -> parserGosZakaz()
         Arguments.EUROTRANS -> parserEuroTrans()
+        Arguments.RHTORG -> parserRhTorg()
     }
 
 }
@@ -383,5 +384,14 @@ fun parserEuroTrans() {
     p.parser()
     logger("Добавили тендеров $AddTenderEuroTrans")
     logger("Обновили тендеров $UpdateTenderEuroTrans")
+    logger("Конец парсинга")
+}
+
+fun parserRhTorg() {
+    logger("Начало парсинга")
+    val p = ParserRhTorg()
+    p.parser()
+    logger("Добавили тендеров $AddTenderRhTorg")
+    logger("Обновили тендеров $UpdateTenderRhTorg")
     logger("Конец парсинга")
 }
