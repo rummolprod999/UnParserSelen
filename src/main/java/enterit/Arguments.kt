@@ -20,4 +20,5 @@ enum class Arguments {
     GOSZAKAZ,
     EUROTRANS,
     RHTORG,
+    TSM,
 }
