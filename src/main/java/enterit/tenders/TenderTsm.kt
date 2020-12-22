@@ -73,7 +73,7 @@ class TenderTsm(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbst
                 )
             )
         }
-        if (endDateT.contains("Вчера в")) {
+        if (endDateT.contains("Завтра в")) {
             endDateT = endDateT.replace(
                 "Завтра в", SimpleDateFormat("dd.MM.yyyy").format(
                     Date.from(
@@ -95,7 +95,7 @@ class TenderTsm(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbst
             return
         }
         val status =
-            driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Статус торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            driver.findElementWithoutException(By.xpath("//div[@class = 'page-status-title']"))?.text?.trim { it <= ' ' }
                 ?: ""
         DriverManager.getConnection(UrlConnect, UserDb, PassDb).use(fun(con: Connection) {
             val dateVer = Date()
@@ -144,7 +144,7 @@ class TenderTsm(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbst
             stmt.close()
             var IdOrganizer = 0
             val fullnameOrg =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Наименование')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Организатор')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (fullnameOrg != "") {
                 val stmto = con.prepareStatement("SELECT id_organizer FROM ${Prefix}organizer WHERE full_name = ?")
@@ -164,13 +164,13 @@ class TenderTsm(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbst
                         driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Юридический адрес (место нахождения)')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
                             ?: ""
                     val email =
-                        driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Адрес электронной почты')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                        driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Адрес электронной почты')]"))?.text?.trim { it <= ' ' }
                             ?: ""
                     val phone =
-                        driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Номер контактного телефона')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                        driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Номер контактного телефона')]"))?.text?.trim { it <= ' ' }
                             ?: ""
                     val contactPerson =
-                        driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Контактное лицо')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                        driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Контактное лицо')]"))?.text?.trim { it <= ' ' }
                             ?: ""
                     val stmtins = con.prepareStatement(
                         "INSERT INTO ${Prefix}organizer SET full_name = ?, post_address = ?, contact_email = ?, contact_phone = ?, fact_address = ?, contact_person = ?",
@@ -196,19 +196,19 @@ class TenderTsm(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbst
             var idPlacingWay = 0
             var idTender = 0
             val placingWayName =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Форма проведения торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Способ закупки')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (placingWayName != "") {
                 idPlacingWay = getPlacingWay(con, placingWayName)
             }
             val idRegion = 0
             val purObj1 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Предмет торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[@class = 'title flex-um']"))?.text?.trim { it <= ' ' }
                     ?: ""
             val purObj2 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Описание предмета договора')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Краткое описание предмета договора')]"))?.text?.trim { it <= ' ' }
                     ?: ""
-            var purObj = "${tn.purName} $purObj1 $purObj2".trim { it <= ' ' }
+            val purObj = "${tn.purName} $purObj1 $purObj2".trim { it <= ' ' }
             val insertTender = con.prepareStatement(
                 "INSERT INTO ${Prefix}tender SET id_xml = ?, purchase_number = ?, doc_publish_date = ?, href = ?, purchase_object_info = ?, type_fz = ?, id_organizer = ?, id_placing_way = ?, id_etp = ?, end_date = ?, cancel = ?, date_version = ?, num_version = ?, notice_version = ?, xml = ?, print_form = ?, id_region = ?",
                 Statement.RETURN_GENERATED_KEYS
@@ -245,7 +245,7 @@ class TenderTsm(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbst
             var idLot = 0
             val LotNumber = 1
             val currency =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Валюта')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Валюта')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             val insertLot = con.prepareStatement(
                 "INSERT INTO ${Prefix}lot SET id_tender = ?, lot_number = ?, currency = ?",
@@ -278,11 +278,11 @@ class TenderTsm(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbst
             }
             val requareList = mutableListOf<String>()
             val rec1 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Требования к участникам торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Требования к участникам')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (rec1 != "") requareList.add(rec1)
             val rec2 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Перечень представляемых участниками торгов документов и требования к их оформлению')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Перечень представляемых участниками закупки документов и требования к их оформлению')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (rec2 != "") requareList.add(rec2)
             requareList.forEach {
@@ -323,7 +323,7 @@ class TenderTsm(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbst
                 }
             }
             val delivPlace1 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Регион поставки товаров, выполнения работ, оказания услуг')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Регион поставки, выполнения работ')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             val delivPlace2 =
                 driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Место (адрес) поставки товаров, выполнения работ, оказания услуг')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
@@ -334,7 +334,7 @@ class TenderTsm(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbst
                     ?: ""
             if (delivTerm1 != "") delivTerm1 = "Условия поставки товаров: $delivTerm1"
             var delivTerm2 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Пояснение условий поставки')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Пояснение условий поставки')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (delivTerm2 != "") delivTerm2 = "Пояснение условий поставки: $delivTerm2"
             var delivTerm3 =
@@ -390,15 +390,20 @@ class TenderTsm(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbst
                         }
                 val delivPlace = it.findElementWithoutException(By.xpath(".//td[6]"))?.text?.trim { it <= ' ' }
                     ?: ""
-                val delivTerm = it.findElementWithoutException(By.xpath(".//td[7]"))?.text?.trim { it <= ' ' }
+                val delivTermT = it.findElementWithoutException(By.xpath(".//td[7]"))?.text?.trim { it <= ' ' }
                     ?: ""
+                val delivTerm = if (delivTermT != "") {
+                    "Срок поставки: ${delivTerm}"
+                } else {
+                    ""
+                }
                 if (delivPlace != "" || delivTerm != "") {
                     con.prepareStatement("INSERT INTO ${Prefix}customer_requirement SET id_lot = ?, id_customer = ?, delivery_place = ?, delivery_term = ?")
                         .apply {
                             setInt(1, idLot)
                             setInt(2, idCustomer)
                             setString(3, delivPlace)
-                            setString(4, "Срок поставки: ${delivTerm}")
+                            setString(4, delivTerm)
                             executeUpdate()
                             close()
                         }
