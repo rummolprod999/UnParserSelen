@@ -32,7 +32,7 @@ class TenderRhTorg(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderA
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]")))
         } catch (e: Exception) {
-            logger("can not find expected startDate", driver.pageSource)
+            logger("cannot find expected startDate", driver.pageSource)
             return
         }
         val datePubT =
@@ -45,7 +45,7 @@ class TenderRhTorg(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderA
         endDateT = endDateT.regExpTest("""(\d{2}.\d{2}.\d{4} \d{2}:\d{2})""")
         val endDate = endDateT.getDateFromString(formatterGpn)
         if (pubDate == Date(0L) || endDate == Date(0L)) {
-            logger("can not find dates in tender", tn.href, datePubT, endDateT)
+            logger("cannot find dates in tender", tn.href, datePubT, endDateT)
             return
         }
         val status =

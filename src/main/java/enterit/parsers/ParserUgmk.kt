@@ -88,7 +88,7 @@ class ParserUgmk : Iparser {
             val purNum = it.findElementWithoutException(By.xpath("./div[1]"))?.text?.trim { it <= ' ' }
                 ?: ""
             if (purNum == "") {
-                logger("can not purNum in tender")
+                logger("cannot purNum in tender")
                 return@forEach
             }
             //purNum = purNum.regExpTest("""(.+)/""")
@@ -96,13 +96,13 @@ class ParserUgmk : Iparser {
             val urlT = it.findElementWithoutException(By.xpath("./div[2]/a"))?.getAttribute("href")?.trim { it <= ' ' }
                 ?: ""
             if (urlT == "") {
-                logger("can not urlT in tender", purNum)
+                logger("cannot urlT in tender", purNum)
                 return@forEach
             }
             val urlL = it.findElementWithoutException(By.xpath("./div[4]/a"))?.getAttribute("href")?.trim { it <= ' ' }
                 ?: ""
             if (urlL == "") {
-                logger("can not urlL in tender", purNum)
+                logger("cannot urlL in tender", purNum)
                 return@forEach
             }
             val purObj = it.findElementWithoutException(By.xpath("./div[2]/a"))?.text?.trim { it <= ' ' }
@@ -111,7 +111,7 @@ class ParserUgmk : Iparser {
                 ?: ""
             val dateEnd = getDateFromFormat(dateEndTmp, formatterOnlyDate)
             if (dateEnd == Date(0L)) {
-                logger("can not find dateEnd on page", urlT, purNum)
+                logger("cannot find dateEnd on page", urlT, purNum)
                 return@forEach
             }
             val status = it.findElementWithoutException(By.xpath("./div[6]"))?.text?.trim { it <= ' ' } ?: ""

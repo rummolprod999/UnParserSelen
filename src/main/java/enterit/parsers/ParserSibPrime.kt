@@ -72,7 +72,7 @@ class ParserSibPrime : Iparser {
         val purNum = el.findElementWithoutException(By.xpath(".//td[2]"))?.text?.trim { it <= ' ' }
             ?: ""
         if (purNum == "") {
-            logger("can not find purNum in tender")
+            logger("cannot find purNum in tender")
             return
         }
         val hrefL = el.findElementWithoutException(By.xpath(".//td[3]/a"))?.getAttribute("href")?.trim { it <= ' ' }
@@ -80,7 +80,7 @@ class ParserSibPrime : Iparser {
         val hrefT = el.findElementWithoutException(By.xpath(".//td[1]/a"))?.getAttribute("href")?.trim { it <= ' ' }
             ?: ""
         if (hrefL == "" || hrefT == "") {
-            logger("can not find hrefs in tender", purNum)
+            logger("cannot find hrefs in tender", purNum)
             return
         }
         val purName = el.findElementWithoutException(By.xpath(".//td[1]/a"))?.text?.trim { it <= ' ' }
@@ -102,7 +102,7 @@ class ParserSibPrime : Iparser {
         }
         val endDate = endDateT.getDateFromString(formatterGpn)
         if (pubDate == Date(0L) && endDate == Date(0L)) {
-            logger("can not find dates in tender", hrefL, datePubT, endDateT)
+            logger("cannot find dates in tender", hrefL, datePubT, endDateT)
             return
         }
         var status = el.findElementWithoutException(By.xpath(".//td[9]"))?.text?.trim { it <= ' ' }

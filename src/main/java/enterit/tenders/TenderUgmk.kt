@@ -110,7 +110,7 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
                     ?: ""
             var dateEnd = getDateFromFormat(dateEndTmp, formatterGpn)
             if (dateEnd == Date(0L)) {
-                logger("can not find dateEnd on page", tt.hrefL)
+                logger("cannot find dateEnd on page", tt.hrefL)
                 return
             }
 
@@ -120,7 +120,7 @@ class TenderUgmk(val tt: UgmkT, val driver: ChromeDriver, val wait: WebDriverWai
                     ?: ""
             var datePub = getDateFromFormat(datePubTmp, formatterGpn)
             if (datePub == Date(0L)) {
-                logger("can not find datePub on page", tt.hrefL)
+                logger("cannot find datePub on page", tt.hrefL)
                 return
             }
             datePub = Date(datePub.time - 2 * 3600 * 1000)

@@ -28,7 +28,7 @@ class TenderMvideo(val tn: DTGetProcListResponse.Tenders.Item, val comp: DTGetPr
         val endDate = tn.purchaseEndDate.getDateFromString(formatterOnlyDate)
         var dateVer = tn.changeDate.getDateFromString(formatterOnlyDate)
         if (pubDate == Date(0L) || endDate == Date(0L) || tn.id == "") {
-            logger("can not find dates or purNum in tender", tn.purchaseStartDate, tn.purchaseEndDate, tn.id)
+            logger("cannot find dates or purNum in tender", tn.purchaseStartDate, tn.purchaseEndDate, tn.id)
             return
         }
         if (dateVer == Date(0L)) {

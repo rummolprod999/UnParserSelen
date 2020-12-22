@@ -57,7 +57,7 @@ class ParserTander : Iparser {
             val hrefs =
                 driver.findElements(By.xpath("//tr[@height = '1']/td[@class = 'xs-table-cell']//a[contains(self::node(), 'Скачать файл')]"))
             if (periods.size != titles.size || titles.size != hrefs.size) {
-                logger("can not compare 3 list with data")
+                logger("cannot compare 3 list with data")
                 return
             } else {
                 try {
@@ -85,7 +85,7 @@ class ParserTander : Iparser {
             val href = hrefs[i].getAttribute("href").trim { it <= ' ' }
             val purNum = href.regExpTest("""DFFILE_OBJ=(.*)""")
             if (purNum == "" || pubDate == Date(0L) || endDate == Date(0L)) {
-                logger("can not find dates or purNum in tender")
+                logger("cannot find dates or purNum in tender")
                 continue
             }
             val tt = TenderTander(purNum, href, purName, pubDate, endDate)

@@ -116,13 +116,13 @@ class ParserKostroma : Iparser {
         val purNum = el.findElementWithoutException(By.xpath("./td[2]/p"))?.text?.trim { it <= ' ' }
             ?: ""
         if (purNum == "") {
-            logger("can not purNum in tender")
+            logger("cannot purNum in tender")
             return
         }
         val urlT = el.findElementWithoutException(By.xpath("./td[4]/a"))?.getAttribute("href")?.trim { it <= ' ' }
             ?: ""
         if (urlT == "") {
-            logger("can not urlT in tender", purNum)
+            logger("cannot urlT in tender", purNum)
             return
         }
         val url = urlT
@@ -139,7 +139,7 @@ class ParserKostroma : Iparser {
             ?.trim { it <= ' ' }
             ?: ""
         if (datePub == Date(0L) || dateEnd == Date(0L)) {
-            logger("can not find pubDate or dateEnd on page", urlT, purNum)
+            logger("cannot find pubDate or dateEnd on page", urlT, purNum)
             return
         }
         val tt = TenderKostroma(status, purNum, purObj, nmck, datePub, dateEnd, url)

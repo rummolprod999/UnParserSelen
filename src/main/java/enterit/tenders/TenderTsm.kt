@@ -13,9 +13,11 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.Statement
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.*
 
-@Suppress("UNUSED_VARIABLE")
 class TenderTsm(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbstract(), ITender {
 
     init {
@@ -29,24 +31,67 @@ class TenderTsm(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbst
         val wait = WebDriverWait(driver, ParserTsm.timeoutB)
         /*wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.xpath("//iframe")))*/
         Thread.sleep(10000)
-        driver.switchTo().frame(0)
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]")))
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(preceding-sibling::div, 'Начало представления предложений')]")))
         } catch (e: Exception) {
-            logger("can not find expected startDate", driver.pageSource)
+            logger("cannot find expected startDate", driver.pageSource)
             return
         }
-        val datePubT =
-            driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+        var datePubT =
+            driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Начало представления предложений')]"))?.text?.trim { it <= ' ' }
                 ?: ""
-        val pubDate = datePubT.getDateFromString(formatterGpn)
+        var pubDate = Date()
+        if (datePubT.contains("Вчера в")) {
+            datePubT = datePubT.replace(
+                "Вчера в", SimpleDateFormat("dd.MM.yyyy").format(
+                    Date.from(
+                        LocalDate.now().minusDays(1).atStartOfDay(
+                            ZoneId.systemDefault()
+                        ).toInstant()
+                    )
+                )
+            )
+        }
+        if (datePubT.contains("Сегодня в")) {
+            datePubT = datePubT.replace(
+                "Сегодня в", SimpleDateFormat("dd.MM.yyyy").format(Date())
+            )
+        }
+        pubDate = datePubT.getDateFromString(formatterGpn)
         var endDateT =
-            driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Окончание приема предложений')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Окончание представления предложений')]"))?.text?.trim { it <= ' ' }
                 ?: ""
-        endDateT = endDateT.regExpTest("""(\d{2}.\d{2}.\d{4} \d{2}:\d{2})""")
-        val endDate = endDateT.getDateFromString(formatterGpn)
+        var endDate = Date()
+        if (endDateT.contains("Вчера в")) {
+            endDateT = endDateT.replace(
+                "Вчера в", SimpleDateFormat("dd.MM.yyyy").format(
+                    Date.from(
+                        LocalDate.now().minusDays(1).atStartOfDay(
+                            ZoneId.systemDefault()
+                        ).toInstant()
+                    )
+                )
+            )
+        }
+        if (endDateT.contains("Вчера в")) {
+            endDateT = endDateT.replace(
+                "Завтра в", SimpleDateFormat("dd.MM.yyyy").format(
+                    Date.from(
+                        LocalDate.now().plusDays(1).atStartOfDay(
+                            ZoneId.systemDefault()
+                        ).toInstant()
+                    )
+                )
+            )
+        }
+        if (endDateT.contains("Сегодня в")) {
+            endDateT = endDateT.replace(
+                "Сегодня в", SimpleDateFormat("dd.MM.yyyy").format(Date())
+            )
+        }
+        endDate = endDateT.getDateFromString(formatterGpn)
         if (pubDate == Date(0L) || endDate == Date(0L)) {
-            logger("can not find dates in tender", tn.href, datePubT, endDateT)
+            logger("cannot find dates in tender", tn.href, datePubT, endDateT)
             return
         }
         val status =

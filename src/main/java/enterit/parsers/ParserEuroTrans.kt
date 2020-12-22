@@ -59,7 +59,7 @@ class ParserEuroTrans : Iparser {
             el.findElementWithoutException(By.xpath(".//span[contains(@class, 'registered-number')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         if (purNum == "") {
-            logger("can not find dates or purNum in tender")
+            logger("cannot find dates or purNum in tender")
             return
         }
         val href = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-block title')]//a"))
