@@ -55,6 +55,8 @@ var tempDirTendersRhTorg: String? = null
 var logDirTendersRhTorg: String? = null
 var tempDirTendersTsm: String? = null
 var logDirTendersTsm: String? = null
+var tempDirTendersMedsi: String? = null
+var logDirTendersMedsi: String? = null
 var UserTander: String? = null
 var UserMvideo: String? = null
 var PassTander: String? = null
@@ -105,6 +107,8 @@ var AddTenderRhTorg: Int = 0
 var UpdateTenderRhTorg: Int = 0
 var AddTenderTsm: Int = 0
 var UpdateTenderTsm: Int = 0
+var AddTenderMedsi: Int = 0
+var UpdateTenderMedsi: Int = 0
 var UrlConnect: String? = null
 var formatter: Format = SimpleDateFormat("dd.MM.yyyy kk:mm:ss")
 var formatterGpn: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy kk:mm")
@@ -208,6 +212,10 @@ fun getSettings() = try {
                     executePath + File.separator + it.childNodes.item(0).textContent
                 "logdir_tenders_tsm" -> logDirTendersTsm =
                     executePath + File.separator + it.childNodes.item(0).textContent
+                "tempdir_tenders_medsi" -> tempDirTendersMedsi =
+                    executePath + File.separator + it.childNodes.item(0).textContent
+                "logdir_tenders_medsi" -> logDirTendersMedsi =
+                    executePath + File.separator + it.childNodes.item(0).textContent
                 "prefix" -> Prefix = try {
                     it.childNodes.item(0).textContent
                 } catch (e: Exception) {
@@ -254,6 +262,7 @@ fun init(args: Array<String>) {
             "eurotrans" -> arg = Arguments.EUROTRANS
             "rhtorg" -> arg = Arguments.RHTORG
             "tsm" -> arg = Arguments.TSM
+            "medsi" -> arg = Arguments.MEDSI
             else -> run {
                 println("Неверно указаны аргументы, используйте $arguments, выходим из программы"); System.exit(
                 0
@@ -284,6 +293,7 @@ fun init(args: Array<String>) {
         Arguments.EUROTRANS -> run { tempDirTenders = tempDirTendersEuroTrans; logDirTenders = logDirTendersEuroTrans }
         Arguments.RHTORG -> run { tempDirTenders = tempDirTendersRhTorg; logDirTenders = logDirTendersRhTorg }
         Arguments.TSM -> run { tempDirTenders = tempDirTendersTsm; logDirTenders = logDirTendersTsm }
+        Arguments.MEDSI -> run { tempDirTenders = tempDirTendersMedsi; logDirTenders = logDirTendersMedsi }
     }
     if (tempDirTenders == null || tempDirTenders == "") {
         println("Не задана папка для временных файлов, выходим из программы")

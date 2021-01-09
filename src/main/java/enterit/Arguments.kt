@@ -21,4 +21,5 @@ enum class Arguments {
     EUROTRANS,
     RHTORG,
     TSM,
+    MEDSI,
 }
