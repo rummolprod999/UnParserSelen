@@ -28,19 +28,19 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
         val wait = WebDriverWait(driver, ParserEuroTrans.timeoutB)
         /*wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.xpath("//iframe")))*/
         Thread.sleep(10000)
-        driver.switchTo().frame(0)
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]")))
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(., 'Начало представления предложений (этап №1)')]/following-sibling::div/div")))
         } catch (e: Exception) {
             logger("cannot find expected startDate", driver.pageSource)
             return
         }
-        val datePubT =
-            driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Начало приема предложений')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+        var datePubT =
+            driver.findElementWithoutException(By.xpath("//div[contains(., 'Начало представления предложений (этап №1)')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                 ?: ""
+        datePubT = datePubT.regExpTest("""(\d{2}.\d{2}.\d{4} \d{2}:\d{2})""")
         val pubDate = datePubT.getDateFromString(formatterGpn)
         var endDateT =
-            driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Окончание приема предложений')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            driver.findElementWithoutException(By.xpath("//div[contains(., 'Окончание представления предложений')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                 ?: ""
         endDateT = endDateT.regExpTest("""(\d{2}.\d{2}.\d{4} \d{2}:\d{2})""")
         val endDate = endDateT.getDateFromString(formatterGpn)
@@ -49,7 +49,7 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
             return
         }
         val status =
-            driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Статус торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+            driver.findElementWithoutException(By.xpath("//div[@class = 'page-status-title']"))?.text?.trim { it <= ' ' }
                 ?: ""
         DriverManager.getConnection(UrlConnect, UserDb, PassDb).use(fun(con: Connection) {
             val dateVer = Date()
@@ -98,7 +98,7 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
             stmt.close()
             var IdOrganizer = 0
             val fullnameOrg =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Наименование')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(@class, 'organization__info__title')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (fullnameOrg != "") {
                 val stmto = con.prepareStatement("SELECT id_organizer FROM ${Prefix}organizer WHERE full_name = ?")
@@ -121,10 +121,10 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
                         driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Адрес электронной почты')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
                             ?: ""
                     val phone =
-                        driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Номер контактного телефона')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                        driver.findElementWithoutException(By.xpath("//div[contains(., 'Адрес электронной почты')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                             ?: ""
                     val contactPerson =
-                        driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Контактное лицо')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                        driver.findElementWithoutException(By.xpath("//div[contains(., 'Контактное лицо')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                             ?: ""
                     val stmtins = con.prepareStatement(
                         "INSERT INTO ${Prefix}organizer SET full_name = ?, post_address = ?, contact_email = ?, contact_phone = ?, fact_address = ?, contact_person = ?",
@@ -150,17 +150,17 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
             var idPlacingWay = 0
             var idTender = 0
             val placingWayName =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Форма проведения торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(., 'Способ закупки')]/following-sibling::div"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (placingWayName != "") {
                 idPlacingWay = getPlacingWay(con, placingWayName)
             }
             val idRegion = 0
             val purObj1 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Предмет торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[@class = 'mat-tooltip-trigger title flex-um']"))?.text?.trim { it <= ' ' }
                     ?: ""
             val purObj2 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Описание предмета договора')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(., 'Краткое описание предмета договора')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
             val purObj = "$purObj1 $purObj2".trim { it <= ' ' }
             val insertTender = con.prepareStatement(
@@ -199,7 +199,7 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
             var idLot = 0
             val LotNumber = 1
             val currency =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Валюта')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(., 'Валюта')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
             val insertLot = con.prepareStatement(
                 "INSERT INTO ${Prefix}lot SET id_tender = ?, lot_number = ?, currency = ?",
@@ -216,14 +216,15 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
             }
             rl.close()
             insertLot.close()
-            val attachments = driver.findElements(By.xpath("//a[. = 'Скачать все приложенные файлы']"))
+            val attachments = driver.findElements(By.xpath("//um-files-dropdown/a"))
             attachments.forEach {
                 val urlAtt = it.getAttribute("href")?.trim { it <= ' ' } ?: ""
+                val nameAtt = it.text?.trim { it <= ' ' } ?: ""
                 if (urlAtt != "") {
                     con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?")
                         .apply {
                             setInt(1, idTender)
-                            setString(2, "Скачать все приложенные файлы")
+                            setString(2, nameAtt)
                             setString(3, urlAtt)
                             executeUpdate()
                             close()
@@ -236,7 +237,7 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
                     ?: ""
             if (rec1 != "") requareList.add(rec1)
             val rec2 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Перечень представляемых участниками торгов документов и требования к их оформлению')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(., 'Перечень представляемых участниками закупки документов и требования к их оформлению')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (rec2 != "") requareList.add(rec2)
             requareList.forEach {
@@ -277,29 +278,29 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
                 }
             }
             val delivPlace1 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Регион поставки товаров, выполнения работ, оказания услуг')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(., 'Регион')]/following-sibling::div"))?.text?.trim { it <= ' ' }
                     ?: ""
             val delivPlace2 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Место (адрес) поставки товаров, выполнения работ, оказания услуг')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(., 'Адрес объекта')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
             val delivPlace = "$delivPlace1 $delivPlace2".trim { it <= ' ' }
             var delivTerm1 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Условия поставки товаров')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(., 'Условия оплаты')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
-            if (delivTerm1 != "") delivTerm1 = "Условия поставки товаров: $delivTerm1"
+            if (delivTerm1 != "") delivTerm1 = "Условия оплаты: $delivTerm1"
             var delivTerm2 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Пояснение условий поставки')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(., 'Отсрочка платежа')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
-            if (delivTerm2 != "") delivTerm2 = "Пояснение условий поставки: $delivTerm2"
+            if (delivTerm2 != "") delivTerm2 = "Отсрочка платежа: $delivTerm2"
             var delivTerm3 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Требования к сроку и объему представления гарантий качества товара, работ, услуг, к обслуживанию товара, к расходам на эксплуатацию товара')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(., 'Сроки поставки')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (delivTerm3 != "") delivTerm3 =
-                "Требования к сроку и объему представления гарантий качества товара, работ, услуг, к обслуживанию товара, к расходам на эксплуатацию товара: $delivTerm3"
+                "Сроки поставки: $delivTerm3"
             var delivTerm4 =
-                driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Сроки поставки товаров, выполнения работ, оказания услуг')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(., 'Проект')]/following-sibling::div"))?.text?.trim { it <= ' ' }
                     ?: ""
-            if (delivTerm4 != "") delivTerm4 = "Сроки поставки товаров, выполнения работ, оказания услуг: $delivTerm4"
+            if (delivTerm4 != "") delivTerm4 = "Проект: $delivTerm4"
             var delivTerm = ""
             if (delivTerm1 != "" || delivTerm2 != "" || delivTerm3 != "" || delivTerm4 != "") {
                 delivTerm = "$delivTerm1\n $delivTerm2\n $delivTerm3\n $delivTerm4".trim { it <= ' ' }
