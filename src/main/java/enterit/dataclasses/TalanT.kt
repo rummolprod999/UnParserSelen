@@ -12,5 +12,4 @@ data class TalanT(
     var status: String,
     var placingWayName: String,
     val urlOrg: String
-) {
-}
+)

@@ -11,5 +11,4 @@ data class CrimeaBT(
     var placingWayName: String,
     val nmck: String,
     val currency: String
-) {
-}
+)

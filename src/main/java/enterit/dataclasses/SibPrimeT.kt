@@ -12,5 +12,4 @@ data class SibPrimeT(
     var status: String,
     var placingWayName: String,
     var nameCus: String
-) {
-}
+)

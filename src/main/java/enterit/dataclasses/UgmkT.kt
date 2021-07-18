@@ -11,5 +11,4 @@ data class UgmkT(
     var status: String,
     val placingWayName: String,
     val nameCus: String
-) {
-}
+)

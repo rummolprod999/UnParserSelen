@@ -23,4 +23,5 @@ enum class Arguments {
     TSM,
     MEDSI,
     PNSH,
+    SLAVECO,
 }

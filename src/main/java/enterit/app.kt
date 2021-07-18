@@ -28,6 +28,7 @@ fun main(args: Array<String>) {
         Arguments.TSM -> parserTsm()
         Arguments.MEDSI -> parserMedsi()
         Arguments.PNSH -> parserPnsh()
+        Arguments.SLAVECO -> parserSlaveco()
     }
 
 }
@@ -423,5 +424,14 @@ fun parserPnsh() {
     p.parser()
     logger("Добавили тендеров $AddTenderPnsh")
     logger("Обновили тендеров $UpdateTenderPnsh")
+    logger("Конец парсинга")
+}
+
+fun parserSlaveco() {
+    logger("Начало парсинга")
+    val p = ParserSlaveco()
+    p.parser()
+    logger("Добавили тендеров $AddTenderSlaveco")
+    logger("Обновили тендеров $UpdateTenderSlaveco")
     logger("Конец парсинга")
 }

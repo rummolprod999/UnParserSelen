@@ -13,5 +13,4 @@ data class BicoT(
     val currency: String,
     val region: String,
     val otr: String
-) {
-}
+)

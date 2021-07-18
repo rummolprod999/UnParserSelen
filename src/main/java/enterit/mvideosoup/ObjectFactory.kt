@@ -93,7 +93,7 @@ class ObjectFactory {
     fun createMTGetProcListResponse(value: DTGetProcListResponse): JAXBElement<DTGetProcListResponse> {
         return JAXBElement<DTGetProcListResponse>(
             _MTGetProcListResponse_QNAME,
-            DTGetProcListResponse::class.java!!,
+            DTGetProcListResponse::class.java,
             null,
             value
         )

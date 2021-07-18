@@ -15,7 +15,7 @@ import java.util.regex.Pattern
 
 
 fun getConformity(conf: String): Int {
-    val s = conf.toLowerCase()
+    val s = conf.lowercase(Locale.getDefault())
     return when {
         s.contains("открыт") -> 5
         s.contains("аукцион") -> 1
@@ -341,7 +341,7 @@ fun String.regExpTest(reg: String): String {
 }
 
 fun getRegion(sp: String): String {
-    val s = sp.toLowerCase()
+    val s = sp.lowercase(Locale.getDefault())
     return when {
         s.contains("белгор") -> "белгор"
         s.contains("брянск") -> "брянск"

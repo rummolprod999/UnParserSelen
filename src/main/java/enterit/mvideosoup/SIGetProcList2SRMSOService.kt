@@ -28,32 +28,29 @@ class SIGetProcList2SRMSOService : Service {
         @WebEndpoint(name = "HTTPS_Port")
         get() = super.getPort(QName("http://mvideo.ru/SRM/GetProcList", "HTTPS_Port"), SIGetProcList2SRMSO::class.java)
 
-    constructor() : super(__getWsdlLocation(), SIGETPROCLIST2SRMSOSERVICE_QNAME) {}
+    constructor() : super(__getWsdlLocation(), SIGETPROCLIST2SRMSOSERVICE_QNAME)
 
     constructor(vararg features: WebServiceFeature) : super(
         __getWsdlLocation(),
         SIGETPROCLIST2SRMSOSERVICE_QNAME,
         *features
-    ) {
-    }
+    )
 
-    constructor(wsdlLocation: URL) : super(wsdlLocation, SIGETPROCLIST2SRMSOSERVICE_QNAME) {}
+    constructor(wsdlLocation: URL) : super(wsdlLocation, SIGETPROCLIST2SRMSOSERVICE_QNAME)
 
     constructor(wsdlLocation: URL, vararg features: WebServiceFeature) : super(
         wsdlLocation,
         SIGETPROCLIST2SRMSOSERVICE_QNAME,
         *features
-    ) {
-    }
+    )
 
-    constructor(wsdlLocation: URL, serviceName: QName) : super(wsdlLocation, serviceName) {}
+    constructor(wsdlLocation: URL, serviceName: QName) : super(wsdlLocation, serviceName)
 
     constructor(wsdlLocation: URL, serviceName: QName, vararg features: WebServiceFeature) : super(
         wsdlLocation,
         serviceName,
         *features
-    ) {
-    }
+    )
 
     /**
      *
