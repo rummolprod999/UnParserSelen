@@ -34,16 +34,16 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
             logger("cannot find expected startDate", driver.pageSource)
             return
         }
-        var datePubT =
+        val datePubT =
             driver.findElementWithoutException(By.xpath("//div[contains(., 'Начало представления предложений (этап №1)')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                 ?: ""
-        datePubT = datePubT.regExpTest("""(\d{2}.\d{2}.\d{4} \d{2}:\d{2})""")
-        val pubDate = datePubT.getDateFromString(formatterGpn)
-        var endDateT =
+        val datePubTT = datePubT.regExpTest("""(\d{2}.\d{2}.\d{4} \d{2}:\d{2})""")
+        val pubDate = datePubTT.getDateFromString(formatterGpn)
+        val endDateT =
             driver.findElementWithoutException(By.xpath("//div[contains(., 'Окончание представления предложений')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                 ?: ""
-        endDateT = endDateT.regExpTest("""(\d{2}.\d{2}.\d{4} \d{2}:\d{2})""")
-        val endDate = endDateT.getDateFromString(formatterGpn)
+        val endDateTT = endDateT.regExpTest("""(\d{2}.\d{2}.\d{4} \d{2}:\d{2})""")
+        val endDate = endDateTT.getDateFromString(formatterGpn)
         if (pubDate == Date(0L) || endDate == Date(0L)) {
             logger("cannot find dates in tender", tn.href, datePubT, endDateT)
             return
