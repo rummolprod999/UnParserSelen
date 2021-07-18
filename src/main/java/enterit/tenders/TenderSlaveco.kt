@@ -2,7 +2,7 @@ package enterit.tenders
 
 import enterit.*
 import enterit.dataclasses.SafmargT
-import enterit.parsers.ParserEuroTrans
+import enterit.parsers.ParserSlaveco
 import enterit.tools.*
 import org.openqa.selenium.By
 import org.openqa.selenium.WebElement
@@ -18,17 +18,20 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
 
-class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbstract(), ITender {
-
+class TenderSlaveco(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbstract(), ITender {
     init {
-        etpName = "ООО «ЕТС»"
-        etpUrl = "http://tender.eurotransstroy.ru/"
+        etpName = "ГК \"Славянск ЭКО\""
+        etpUrl = "https://tender.slaveco.ru/"
+    }
+
+    companion object TypeFz {
+        const val typeFz = 345
     }
 
     override fun parsing() {
         //driver.close()
         driver.get(tn.href)
-        val wait = WebDriverWait(driver, ParserEuroTrans.timeoutB)
+        val wait = WebDriverWait(driver, ParserSlaveco.timeoutB)
         /*wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.xpath("//iframe")))*/
         Thread.sleep(10000)
         try {
@@ -240,9 +243,9 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
             rt.close()
             insertTender.close()
             if (updated) {
-                UpdateTenderEuroTrans++
+                UpdateTenderSlaveco++
             } else {
-                AddTenderEuroTrans++
+                AddTenderSlaveco++
             }
             var idLot = 0
             val LotNumber = 1
@@ -366,13 +369,13 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
                         }
             }
             val purobj1 =
-                driver.findElements(By.xpath("//table[preceding-sibling::div[contains(., 'Позиции спецификации:')] and  contains(@class, 'competitive-table-data')]//tr[position() > 1]"))
+                driver.findElements(By.xpath("//div[@class = 'k-grid-table-wrap' and @role = 'presentation']//tr"))
             purobj1.forEach {
-                val name = it.findElementWithoutException(By.xpath(".//td[3]"))?.text?.trim { it <= ' ' }
+                val name = it.findElementWithoutException(By.xpath(".//td[2]"))?.text?.trim { it <= ' ' }
                     ?: ""
                 val okei = it.findElementWithoutException(By.xpath(".//td[4]"))?.text?.trim { it <= ' ' }
                     ?: ""
-                val quantity = it.findElementWithoutException(By.xpath(".//td[5]"))?.text?.trim { it <= ' ' }
+                val quantity = it.findElementWithoutException(By.xpath(".//td[3]"))?.text?.trim { it <= ' ' }
                     ?: ""
                 val insertPurObj =
                     con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?")
@@ -442,10 +445,5 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
             }
         })
 
-
-    }
-
-    companion object TypeFz {
-        const val typeFz = 292
     }
 }
