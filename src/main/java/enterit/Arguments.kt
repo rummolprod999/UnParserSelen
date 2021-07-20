@@ -24,4 +24,5 @@ enum class Arguments {
     MEDSI,
     PNSH,
     SLAVECO,
+    BRUSNIKA,
 }

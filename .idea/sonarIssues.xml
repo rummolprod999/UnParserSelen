@@ -53,6 +53,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/enterit/parsers/ParserBrusnika.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/main/java/enterit/parsers/ParserEuroTrans.kt">
           <value>
             <set />
@@ -104,6 +109,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/src/main/java/enterit/tenders/TenderBelMarket.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/enterit/tenders/TenderBrusnika.kt">
           <value>
             <set />
           </value>
