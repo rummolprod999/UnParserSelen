@@ -95,7 +95,7 @@ class TenderMedsi(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAb
             return
         }
         val status =
-            driver.findElementWithoutException(By.xpath("//div[@class = 'page-status-title']"))?.text?.trim { it <= ' ' }
+            driver.findElementWithoutException(By.xpath("//div[contains(@class, 'status-button-title')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         DriverManager.getConnection(UrlConnect, UserDb, PassDb).use(fun(con: Connection) {
             val dateVer = Date()
@@ -365,29 +365,82 @@ class TenderMedsi(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAb
             val purobj1 =
                 driver.findElements(By.xpath("//mat-card-title[. = 'Спецификация поставки']/following-sibling::mat-card-content//div[@class = 'k-grid-table-wrap' and @role = 'presentation']//tr"))
             purobj1.forEach {
-                val name1 = it.findElementWithoutException(By.xpath(".//td[3]"))?.text?.trim { it <= ' ' }
+                val test = it.findElementWithoutException(By.xpath(".//td[6]"))?.text?.trim { it <= ' ' }
                     ?: ""
-                val name2 = it.findElementWithoutException(By.xpath(".//td[4]"))?.text?.trim { it <= ' ' }
-                    ?: ""
-                val name = "${name1} ${name2}".trim { it <= ' ' }
-                val okei = it.findElementWithoutException(By.xpath(".//td[6]"))?.text?.trim { it <= ' ' }
-                    ?: ""
-                val quantity =
-                    it.findElementWithoutException(By.xpath(".//td[5]"))?.text?.trim { it <= ' ' }?.replace(",", "")
-                        ?.deleteAllWhiteSpace()
+                if (test != "") {
+                    val name1 = it.findElementWithoutException(By.xpath(".//td[3]"))?.text?.trim { it <= ' ' }
                         ?: ""
-                val insertPurObj =
-                    con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?")
-                        .apply {
-                            setInt(1, idLot)
-                            setInt(2, idCustomer)
-                            setString(3, name)
-                            setString(4, okei)
-                            setString(5, quantity)
-                            setString(6, quantity)
-                            executeUpdate()
-                            close()
-                        }
+                    val name2 = it.findElementWithoutException(By.xpath(".//td[4]"))?.text?.trim { it <= ' ' }
+                        ?: ""
+                    val name = "${name1} ${name2}".trim { it <= ' ' }
+                    val okei = it.findElementWithoutException(By.xpath(".//td[6]"))?.text?.trim { it <= ' ' }
+                        ?: ""
+                    val quantity =
+                        it.findElementWithoutException(By.xpath(".//td[5]"))?.text?.trim { it <= ' ' }?.replace(",", "")
+                            ?.deleteAllWhiteSpace()
+                            ?: ""
+                    val insertPurObj =
+                        con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?")
+                            .apply {
+                                setInt(1, idLot)
+                                setInt(2, idCustomer)
+                                setString(3, name)
+                                setString(4, okei)
+                                setString(5, quantity)
+                                setString(6, quantity)
+                                executeUpdate()
+                                close()
+                            }
+                }
+                val test2 = it.findElementWithoutException(By.xpath(".//td[5]"))?.text?.trim { it <= ' ' }
+                    ?: ""
+                if (test2 != "" && test == "") {
+                    val name1 = it.findElementWithoutException(By.xpath(".//td[2]"))?.text?.trim { it <= ' ' }
+                        ?: ""
+                    val name2 = it.findElementWithoutException(By.xpath(".//td[3]"))?.text?.trim { it <= ' ' }
+                        ?: ""
+                    val name = "${name1} ${name2}".trim { it <= ' ' }
+                    val okei = it.findElementWithoutException(By.xpath(".//td[5]"))?.text?.trim { it <= ' ' }
+                        ?: ""
+                    val quantity =
+                        it.findElementWithoutException(By.xpath(".//td[4]"))?.text?.trim { it <= ' ' }?.replace(",", "")
+                            ?.deleteAllWhiteSpace()
+                            ?: ""
+                    val insertPurObj =
+                        con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?")
+                            .apply {
+                                setInt(1, idLot)
+                                setInt(2, idCustomer)
+                                setString(3, name)
+                                setString(4, okei)
+                                setString(5, quantity)
+                                setString(6, quantity)
+                                executeUpdate()
+                                close()
+                            }
+                } else {
+                    val name1 = it.findElementWithoutException(By.xpath(".//td[2]"))?.text?.trim { it <= ' ' }
+                        ?: ""
+                    val name = "${name1}".trim { it <= ' ' }
+                    val okei = it.findElementWithoutException(By.xpath(".//td[4]"))?.text?.trim { it <= ' ' }
+                        ?: ""
+                    val quantity =
+                        it.findElementWithoutException(By.xpath(".//td[3]"))?.text?.trim { it <= ' ' }?.replace(",", "")
+                            ?.deleteAllWhiteSpace()
+                            ?: ""
+                    val insertPurObj =
+                        con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?")
+                            .apply {
+                                setInt(1, idLot)
+                                setInt(2, idCustomer)
+                                setString(3, name)
+                                setString(4, okei)
+                                setString(5, quantity)
+                                setString(6, quantity)
+                                executeUpdate()
+                                close()
+                            }
+                }
                 val delivPlace = it.findElementWithoutException(By.xpath(".//td[7]"))?.text?.trim { it <= ' ' }
                     ?: ""
                 val delivTermT = it.findElementWithoutException(By.xpath(".//td[8]"))?.text?.trim { it <= ' ' }

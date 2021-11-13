@@ -21,7 +21,7 @@ class ParserMedsi : Iparser {
 
     companion object WebCl {
         const val BaseUrl =
-            "https://etp.medsi.ru/trades?page=purchases&skip=0&search=%7B%22processStatuses%22:%5B%5D,%22conditions%22:%7B%22price%22:%7B%7D,%22publishDate%22:%7B%7D,%22procurementClassifier%22:%5B%5D,%22destinationRegions%22:%5B%5D,%22orderBy%22:%22REGISTERED_DATE_DESC%22%7D%7D"
+            "https://etp.medsi.ru/trades"
         const val timeoutB = 60L
     }
 
@@ -37,15 +37,15 @@ class ParserMedsi : Iparser {
         try {
             driver.get(BaseUrl)
             val wait = WebDriverWait(driver, timeoutB)
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-list-item")))
-            val tenders = driver.findElements(By.xpath("//um-trade-list-item"))
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-search-card")))
+            val tenders = driver.findElements(By.xpath("//um-trade-search-card"))
             tenders.forEach { addToList(it) }
             tendersS.forEach {
                 try {
                     val t = TenderMedsi(it, driver)
                     t.parsing()
                 } catch (e: Exception) {
-                    logger("error in TenderRhTorg.parsing()", e.stackTrace, e, it.href)
+                    logger("error in TenderMedsi.parsing()", e.stackTrace, e, it.href)
                 }
             }
         } catch (e: Exception) {
@@ -57,17 +57,17 @@ class ParserMedsi : Iparser {
 
     private fun addToList(el: WebElement) {
         val purNum =
-            el.findElementWithoutException(By.xpath(".//span[contains(@class, 'registered-number')]"))?.text?.trim { it <= ' ' }
+            el.findElementWithoutException(By.xpath(".//div[contains(@class, 'trade-number')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         if (purNum == "") {
             logger("cannot find dates or purNum in tender")
             return
         }
-        val href = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))
+        val href = el.findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
             ?.getAttribute("href")?.trim { it <= ' ' }
             ?: ""
         val purName =
-            el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))?.text?.trim { it <= ' ' }
+            el.findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         val tn = SafmargT(purNum, href, purName)
         tendersS.add(tn)
