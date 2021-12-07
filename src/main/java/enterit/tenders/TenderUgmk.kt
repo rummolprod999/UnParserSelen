@@ -285,9 +285,9 @@ class TenderUgmk(val tn: SafmargT<String>, val driver: ChromeDriver, val wait: W
             rt.close()
             insertTender.close()
             if (updated) {
-                UpdateTenderBrusnika++
+                UpdateTenderUgmk++
             } else {
-                AddTenderBrusnika++
+                AddTenderUgmk++
             }
             val attachments = driver.findElements(By.xpath("//a[starts-with(@href, '/files/get')]"))
             attachments.forEach {

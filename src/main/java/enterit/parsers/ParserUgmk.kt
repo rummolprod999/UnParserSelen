@@ -38,7 +38,7 @@ class ParserUgmk : Iparser {
             driver.get(BaseUrl)
             val wait = WebDriverWait(driver, timeoutB)
             addTenders(wait, driver)
-            (1..3).forEach {
+            (1..4).forEach {
                 try {
                     parserPageN(driver, wait)
                 } catch (e: Exception) {
