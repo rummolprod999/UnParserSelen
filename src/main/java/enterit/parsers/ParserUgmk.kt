@@ -22,7 +22,7 @@ class ParserUgmk : Iparser {
 
     companion object WebCl {
         const val BaseUrl = "https://etp.ugmk.com/trades?page=purchases"
-        const val timeoutB = 120L
+        const val timeoutB = 60L
     }
 
     private val tendersS = mutableListOf<SafmargT<String>>()
@@ -38,7 +38,7 @@ class ParserUgmk : Iparser {
             driver.get(BaseUrl)
             val wait = WebDriverWait(driver, timeoutB)
             addTenders(wait, driver)
-            (1..4).forEach {
+            (1..3).forEach {
                 try {
                     parserPageN(driver, wait)
                 } catch (e: Exception) {
@@ -50,7 +50,7 @@ class ParserUgmk : Iparser {
                     val t = TenderUgmk(it, driver, wait)
                     t.parsing()
                 } catch (e: Exception) {
-                    logger("error in TenderSlaveco.parsing()", e.stackTrace, e, it.href)
+                    logger("error in TenderUgmk.parsing()", e.stackTrace, e, it.href)
                 }
             }
         } catch (e: Exception) {

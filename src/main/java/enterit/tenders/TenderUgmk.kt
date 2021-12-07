@@ -36,7 +36,7 @@ class TenderUgmk(val tn: SafmargT<String>, val driver: ChromeDriver, val wait: W
     override fun parsing() {
         driver.get(tn.href)
         val wait = WebDriverWait(driver, ParserUgmk.timeoutB)
-        Thread.sleep(10000)
+        Thread.sleep(5000)
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(preceding-sibling::div, 'Начало представления предложений')]")))
         } catch (e: Exception) {
