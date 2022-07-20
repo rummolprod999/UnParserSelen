@@ -32,11 +32,17 @@ class ParserUgmk : Iparser {
         options.addArguments("disable-gpu")
         options.addArguments("no-sandbox")
         options.addArguments("ignore-certificate-errors")
+        options.addArguments("window-size=1920,1080")
         options.setAcceptInsecureCerts(true)
         val driver = ChromeDriver(options)
         try {
             driver.get(BaseUrl)
             val wait = WebDriverWait(driver, timeoutB)
+            Thread.sleep(5000)
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@id = 'mat-button-toggle-3-button']")))
+            driver.switchTo().defaultContent()
+            val js = driver as JavascriptExecutor
+            js.executeScript("document.querySelectorAll('#mat-button-toggle-3-button')[0].click()")
             addTenders(wait, driver)
             (1..4).forEach {
                 try {
