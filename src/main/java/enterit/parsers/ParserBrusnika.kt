@@ -33,12 +33,13 @@ class ParserBrusnika : Iparser {
         options.addArguments("disable-gpu")
         options.addArguments("no-sandbox")
         options.addArguments("ignore-certificate-errors")
+        options.addArguments("window-size=1920,1080")
         options.setAcceptInsecureCerts(true)
         val driver = ChromeDriver(options)
         try {
             driver.get(BaseUrl)
             val wait = WebDriverWait(driver, timeoutB)
-            showAllTenders(driver, wait)
+            //showAllTenders(driver, wait)
             getTenderList(wait, driver)
             repeat((1..2).count()) {
                 try {
@@ -81,9 +82,9 @@ class ParserBrusnika : Iparser {
         wait: WebDriverWait,
         driver: ChromeDriver
     ) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-list-item")))
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-search-card/um-card")))
         driver.switchTo().defaultContent()
-        val tenders = driver.findElements(By.xpath("//um-trade-list-item"))
+        val tenders = driver.findElements(By.xpath("//um-trade-search-card/um-card"))
         tenders.forEach {
             try {
                 addToList(it)
@@ -95,11 +96,10 @@ class ParserBrusnika : Iparser {
 
     private fun parserPageN(driver: ChromeDriver, wait: WebDriverWait) {
         driver.switchTo().defaultContent()
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@aria-label= 'Next']")))
         Thread.sleep(5000)
         driver.switchTo().defaultContent()
         val js = driver as JavascriptExecutor
-        js.executeScript("document.querySelectorAll('a[aria-label= \"Next\"]')[0].click()")
+        js.executeScript("document.querySelectorAll('button.mat-focus-indicator.mat-primary.mat-icon-button')[1].click()")
         Thread.sleep(3000)
         driver.switchTo().defaultContent()
         getTenderList(wait, driver)
@@ -107,17 +107,17 @@ class ParserBrusnika : Iparser {
 
     private fun addToList(el: WebElement) {
         val purNum =
-            el.findElementWithoutException(By.xpath(".//span[contains(@class, 'registered-number')]"))?.text?.trim { it <= ' ' }
+            el.findElementWithoutException(By.xpath(".//div[contains(@class, 'trade-number')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         if (purNum == "") {
             logger("cannot find dates or purNum in tender")
             return
         }
-        val href = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))
+        val href = el.findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
             ?.getAttribute("href")?.trim { it <= ' ' }
             ?: ""
         val purName =
-            el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))?.text?.trim { it <= ' ' }
+            el.findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         val tn = SafmargT(purNum, href, purName)
         tendersS.add(tn)

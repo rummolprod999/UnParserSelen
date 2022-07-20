@@ -371,7 +371,7 @@ class TenderBrusnika(val tn: SafmargT<String>, val driver: ChromeDriver) : Tende
                 val LotNumber = index + 1
                 val lotName =
                     lot.findElementWithoutException(By.xpath(".//mat-expansion-panel-header//div[contains(@class, 'column-title')]"))?.text?.trim { it <= ' ' }
-                        ?: ""
+                        ?: purObj
                 val nmck =
                     lot.findElementWithoutException(By.xpath(".//div[contains(., 'Расчетная стоимость')]/following-sibling::div/div/span"))?.text?.trim { it <= ' ' }
                         ?.deleteAllWhiteSpace()?.replace(",", ".")
@@ -418,7 +418,7 @@ class TenderBrusnika(val tn: SafmargT<String>, val driver: ChromeDriver) : Tende
                     lot.findElements(By.xpath("//div[@class = 'k-grid-table-wrap' and @role = 'presentation']//tr[not(contains(., 'Деньги'))]"))
                 purobj1.forEach {
                     val name2 = it.findElementWithoutException(By.xpath(".//td[3]"))?.text?.trim { it <= ' ' }
-                        ?: ""
+                        ?: purObj
                     val name = "${name2}".trim { it <= ' ' }
                     if (name == "Файл") {
                         return@forEach
