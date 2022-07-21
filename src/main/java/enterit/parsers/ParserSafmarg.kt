@@ -1,5 +1,7 @@
 package enterit.parsers
 
+import enterit.PassSafmar
+import enterit.UserSafmar
 import enterit.dataclasses.SafmargT
 import enterit.tenders.TenderSafmarg
 import enterit.tools.findElementWithoutException
@@ -39,6 +41,9 @@ class ParserSafmarg : Iparser {
             driver.get(BaseUrl)
             val wait = WebDriverWait(driver, timeoutB)
             Thread.sleep(5000)
+            //auth(wait, driver)
+            //driver.get(BaseUrl)
+            //Thread.sleep(5000)
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@id = 'mat-button-toggle-3-button']")))
             driver.switchTo().defaultContent()
             try {
@@ -48,6 +53,7 @@ class ParserSafmarg : Iparser {
             }
             Thread.sleep(5000)
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-search-card/um-card")))
+            driver.switchTo().defaultContent()
             val tenders = driver.findElements(By.xpath("//um-trade-search-card/um-card"))
             tenders.forEach { addToList(it) }
             tendersS.forEach {
@@ -63,6 +69,31 @@ class ParserSafmarg : Iparser {
         } finally {
             driver.quit()
         }
+    }
+
+    private fun auth(
+        wait: WebDriverWait,
+        driver: ChromeDriver
+    ) {
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[contains(., 'Войти')]")))
+            driver.switchTo().defaultContent()
+            driver.findElement(By.xpath("//button[contains(., 'Войти')]")).click()
+            driver.switchTo().defaultContent()
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[contains(., 'ДАЛЕЕ')]")))
+            driver.switchTo().defaultContent()
+            val usr = driver.findElement(By.xpath("//input[@formcontrolname = 'login']"))
+            val pass = driver.findElement(By.xpath("//input[@formcontrolname = 'password']"))
+            val inp = driver.findElement(By.xpath("//button[contains(., 'ДАЛЕЕ')]"))
+            //Thread.sleep(10000)
+            usr.sendKeys(UserSafmar)
+            pass.sendKeys(PassSafmar)
+            inp.click()
+        } catch (e: Exception) {
+            logger("Error in auth function", e.stackTrace, e)
+        }
+        Thread.sleep(5000)
+        driver.switchTo().defaultContent()
     }
 
     private fun addToList(el: WebElement) {

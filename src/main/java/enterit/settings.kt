@@ -66,6 +66,8 @@ var logDirTendersBrusnika: String? = null
 var UserTander: String? = null
 var UserMvideo: String? = null
 var PassTander: String? = null
+var UserSafmar: String? = null
+var PassSafmar: String? = null
 var Prefix: String? = null
 var UserDb: String? = null
 var PassDb: String? = null
@@ -146,100 +148,148 @@ fun getSettings() = try {
                 "database" -> Database = it.childNodes.item(0).textContent
                 "tempdir_tenders_tander" -> tempDirTendersTander =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_tander" -> logDirTendersTander =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_safmar" -> tempDirTendersSafmarg =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_safmar" -> logDirTendersSafmarg =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_talan" -> tempDirTendersTalan =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_talan" -> logDirTendersTalan =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_mvideo" -> tempDirTendersMvideo =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_mvideo" -> logDirTendersMvideo =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_mosreg" -> tempDirTendersMosreg =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_mosreg" -> logDirTendersMosreg =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_ugmk" -> tempDirTendersUgmk =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_ugmk" -> logDirTendersUgmk =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_imptorgov" -> tempDirTendersImpTorgov =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_imptorgov" -> logDirTendersImpTorgov =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_sibprime" -> tempDirTendersSibPrime =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_sibprime" -> logDirTendersSibPrime =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_crimeabt" -> tempDirTendersCrimeaBt =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_crimeabt" -> logDirTendersCrimeaBt =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_belmarket" -> tempDirTendersBelMarket =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_belmarket" -> logDirTendersBelMarket =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_bico" -> tempDirTendersBico =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_bico" -> logDirTendersBico =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_rostov" -> tempDirTendersRostov =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_rostov" -> logDirTendersRostov =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_simferop" -> tempDirTendersSimferop =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_simferop" -> logDirTendersSimferop =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_kostroma" -> tempDirTendersKostroma =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_kostroma" -> logDirTendersKostroma =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_tomsk" -> tempDirTendersTomsk =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_tomsk" -> logDirTendersTomsk =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_zmo" -> tempDirTendersZmo =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_zmo" -> logDirTendersZmo =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_goszakaz" -> tempDirTendersGosZakaz =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_goszakaz" -> logDirTendersGosZakaz =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_eurotrans" -> tempDirTendersEuroTrans =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_eurotrans" -> logDirTendersEuroTrans =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_rhtorg" -> tempDirTendersRhTorg =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_rhtorg" -> logDirTendersRhTorg =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_tsm" -> tempDirTendersTsm =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_tsm" -> logDirTendersTsm =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_medsi" -> tempDirTendersMedsi =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_medsi" -> logDirTendersMedsi =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_pnsh" -> tempDirTendersPnsh =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_pnsh" -> logDirTendersPnsh =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_slaveco" -> tempDirTendersSlaveco =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_slaveco" -> logDirTendersSlaveco =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "tempdir_tenders_brusnika" -> tempDirTendersBrusnika =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "logdir_tenders_brusnika" -> logDirTendersBrusnika =
                     executePath + File.separator + it.childNodes.item(0).textContent
+
                 "prefix" -> Prefix = try {
                     it.childNodes.item(0).textContent
                 } catch (e: Exception) {
@@ -249,6 +299,8 @@ fun getSettings() = try {
                 "usertander" -> UserTander = it.childNodes.item(0).textContent
                 "usermvideo" -> UserMvideo = it.childNodes.item(0).textContent
                 "passtander" -> PassTander = it.childNodes.item(0).textContent
+                "usersafmar" -> UserSafmar = it.childNodes.item(0).textContent
+                "passsafmar" -> PassSafmar = it.childNodes.item(0).textContent
                 "userdb" -> UserDb = it.childNodes.item(0).textContent
                 "passdb" -> PassDb = it.childNodes.item(0).textContent
                 "server" -> Server = it.childNodes.item(0).textContent
