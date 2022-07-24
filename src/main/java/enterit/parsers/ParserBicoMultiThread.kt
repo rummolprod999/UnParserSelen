@@ -101,6 +101,7 @@ class ParserBicoMultiThread : Iparser {
         listUrls.forEach {
             val t = Thread(PageProducer(st, it, countPage))
             t.start()
+            Thread.sleep(300)
             //t.join()
         }
         val tt = Thread(PageConsumer(st, listUrls.size * countPage, ::parserList))
@@ -155,7 +156,7 @@ class ParserBicoMultiThread : Iparser {
             ?: ""
         val tn = BicoT(purNum, urlTend, purObj, datePub, dateEnd, pwName, price, currency, region, otr)
         try {
-            Thread.sleep(30)
+            Thread.sleep(3)
             val t = TenderBico(tn)
             t.parsing()
         } catch (e: Exception) {
