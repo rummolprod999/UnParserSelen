@@ -59,7 +59,7 @@ class BicoStore(val dec: ArrayDeque<PageBico>) {
 
 class ParserBicoMultiThread : Iparser {
     private val BaseUrl = "https://www.bicotender.ru"
-    private val StartUrl = "https://www.bicotender.ru/katalog/otrasly.html"
+    private val StartUrl = "https://www.bicotender.ru/catalog/by-field/"
     private val listUrls = mutableListOf<String>()
     private val countPage = 500
     val commonDequePages = ArrayDeque<PageBico>()
@@ -130,7 +130,7 @@ class ParserBicoMultiThread : Iparser {
             ?: ""
         if (urlT == "") run { logger("get empty urlT"); return }
         val urlTend = "$BaseUrl$urlT"
-        val typeT = el.selectFirst("td:eq(1)")?.ownText()?.trim { it <= ' ' }
+        val typeT = el.selectFirst("td:eq(1)")?.text()?.trim { it <= ' ' }
             ?: ""
         val purNum = typeT.getDataFromRegexp("#(\\d+)")
         if (purNum == "") {
@@ -139,7 +139,7 @@ class ParserBicoMultiThread : Iparser {
         val pwName = typeT.getDataFromRegexp("^(.+)#").deleteDoubleWhiteSpace()
         val priceT = el.selectFirst("td:eq(2)")?.text()?.trim { it <= ' ' }
             ?: ""
-        val currency = priceT.getDataFromRegexp("(\\w+)\$").deleteDoubleWhiteSpace()
+        val currency = priceT.getDataFromRegexp("\\s+([\\p{L}.]+)$").deleteDoubleWhiteSpace()
         val price = priceT.extractPrice()
         val dateS = el.selectFirst("td:eq(3)")?.text()?.deleteDoubleWhiteSpace()?.trim { it <= ' ' }
             ?: ""
