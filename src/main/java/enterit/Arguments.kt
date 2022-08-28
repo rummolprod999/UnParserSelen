@@ -25,4 +25,5 @@ enum class Arguments {
     PNSH,
     SLAVECO,
     BRUSNIKA,
+    ETPDON,
 }
