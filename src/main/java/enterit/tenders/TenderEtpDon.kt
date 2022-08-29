@@ -237,9 +237,9 @@ class TenderEtpDon(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderA
             rt.close()
             insertTender.close()
             if (updated) {
-                UpdateTenderMedsi++
+                UpdateTenderEtpDon++
             } else {
-                AddTenderMedsi++
+                AddTenderEtpDon++
             }
             var idLot = 0
             val LotNumber = 1
