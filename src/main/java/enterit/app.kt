@@ -31,6 +31,7 @@ fun main(args: Array<String>) {
         Arguments.SLAVECO -> parserSlaveco()
         Arguments.BRUSNIKA -> parserBrusnika()
         Arguments.ETPDON -> parserEtpDon()
+        Arguments.SMINEX -> parserSminex()
     }
 
 }
@@ -453,5 +454,14 @@ fun parserEtpDon() {
     p.parser()
     logger("Добавили тендеров $AddTenderEtpDon")
     logger("Обновили тендеров $UpdateTenderEtpDon")
+    logger("Конец парсинга")
+}
+
+fun parserSminex() {
+    logger("Начало парсинга")
+    val p = ParserSminex()
+    p.parser()
+    logger("Добавили тендеров $AddTenderSminex")
+    logger("Обновили тендеров $UpdateTenderSminex")
     logger("Конец парсинга")
 }

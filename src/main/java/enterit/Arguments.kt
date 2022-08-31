@@ -26,4 +26,5 @@ enum class Arguments {
     SLAVECO,
     BRUSNIKA,
     ETPDON,
+    SMINEX,
 }
