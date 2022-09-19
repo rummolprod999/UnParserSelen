@@ -24,7 +24,7 @@ class ParserSafmarg : Iparser {
 
     companion object WebCl {
         const val BaseUrl = "https://tender.safmargroup.ru/trades"
-        const val timeoutB = 120L
+        const val timeoutB = 60L
     }
 
     private val tendersS = mutableListOf<SafmargT<String>>()

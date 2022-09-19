@@ -35,13 +35,13 @@ class TenderSlaveco(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
         /*wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.xpath("//iframe")))*/
         Thread.sleep(10000)
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(., 'Начало представления предложений (этап №1)')]/following-sibling::div/div")))
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(., 'Начало представления предложений (этап №1)') or contains(., 'Начало подтверждения участия')]/following-sibling::div/div")))
         } catch (e: Exception) {
             logger("cannot find expected startDate", tn.href)
             return
         }
         var datePubT =
-            driver.findElementWithoutException(By.xpath("//div[contains(., 'Начало представления предложений (этап №1)')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
+            driver.findElementWithoutException(By.xpath("//div[contains(., 'Начало представления предложений (этап №1)') or contains(., 'Начало подтверждения участия')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                 ?: ""
         var pubDate = Date()
         if (datePubT.contains("Вчера в")) {

@@ -32,6 +32,7 @@ class ParserSlaveco : Iparser {
         options.addArguments("disable-gpu")
         options.addArguments("no-sandbox")
         options.addArguments("ignore-certificate-errors")
+        options.addArguments("window-size=1920,1080")
         options.setAcceptInsecureCerts(true)
         val driver = ChromeDriver(options)
         try {

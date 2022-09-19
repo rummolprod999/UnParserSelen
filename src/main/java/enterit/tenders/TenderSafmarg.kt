@@ -30,12 +30,12 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
         driver.get(tn.href)
         val wait = WebDriverWait(driver, ParserSafmarg.timeoutB)
         /*wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.xpath("//iframe")))*/
-        Thread.sleep(10000)
+        Thread.sleep(5000)
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[. = 'Начало подтверждения участия']/following-sibling::div/div")))
         } catch (e: Exception) {
-            logger("cannot find expected startDate", tn.href)
-            return
+            //logger("cannot find expected startDate", tn.href)
+            //return
         }
         var datePubT =
             driver.findElementWithoutException(By.xpath("//div[. = 'Начало подтверждения участия']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
@@ -59,13 +59,50 @@ class TenderSafmarg(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
         }
         pubDate = datePubT.getDateFromString(formatterGpn)
         var endDateT =
-            driver.findElementWithoutException(By.xpath("//div[. = 'Окончание представления предложений']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
+            driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Окончание представления предложений')]"))?.text?.trim { it <= ' ' }
                 ?: ""
-        endDateT = endDateT.regExpTest("""(\d{2}.\d{2}.\d{4} \d{2}:\d{2})""")
-        val endDate = endDateT.getDateFromString(formatterGpn)
-        if (pubDate == Date(0L) || endDate == Date(0L)) {
+        var endDate = Date()
+        if (endDateT.contains("Вчера в")) {
+            endDateT = endDateT.replace(
+                "Вчера в", SimpleDateFormat("dd.MM.yyyy").format(
+                    Date.from(
+                        LocalDate.now().minusDays(1).atStartOfDay(
+                            ZoneId.systemDefault()
+                        ).toInstant()
+                    )
+                )
+            )
+        }
+        if (endDateT.contains("Завтра в")) {
+            endDateT = endDateT.replace(
+                "Завтра в", SimpleDateFormat("dd.MM.yyyy").format(
+                    Date.from(
+                        LocalDate.now().plusDays(1).atStartOfDay(
+                            ZoneId.systemDefault()
+                        ).toInstant()
+                    )
+                )
+            )
+        }
+        if (endDateT.contains("Сегодня в")) {
+            endDateT = endDateT.replace(
+                "Сегодня в", SimpleDateFormat("dd.MM.yyyy").format(Date())
+            )
+        }
+        endDateT = endDateT.getDataFromRegexp("""(\d{2}\.\d{2}\.\d{4}\s+\d{2}:\d{2})""")
+        endDate = endDateT.getDateFromString(formatterGpn)
+        if (pubDate == Date(0L) && endDate == Date(0L)) {
             logger("cannot find dates in tender", tn.href, datePubT, endDateT)
-            return
+            pubDate = Date.from(
+                LocalDate.now().atStartOfDay(
+                    ZoneId.systemDefault()
+                ).toInstant()
+            )
+            endDate = Date.from(
+                LocalDate.now().plusDays(1).atStartOfDay(
+                    ZoneId.systemDefault()
+                ).toInstant()
+            )
         }
         val status =
             driver.findElementWithoutException(By.xpath("//td[contains(preceding-sibling::td, 'Статус торгов')]//div[contains(@class, 'translate-text-')]"))?.text?.trim { it <= ' ' }
