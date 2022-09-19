@@ -37,7 +37,7 @@ class TenderSlaveco(val tn: SafmargT<String>, val driver: ChromeDriver) : Tender
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(., 'Начало представления предложений (этап №1)')]/following-sibling::div/div")))
         } catch (e: Exception) {
-            logger("cannot find expected startDate", driver.pageSource)
+            logger("cannot find expected startDate", tn.href)
             return
         }
         var datePubT =
