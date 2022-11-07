@@ -31,11 +31,14 @@ class ParserEuroTrans : Iparser {
         options.addArguments("disable-gpu")
         options.addArguments("no-sandbox")
         options.addArguments("ignore-certificate-errors")
+        options.addArguments("window-size=1920,1080")
         options.setAcceptInsecureCerts(true)
         val driver = ChromeDriver(options)
         try {
             driver.get(BaseUrl)
             val wait = WebDriverWait(driver, timeoutB)
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@id = 'mat-button-toggle-3-button']")))
+                .click()
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-search-card/um-card")))
             val tenders = driver.findElements(By.xpath("//um-trade-search-card/um-card"))
             tenders.forEach { addToList(it) }
