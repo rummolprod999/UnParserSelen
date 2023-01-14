@@ -32,14 +32,19 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
         /*wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(By.xpath("//iframe")))*/
         Thread.sleep(10000)
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(., 'Начало представления предложений (этап №1)')]/following-sibling::div/div")))
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(@class, 'number')]")))
         } catch (e: Exception) {
-            logger("cannot find expected startDate", driver.pageSource)
+            logger("cannot find expected number", tn.href)
             return
         }
         var datePubT =
             driver.findElementWithoutException(By.xpath("//div[contains(., 'Начало представления предложений (этап №1)')]/following-sibling::div/div"))?.text?.trim { it <= ' ' }
                 ?: ""
+        if (datePubT == "") {
+            datePubT =
+                driver.findElementWithoutException(By.xpath("//div[. = 'Начало подтверждения участия']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
+                    ?: ""
+        }
         var pubDate = Date()
         if (datePubT.contains("Вчера в")) {
             datePubT = datePubT.replace(
@@ -97,7 +102,7 @@ class TenderEuroTrans(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
             return
         }
         val status =
-            driver.findElementWithoutException(By.xpath("//div[@class = 'page-status-title']"))?.text?.trim { it <= ' ' }
+            driver.findElementWithoutException(By.xpath("//div[contains(@class, 'status-button-title')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         DriverManager.getConnection(UrlConnect, UserDb, PassDb).use(fun(con: Connection) {
             val dateVer = Date()
