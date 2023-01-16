@@ -44,7 +44,7 @@ class ParserUgmk : Iparser {
             val js = driver as JavascriptExecutor
             js.executeScript("document.querySelectorAll('#mat-button-toggle-3-button')[0].click()")
             addTenders(wait, driver)
-            (1..4).forEach {
+            (1..10).forEach {
                 try {
                     parserPageN(driver, wait)
                 } catch (e: Exception) {
