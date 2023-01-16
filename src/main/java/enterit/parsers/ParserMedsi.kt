@@ -5,6 +5,7 @@ import enterit.tenders.TenderMedsi
 import enterit.tools.findElementWithoutException
 import enterit.tools.logger
 import org.openqa.selenium.By
+import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
@@ -32,11 +33,20 @@ class ParserMedsi : Iparser {
         options.addArguments("disable-gpu")
         options.addArguments("no-sandbox")
         options.addArguments("ignore-certificate-errors")
+        options.addArguments("window-size=1920,1080")
         options.setAcceptInsecureCerts(true)
         val driver = ChromeDriver(options)
         try {
             driver.get(BaseUrl)
             val wait = WebDriverWait(driver, timeoutB)
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@id = 'mat-button-toggle-3-button']")))
+            driver.switchTo().defaultContent()
+            try {
+                val js = driver as JavascriptExecutor
+                js.executeScript("document.querySelectorAll('#mat-button-toggle-3-button')[0].click()")
+            } catch (e: Exception) {
+            }
+            Thread.sleep(5000)
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-search-card")))
             val tenders = driver.findElements(By.xpath("//um-trade-search-card"))
             tenders.forEach { addToList(it) }

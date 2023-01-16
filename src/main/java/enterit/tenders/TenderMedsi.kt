@@ -428,19 +428,22 @@ class TenderMedsi(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAb
                         it.findElementWithoutException(By.xpath(".//td[3]"))?.text?.trim { it <= ' ' }?.replace(",", "")
                             ?.deleteAllWhiteSpace()
                             ?: ""
-                    val insertPurObj =
-                        con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?")
-                            .apply {
-                                setInt(1, idLot)
-                                setInt(2, idCustomer)
-                                setString(3, name)
-                                setString(4, okei)
-                                setString(5, quantity)
-                                setString(6, quantity)
-                                executeUpdate()
-                                close()
-                            }
+                    if (name != "") {
+                        val insertPurObj =
+                            con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?")
+                                .apply {
+                                    setInt(1, idLot)
+                                    setInt(2, idCustomer)
+                                    setString(3, name)
+                                    setString(4, okei)
+                                    setString(5, quantity)
+                                    setString(6, quantity)
+                                    executeUpdate()
+                                    close()
+                                }
+                    }
                 }
+
                 val delivPlace = it.findElementWithoutException(By.xpath(".//td[7]"))?.text?.trim { it <= ' ' }
                     ?: ""
                 val delivTermT = it.findElementWithoutException(By.xpath(".//td[8]"))?.text?.trim { it <= ' ' }
