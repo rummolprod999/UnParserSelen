@@ -27,4 +27,5 @@ enum class Arguments {
     BRUSNIKA,
     ETPDON,
     SMINEX,
+    ORELSTROY,
 }

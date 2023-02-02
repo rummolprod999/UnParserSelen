@@ -32,6 +32,7 @@ fun main(args: Array<String>) {
         Arguments.BRUSNIKA -> parserBrusnika()
         Arguments.ETPDON -> parserEtpDon()
         Arguments.SMINEX -> parserSminex()
+        Arguments.ORELSTROY -> parserOrelStroy()
     }
 
 }
@@ -463,5 +464,14 @@ fun parserSminex() {
     p.parser()
     logger("Добавили тендеров $AddTenderSminex")
     logger("Обновили тендеров $UpdateTenderSminex")
+    logger("Конец парсинга")
+}
+
+fun parserOrelStroy() {
+    logger("Начало парсинга")
+    val p = ParserOrelStroy()
+    p.parser()
+    logger("Добавили тендеров $AddTenderOrelStroy")
+    logger("Обновили тендеров $UpdateTenderOrelStroy")
     logger("Конец парсинга")
 }
