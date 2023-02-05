@@ -215,14 +215,14 @@ class TenderOrelStroy(val tn: SafmargT<String>, val driver: ChromeDriver) : Tend
             }
             rl.close()
             insertLot.close()
-            val attachments = driver.findElements(By.xpath("//a[. = 'Скачать все приложенные файлы']"))
+            val attachments = driver.findElements(By.xpath("//span[@class = 'file-name']/a"))
             attachments.forEach {
                 val urlAtt = it.getAttribute("href")?.trim { it <= ' ' } ?: ""
                 if (urlAtt != "") {
                     con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?")
                         .apply {
                             setInt(1, idTender)
-                            setString(2, "Скачать все приложенные файлы")
+                            setString(2, it.text.trim { it <= ' ' })
                             setString(3, urlAtt)
                             executeUpdate()
                             close()
