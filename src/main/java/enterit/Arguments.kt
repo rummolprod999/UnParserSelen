@@ -28,4 +28,5 @@ enum class Arguments {
     ETPDON,
     SMINEX,
     ORELSTROY,
+    LEVEL,
 }
