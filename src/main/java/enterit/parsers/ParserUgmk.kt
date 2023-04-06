@@ -21,7 +21,7 @@ class ParserUgmk : Iparser {
     }
 
     companion object WebCl {
-        const val BaseUrl = "https://etp.ugmk.com/trades?page=purchases"
+        const val BaseUrl = "https://etp.ugmk.com/trades"
         const val timeoutB = 60L
     }
 
