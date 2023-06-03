@@ -375,11 +375,12 @@ class TenderGlavstroy(val tn: SafmargT<String>, val driver: ChromeDriver, val wa
                 var idLot = 0
                 val LotNumber = index + 1
                 var lotName =
-                    lot.findElementWithoutException(By.xpath(".//mat-expansion-panel-header//div[contains(@class, 'column-title')]"))?.text?.trim { it <= ' ' } t
+                    lot.findElementWithoutException(By.xpath(".//mat-expansion-panel-header//div[contains(@class, 'column-title')]"))?.text?.trim { it <= ' ' }
                         ?: ""
                 if (lotName == "") {
-                    lotName = n
-                        ?: tn.purName
+                    lotName =
+                        lot.findElementWithoutException(By.xpath(".//div[. = 'Краткое описание предмета договора']/following-sibling::div/div"))?.text?.trim { it <= ' ' }
+                            ?: tn.purName
                 }
                 val nmck =
                     lot.findElementWithoutException(By.xpath(".//div[contains(., 'Расчетная стоимость')]/following-sibling::div/div/span"))?.text?.trim { it <= ' ' }
