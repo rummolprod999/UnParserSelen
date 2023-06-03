@@ -34,6 +34,7 @@ fun main(args: Array<String>) {
         Arguments.SMINEX -> parserSminex()
         Arguments.ORELSTROY -> parserOrelStroy()
         Arguments.LEVEL -> parserLevel()
+        Arguments.GLAVSTROY -> parserGlavstroy()
     }
 
 }
@@ -483,5 +484,14 @@ fun parserLevel() {
     p.parser()
     logger("Добавили тендеров $AddTenderLevel")
     logger("Обновили тендеров $UpdateTenderLevel")
+    logger("Конец парсинга")
+}
+
+fun parserGlavstroy() {
+    logger("Начало парсинга")
+    val p = ParserGlavstroy()
+    p.parser()
+    logger("Добавили тендеров $AddTenderGlavstroy")
+    logger("Обновили тендеров $UpdateTenderGlavstroy")
     logger("Конец парсинга")
 }

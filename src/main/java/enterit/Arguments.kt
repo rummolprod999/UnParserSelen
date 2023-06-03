@@ -29,4 +29,6 @@ enum class Arguments {
     SMINEX,
     ORELSTROY,
     LEVEL,
+    GLAVSTROY,
+
 }
