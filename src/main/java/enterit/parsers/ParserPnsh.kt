@@ -23,7 +23,7 @@ class ParserPnsh : Iparser {
 
     companion object WebCl {
         const val BaseUrl =
-            "https://tender.pnsh.ru/trades?page=purchases"
+            "https://tender.pnsh.ru/trades?documents"
         const val timeoutB = 60L
     }
 
