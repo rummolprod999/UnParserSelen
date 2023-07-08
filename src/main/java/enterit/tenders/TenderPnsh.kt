@@ -31,7 +31,7 @@ class TenderPnsh(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbs
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(preceding-sibling::div, 'Начало подтверждения участия')]")))
         } catch (e: Exception) {
-            logger("cannot find expected startDate", driver.pageSource)
+            logger("cannot find expected startDate", tn.href)
             return
         }
         var datePubT =
@@ -142,7 +142,7 @@ class TenderPnsh(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbs
             stmt.close()
             var IdOrganizer = 0
             val fullnameOrg =
-                driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Организатор')]"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(@class, 'organization__info__title')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             if (fullnameOrg != "") {
                 val stmto = con.prepareStatement("SELECT id_organizer FROM ${Prefix}organizer WHERE full_name = ?")
@@ -202,7 +202,7 @@ class TenderPnsh(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbs
             }
             val idRegion = 0
             val purObj1 =
-                driver.findElementWithoutException(By.xpath("//div[@class = 'title flex-um']"))?.text?.trim { it <= ' ' }
+                driver.findElementWithoutException(By.xpath("//div[contains(@class, 'title flex-um')]"))?.text?.trim { it <= ' ' }
                     ?: ""
             val purObj2 =
                 driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Краткое описание предмета договора')]"))?.text?.trim { it <= ' ' }
@@ -371,16 +371,16 @@ class TenderPnsh(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbs
                 val purobj1 =
                     lot.findElements(By.xpath("//div[@class = 'k-grid-table-wrap' and @role = 'presentation']//tr"))
                 purobj1.forEach {
-                    val name2 = it.findElementWithoutException(By.xpath(".//td[3]"))?.text?.trim { it <= ' ' }
+                    val name2 = it.findElementWithoutException(By.xpath(".//td[4]"))?.text?.trim { it <= ' ' }
                         ?: ""
                     val name = "${name2}".trim { it <= ' ' }
-                    if (name == "Файл") {
+                    if (name == "Файл" || name == "" || name == null) {
                         return@forEach
                     }
-                    val okei = it.findElementWithoutException(By.xpath(".//td[5]"))?.text?.trim { it <= ' ' }
+                    val okei = it.findElementWithoutException(By.xpath(".//td[7]"))?.text?.trim { it <= ' ' }
                         ?: ""
                     val quantity =
-                        it.findElementWithoutException(By.xpath(".//td[4]"))?.text?.trim { it <= ' ' }?.replace(",", "")
+                        it.findElementWithoutException(By.xpath(".//td[6]"))?.text?.trim { it <= ' ' }?.replace(",", "")
                             ?.deleteAllWhiteSpace()
                             ?: ""
                     con.prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?")
@@ -394,7 +394,7 @@ class TenderPnsh(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbs
                             executeUpdate()
                             close()
                         }
-                    val delivTermT = it.findElementWithoutException(By.xpath(".//td[6]"))?.text?.trim { it <= ' ' }
+                    val delivTermT = it.findElementWithoutException(By.xpath(".//td[9]"))?.text?.trim { it <= ' ' }
                         ?: ""
                     val delivTerm = if (delivTermT != "") {
                         "Срок поставки: ${delivTerm}"
@@ -406,8 +406,8 @@ class TenderPnsh(val tn: SafmargT<String>, val driver: ChromeDriver) : TenderAbs
                             .apply {
                                 setInt(1, idLot)
                                 setInt(2, idCustomer)
-                                setString(3, delivPlace)
-                                setString(4, delivTerm)
+                                setString(3, delivTerm)
+                                setString(4, "")
                                 executeUpdate()
                                 close()
                             }

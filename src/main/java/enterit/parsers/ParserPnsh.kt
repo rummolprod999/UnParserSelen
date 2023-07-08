@@ -34,6 +34,7 @@ class ParserPnsh : Iparser {
         options.addArguments("disable-gpu")
         options.addArguments("no-sandbox")
         options.addArguments("ignore-certificate-errors")
+        options.addArguments("window-size=1920,1080")
         options.setAcceptInsecureCerts(true)
         val driver = ChromeDriver(options)
         try {
@@ -41,7 +42,7 @@ class ParserPnsh : Iparser {
             val wait = WebDriverWait(driver, timeoutB)
             showAllTenders(driver, wait)
             getTenderList(wait, driver)
-            (1..4).forEach {
+            (1..2).forEach {
                 try {
                     parserPageN(driver, wait)
                 } catch (e: Exception) {
@@ -82,9 +83,9 @@ class ParserPnsh : Iparser {
         wait: WebDriverWait,
         driver: ChromeDriver
     ) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-list-item")))
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-search-card/um-card")))
         driver.switchTo().defaultContent()
-        val tenders = driver.findElements(By.xpath("//um-trade-list-item"))
+        val tenders = driver.findElements(By.xpath("//um-trade-search-card/um-card"))
         tenders.forEach {
             try {
                 addToList(it)
@@ -108,13 +109,13 @@ class ParserPnsh : Iparser {
 
     private fun addToList(el: WebElement) {
         val purNum =
-            el.findElementWithoutException(By.xpath(".//span[contains(@class, 'registered-number')]"))?.text?.trim { it <= ' ' }
+            el.findElementWithoutException(By.xpath(".//div[contains(@class, 'trade-number')]"))?.text?.trim { it <= ' ' }
                 ?: ""
         if (purNum == "") {
             logger("cannot find dates or purNum in tender")
             return
         }
-        val href = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))
+        val href = el.findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
             ?.getAttribute("href")?.trim { it <= ' ' }
             ?: ""
         val purName =
