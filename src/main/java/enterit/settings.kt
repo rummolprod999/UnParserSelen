@@ -73,6 +73,8 @@ var tempDirTendersLevel: String? = null
 var logDirTendersLevel: String? = null
 var tempDirTendersGlavstroy: String? = null
 var logDirTendersGlavstroy: String? = null
+var tempDirTendersItMetal: String? = null
+var logDirTendersItMetal: String? = null
 var UserTander: String? = null
 var UserMvideo: String? = null
 var PassTander: String? = null
@@ -143,6 +145,8 @@ var AddTenderLevel: Int = 0
 var UpdateTenderLevel: Int = 0
 var AddTenderGlavstroy: Int = 0
 var UpdateTenderGlavstroy: Int = 0
+var AddTenderItMetal: Int = 0
+var UpdateTenderItMetal: Int = 0
 var UrlConnect: String? = null
 var formatter: Format = SimpleDateFormat("dd.MM.yyyy kk:mm:ss")
 var formatterGpn: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy kk:mm")
@@ -339,6 +343,11 @@ fun getSettings() = try {
 
                 "logdir_tenders_glavstroy" -> logDirTendersGlavstroy =
                     executePath + File.separator + it.childNodes.item(0).textContent
+                "tempdir_tenders_itmetal" -> tempDirTendersItMetal=
+                    executePath + File.separator + it.childNodes.item(0).textContent
+
+                "logdir_tenders_itmetal" -> logDirTendersItMetal =
+                    executePath + File.separator + it.childNodes.item(0).textContent
 
                 "prefix" -> Prefix = try {
                     it.childNodes.item(0).textContent
@@ -397,6 +406,7 @@ fun init(args: Array<String>) {
             "orelstroy" -> arg = Arguments.ORELSTROY
             "level" -> arg = Arguments.LEVEL
             "glavstroy" -> arg = Arguments.GLAVSTROY
+            "itmetal" -> arg = Arguments.ITMETAL
             else -> run {
                 println("Неверно указаны аргументы, используйте $arguments, выходим из программы"); System.exit(
                 0
@@ -436,6 +446,7 @@ fun init(args: Array<String>) {
         Arguments.ORELSTROY -> run { tempDirTenders = tempDirTendersOrelStroy; logDirTenders = logDirTendersOrelStroy }
         Arguments.LEVEL -> run { tempDirTenders = tempDirTendersLevel; logDirTenders = logDirTendersLevel }
         Arguments.GLAVSTROY -> run { tempDirTenders = tempDirTendersGlavstroy; logDirTenders = logDirTendersGlavstroy }
+        Arguments.ITMETAL -> run { tempDirTenders = tempDirTendersItMetal; logDirTenders = logDirTendersItMetal }
     }
     if (tempDirTenders == null || tempDirTenders == "") {
         println("Не задана папка для временных файлов, выходим из программы")

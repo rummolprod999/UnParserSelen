@@ -35,6 +35,7 @@ fun main(args: Array<String>) {
         Arguments.ORELSTROY -> parserOrelStroy()
         Arguments.LEVEL -> parserLevel()
         Arguments.GLAVSTROY -> parserGlavstroy()
+        Arguments.ITMETAL -> parserItMetal()
     }
 
 }
@@ -493,5 +494,14 @@ fun parserGlavstroy() {
     p.parser()
     logger("Добавили тендеров $AddTenderGlavstroy")
     logger("Обновили тендеров $UpdateTenderGlavstroy")
+    logger("Конец парсинга")
+}
+
+fun parserItMetal() {
+    logger("Начало парсинга")
+    val p = ParserItMetal()
+    p.parser()
+    logger("Добавили тендеров $AddTenderItMetal")
+    logger("Обновили тендеров $UpdateTenderItMetal")
     logger("Конец парсинга")
 }

@@ -30,5 +30,6 @@ enum class Arguments {
     ORELSTROY,
     LEVEL,
     GLAVSTROY,
+    ITMETAL,
 
 }
