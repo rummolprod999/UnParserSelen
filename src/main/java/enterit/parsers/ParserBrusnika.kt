@@ -22,7 +22,7 @@ class ParserBrusnika : Iparser {
 
     companion object WebCl {
         const val BaseUrl =
-            "https://srm.brusnika.ru/trades?page=purchases"
+            "https://srm.brusnika.ru/trades?documents"
         const val timeoutB = 60L
     }
 
