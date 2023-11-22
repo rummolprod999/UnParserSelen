@@ -51,7 +51,7 @@ class ParserSlaveco : Iparser {
             auth(wait, driver)
             driver.get(BaseUrl)
             addTenders(wait, driver)
-            (1..4).forEach {
+            (1..20).forEach {
                 try {
                     parserPageN(driver, wait)
                 } catch (e: Exception) {
