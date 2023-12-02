@@ -97,7 +97,7 @@ class TenderTalan(val tn: TalanT) : TenderAbstract(), ITender {
                     return
                 }
                 val htmlOrg = Jsoup.parse(pageOrg)
-                fullnameOrg = htmlOrg.selectFirst("label:containsOwn(Полное наименование) + div > div")?.ownText()
+                fullnameOrg = htmlLot.selectFirst("label:containsOwn(Организатор) + div > div a")?.ownText()
                     ?.trim { it <= ' ' }
                     ?: ""
                 if (fullnameOrg != "") {

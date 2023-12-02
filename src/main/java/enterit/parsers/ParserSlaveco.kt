@@ -8,7 +8,6 @@ import enterit.tools.findElementWithoutException
 import enterit.tools.logger
 import org.openqa.selenium.By
 import org.openqa.selenium.JavascriptExecutor
-import org.openqa.selenium.PageLoadStrategy
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
@@ -36,13 +35,13 @@ class ParserSlaveco : Iparser {
         options.addArguments("no-sandbox")
         options.addArguments("ignore-certificate-errors")
         options.addArguments("window-size=1920,1080")
-        options.addArguments("disable-infobars")
+        /*options.addArguments("disable-infobars")
         options.addArguments("lang=ru, ru-RU")
         options.addArguments("disable-blink-features=AutomationControlled")
         options.addArguments("disable-dev-shm-usage")
         options.addArguments("disable-browser-side-navigation")
         options.addArguments("start-maximized")
-        options.setPageLoadStrategy(PageLoadStrategy.NONE)
+        options.setPageLoadStrategy(PageLoadStrategy.NONE)*/
         options.setAcceptInsecureCerts(true)
         val driver = ChromeDriver(options)
         try {
@@ -50,6 +49,7 @@ class ParserSlaveco : Iparser {
             val wait = WebDriverWait(driver, timeoutB)
             auth(wait, driver)
             driver.get(BaseUrl)
+            driver.switchTo().defaultContent()
             addTenders(wait, driver)
             (1..20).forEach {
                 try {
@@ -111,6 +111,8 @@ class ParserSlaveco : Iparser {
         wait: WebDriverWait,
         driver: ChromeDriver
     ) {
+        //driver.getScreenshotAs(OutputType.FILE)
+        driver.switchTo().defaultContent()
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-search-card/um-card")))
         val tenders = driver.findElements(By.xpath("//um-trade-search-card/um-card"))
         tenders.forEach {

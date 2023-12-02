@@ -36,7 +36,7 @@ class ParserTalan : Iparser {
         val driver = ChromeDriver(options)
         driver.manage().window().maximize();
         try {
-            for (i in 1..5) {
+            for (i in 1..30) {
                 val urlT = "$BaseUrl$i"
                 try {
                     parserList(urlT, driver)
@@ -57,9 +57,9 @@ class ParserTalan : Iparser {
         driver.switchTo().defaultContent()
         val wait = WebDriverWait(driver, timeoutB)
         Thread.sleep(15000)
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@aria-describedby = 'grid_TenderGridViewModel_info']/tbody/tr[contains(@class, 'parent') and @id][10]")))
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@aria-describedby = 'grid_TenderGridViewModel_info']/tbody/tr[contains(@role, 'row') and @id][10]")))
         val tenders =
-            driver.findElements(By.xpath("//table[@aria-describedby = 'grid_TenderGridViewModel_info']/tbody/tr[contains(@class, 'parent') and @id]"))
+            driver.findElements(By.xpath("//table[@aria-describedby = 'grid_TenderGridViewModel_info']/tbody/tr[contains(@role, 'row') and @id]"))
         tenders.forEach {
             try {
                 parserTender(it)
