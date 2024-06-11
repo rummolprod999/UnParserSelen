@@ -23,7 +23,7 @@ class ParserTalan : Iparser {
     }
 
     companion object WebCl {
-        const val BaseUrl = "http://тендеры.талан.рф/Tenders#page="
+        const val BaseUrl = "https://xn--d1abb4arh2e.xn--80aa6ajv.xn--p1ai/Tenders#page="
         const val timeoutB = 120L
     }
 
