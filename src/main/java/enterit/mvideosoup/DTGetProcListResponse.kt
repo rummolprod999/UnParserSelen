@@ -1,11 +1,9 @@
 package enterit.mvideosoup
 
-
 import javax.xml.bind.annotation.XmlAccessType
 import javax.xml.bind.annotation.XmlAccessorType
 import javax.xml.bind.annotation.XmlElement
 import javax.xml.bind.annotation.XmlType
-
 
 /**
  *
@@ -98,7 +96,6 @@ import javax.xml.bind.annotation.XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DT_GetProcList_Response", propOrder = arrayOf("header", "tenders"))
 class DTGetProcListResponse {
-
     /**
      * Gets the value of the header property.
      *
@@ -115,6 +112,7 @@ class DTGetProcListResponse {
      */
     @XmlElement(name = "Header", required = true)
     var header: DTGetProcListResponse.Header = DTGetProcListResponse.Header()
+
     /**
      * Gets the value of the tenders property.
      *
@@ -131,7 +129,6 @@ class DTGetProcListResponse {
      */
     @XmlElement(name = "Tenders", required = true)
     var tenders: DTGetProcListResponse.Tenders = DTGetProcListResponse.Tenders()
-
 
     /**
      *
@@ -176,14 +173,13 @@ class DTGetProcListResponse {
      * &lt;/restriction>
      * &lt;/complexContent>
      * &lt;/complexType>
-    </pre> *
+     </pre> *
      *
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = arrayOf("company", "source"))
     class Header {
-
         /**
          * Gets the value of the company property.
          *
@@ -200,6 +196,7 @@ class DTGetProcListResponse {
          */
         @XmlElement(name = "Company")
         var company: DTGetProcListResponse.Header.Company = DTGetProcListResponse.Header.Company()
+
         /**
          * Gets the value of the source property.
          *
@@ -216,7 +213,6 @@ class DTGetProcListResponse {
          */
         @XmlElement(name = "Source")
         var source: DTGetProcListResponse.Header.Source = DTGetProcListResponse.Header.Source()
-
 
         /**
          *
@@ -240,14 +236,13 @@ class DTGetProcListResponse {
          * &lt;/restriction>
          * &lt;/complexContent>
          * &lt;/complexType>
-        </pre> *
+         </pre> *
          *
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
         @XmlType(name = "", propOrder = arrayOf("name", "inn", "kpp", "address", "phone", "email"))
         class Company {
-
             /**
              * Gets the value of the name property.
              *
@@ -264,6 +259,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "Name")
             var name: String = ""
+
             /**
              * Gets the value of the inn property.
              *
@@ -280,6 +276,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "INN")
             var inn: String = ""
+
             /**
              * Gets the value of the kpp property.
              *
@@ -296,6 +293,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "KPP")
             var kpp: String = ""
+
             /**
              * Gets the value of the address property.
              *
@@ -312,6 +310,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "Address")
             var address: String = ""
+
             /**
              * Gets the value of the phone property.
              *
@@ -328,6 +327,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "Phone")
             var phone: String = ""
+
             /**
              * Gets the value of the email property.
              *
@@ -344,9 +344,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "Email")
             var email: String = ""
-
         }
-
 
         /**
          *
@@ -365,14 +363,13 @@ class DTGetProcListResponse {
          * &lt;/restriction>
          * &lt;/complexContent>
          * &lt;/complexType>
-        </pre> *
+         </pre> *
          *
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
         @XmlType(name = "", propOrder = arrayOf("version"))
         class Source {
-
             /**
              * Gets the value of the version property.
              *
@@ -389,11 +386,8 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "Version")
             var version: String = ""
-
         }
-
     }
-
 
     /**
      *
@@ -432,17 +426,15 @@ class DTGetProcListResponse {
      * &lt;/restriction>
      * &lt;/complexContent>
      * &lt;/complexType>
-    </pre> *
+     </pre> *
      *
      *
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "", propOrder = arrayOf("item"))
     class Tenders {
-
         @XmlElement(name = "Item")
         var item: List<DTGetProcListResponse.Tenders.Item>? = null
-
 
         /**
          * Gets the value of the item property.
@@ -459,7 +451,7 @@ class DTGetProcListResponse {
          * For example, to add a new item, do as follows:
          * <pre>
          * getItem().add(newItem);
-        </pre> *
+         </pre> *
          *
          *
          *
@@ -475,7 +467,6 @@ class DTGetProcListResponse {
             }
             return this.item
         }*/
-
 
         /**
          *
@@ -504,29 +495,29 @@ class DTGetProcListResponse {
          * &lt;/restriction>
          * &lt;/complexContent>
          * &lt;/complexType>
-        </pre> *
+         </pre> *
          *
          *
          */
         @XmlAccessorType(XmlAccessType.FIELD)
         @XmlType(
             name = "",
-            propOrder = arrayOf(
-                "id",
-                "processTypeCode",
-                "processTypeText",
-                "changeDate",
-                "purchaseStartDate",
-                "purchaseEndDate",
-                "contractDate",
-                "price",
-                "comment",
-                "link",
-                "text"
-            )
+            propOrder =
+                arrayOf(
+                    "id",
+                    "processTypeCode",
+                    "processTypeText",
+                    "changeDate",
+                    "purchaseStartDate",
+                    "purchaseEndDate",
+                    "contractDate",
+                    "price",
+                    "comment",
+                    "link",
+                "text",
+            ),
         )
         class Item {
-
             /**
              * Gets the value of the id property.
              *
@@ -543,6 +534,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "Id", required = true)
             var id: String = ""
+
             /**
              * Gets the value of the processTypeCode property.
              *
@@ -559,6 +551,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "ProcessTypeCode", required = true)
             var processTypeCode: String = ""
+
             /**
              * Gets the value of the processTypeText property.
              *
@@ -575,6 +568,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "ProcessTypeText")
             var processTypeText: String = ""
+
             /**
              * Gets the value of the changeDate property.
              *
@@ -591,6 +585,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "ChangeDate")
             var changeDate: String = ""
+
             /**
              * Gets the value of the purchaseStartDate property.
              *
@@ -607,6 +602,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "PurchaseStartDate")
             var purchaseStartDate: String = ""
+
             /**
              * Gets the value of the purchaseEndDate property.
              *
@@ -623,6 +619,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "PurchaseEndDate")
             var purchaseEndDate: String = ""
+
             /**
              * Gets the value of the contractDate property.
              *
@@ -639,6 +636,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "ContractDate")
             var contractDate: String = ""
+
             /**
              * Gets the value of the price property.
              *
@@ -655,6 +653,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "Price")
             var price: String = ""
+
             /**
              * Gets the value of the comment property.
              *
@@ -671,6 +670,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "Comment")
             var comment: String = ""
+
             /**
              * Gets the value of the link property.
              *
@@ -687,6 +687,7 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "Link")
             var link: String = ""
+
             /**
              * Gets the value of the text property.
              *
@@ -703,9 +704,6 @@ class DTGetProcListResponse {
              */
             @XmlElement(name = "Text")
             var text: String = ""
-
         }
-
     }
-
 }

@@ -8,7 +8,11 @@ import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 
 val executePath: String =
-    File(Class.forName("enterit.AppKt").protectionDomain.codeSource.location.path).parentFile.toString()
+    File(
+        Class
+            .forName("enterit.AppKt")
+            .protectionDomain.codeSource.location.path,
+    ).parentFile.toString()
 const val arguments =
     "tander, safmarg, talan, mvideo, mosreg, ugmk, imptorgov, sibprime, crimeabt, belmarket, bico, rostov, simferop, kostroma, tomsk, zmo, goszakaz, eurotrans, rhtorg, tsm, pnsh, slaveco, brusnika, etpdon, sminex, orelstroy, level, glavstroy"
 lateinit var arg: Arguments
@@ -154,222 +158,285 @@ var formatterOnlyDate: Format = SimpleDateFormat("dd.MM.yyyy")
 var formatterEtpRf: Format = SimpleDateFormat("dd.MM.yyyy kk:mm:ss (XXX)")
 var formatterEtpRfN: Format = SimpleDateFormat("dd.MM.yyyy kk:mm (XXX)")
 
-fun getSettings() = try {
-    val filePathSetting = executePath + File.separator + "setting_tenders.xml"
-    val documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-    val document = documentBuilder.parse(filePathSetting)
-    val root = document.documentElement
-    val settings = root.childNodes
-    (0 until settings.length)
-        .asSequence()
-        .map { settings.item(it) }
-        .filter {
-            @Suppress("DEPRECATED_IDENTITY_EQUALS")
-            it.nodeType !== Node.TEXT_NODE
-        }
-        .forEach {
-            when (it.nodeName) {
-                "database" -> Database = it.childNodes.item(0).textContent
-                "tempdir_tenders_tander" -> tempDirTendersTander =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+fun getSettings() =
+    try {
+        val filePathSetting = executePath + File.separator + "setting_tenders.xml"
+        val documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        val document = documentBuilder.parse(filePathSetting)
+        val root = document.documentElement
+        val settings = root.childNodes
+        (0 until settings.length)
+            .asSequence()
+            .map { settings.item(it) }
+            .filter {
+                @Suppress("DEPRECATED_IDENTITY_EQUALS")
+                it.nodeType !== Node.TEXT_NODE
+            }.forEach {
+                when (it.nodeName) {
+                    "database" -> Database = it.childNodes.item(0).textContent
+                    "tempdir_tenders_tander" ->
+                        tempDirTendersTander =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_tander" -> logDirTendersTander =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_tander" ->
+                        logDirTendersTander =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_safmar" -> tempDirTendersSafmarg =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_safmar" ->
+                        tempDirTendersSafmarg =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_safmar" -> logDirTendersSafmarg =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_safmar" ->
+                        logDirTendersSafmarg =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_talan" -> tempDirTendersTalan =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_talan" ->
+                        tempDirTendersTalan =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_talan" -> logDirTendersTalan =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_talan" ->
+                        logDirTendersTalan =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_mvideo" -> tempDirTendersMvideo =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_mvideo" ->
+                        tempDirTendersMvideo =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_mvideo" -> logDirTendersMvideo =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_mvideo" ->
+                        logDirTendersMvideo =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_mosreg" -> tempDirTendersMosreg =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_mosreg" ->
+                        tempDirTendersMosreg =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_mosreg" -> logDirTendersMosreg =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_mosreg" ->
+                        logDirTendersMosreg =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_ugmk" -> tempDirTendersUgmk =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_ugmk" ->
+                        tempDirTendersUgmk =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_ugmk" -> logDirTendersUgmk =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_ugmk" ->
+                        logDirTendersUgmk =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_imptorgov" -> tempDirTendersImpTorgov =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_imptorgov" ->
+                        tempDirTendersImpTorgov =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_imptorgov" -> logDirTendersImpTorgov =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_imptorgov" ->
+                        logDirTendersImpTorgov =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_sibprime" -> tempDirTendersSibPrime =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_sibprime" ->
+                        tempDirTendersSibPrime =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_sibprime" -> logDirTendersSibPrime =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_sibprime" ->
+                        logDirTendersSibPrime =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_crimeabt" -> tempDirTendersCrimeaBt =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_crimeabt" ->
+                        tempDirTendersCrimeaBt =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_crimeabt" -> logDirTendersCrimeaBt =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_crimeabt" ->
+                        logDirTendersCrimeaBt =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_belmarket" -> tempDirTendersBelMarket =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_belmarket" ->
+                        tempDirTendersBelMarket =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_belmarket" -> logDirTendersBelMarket =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_belmarket" ->
+                        logDirTendersBelMarket =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_bico" -> tempDirTendersBico =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_bico" ->
+                        tempDirTendersBico =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_bico" -> logDirTendersBico =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_bico" ->
+                        logDirTendersBico =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_rostov" -> tempDirTendersRostov =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_rostov" ->
+                        tempDirTendersRostov =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_rostov" -> logDirTendersRostov =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_rostov" ->
+                        logDirTendersRostov =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_simferop" -> tempDirTendersSimferop =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_simferop" ->
+                        tempDirTendersSimferop =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_simferop" -> logDirTendersSimferop =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_simferop" ->
+                        logDirTendersSimferop =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_kostroma" -> tempDirTendersKostroma =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_kostroma" ->
+                        tempDirTendersKostroma =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_kostroma" -> logDirTendersKostroma =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_kostroma" ->
+                        logDirTendersKostroma =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_tomsk" -> tempDirTendersTomsk =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_tomsk" ->
+                        tempDirTendersTomsk =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_tomsk" -> logDirTendersTomsk =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_tomsk" ->
+                        logDirTendersTomsk =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_zmo" -> tempDirTendersZmo =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_zmo" ->
+                        tempDirTendersZmo =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_zmo" -> logDirTendersZmo =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_zmo" ->
+                        logDirTendersZmo =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_goszakaz" -> tempDirTendersGosZakaz =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_goszakaz" ->
+                        tempDirTendersGosZakaz =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_goszakaz" -> logDirTendersGosZakaz =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_goszakaz" ->
+                        logDirTendersGosZakaz =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_eurotrans" -> tempDirTendersEuroTrans =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_eurotrans" ->
+                        tempDirTendersEuroTrans =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_eurotrans" -> logDirTendersEuroTrans =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_eurotrans" ->
+                        logDirTendersEuroTrans =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_rhtorg" -> tempDirTendersRhTorg =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_rhtorg" ->
+                        tempDirTendersRhTorg =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_rhtorg" -> logDirTendersRhTorg =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_rhtorg" ->
+                        logDirTendersRhTorg =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_tsm" -> tempDirTendersTsm =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_tsm" ->
+                        tempDirTendersTsm =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_tsm" -> logDirTendersTsm =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_tsm" ->
+                        logDirTendersTsm =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_medsi" -> tempDirTendersMedsi =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_medsi" ->
+                        tempDirTendersMedsi =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_medsi" -> logDirTendersMedsi =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_medsi" ->
+                        logDirTendersMedsi =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_pnsh" -> tempDirTendersPnsh =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_pnsh" ->
+                        tempDirTendersPnsh =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_pnsh" -> logDirTendersPnsh =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_pnsh" ->
+                        logDirTendersPnsh =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_slaveco" -> tempDirTendersSlaveco =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_slaveco" ->
+                        tempDirTendersSlaveco =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_slaveco" -> logDirTendersSlaveco =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_slaveco" ->
+                        logDirTendersSlaveco =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_brusnika" -> tempDirTendersBrusnika =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_brusnika" ->
+                        tempDirTendersBrusnika =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_brusnika" -> logDirTendersBrusnika =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_brusnika" ->
+                        logDirTendersBrusnika =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_etpdon" -> tempDirTendersEtpDon =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_etpdon" ->
+                        tempDirTendersEtpDon =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_etpdon" -> logDirTendersEtpDon =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_etpdon" ->
+                        logDirTendersEtpDon =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_sminex" -> tempDirTendersSminex =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_sminex" ->
+                        tempDirTendersSminex =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_sminex" -> logDirTendersSminex =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_sminex" ->
+                        logDirTendersSminex =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_orelstroy" -> tempDirTendersOrelStroy =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_orelstroy" ->
+                        tempDirTendersOrelStroy =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_orelstroy" -> logDirTendersOrelStroy =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_orelstroy" ->
+                        logDirTendersOrelStroy =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_level" -> tempDirTendersLevel =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_level" ->
+                        tempDirTendersLevel =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_level" -> logDirTendersLevel =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_level" ->
+                        logDirTendersLevel =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "tempdir_tenders_glavstroy" -> tempDirTendersGlavstroy =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_glavstroy" ->
+                        tempDirTendersGlavstroy =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_glavstroy" -> logDirTendersGlavstroy =
-                    executePath + File.separator + it.childNodes.item(0).textContent
-                "tempdir_tenders_itmetal" -> tempDirTendersItMetal=
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "logdir_tenders_glavstroy" ->
+                        logDirTendersGlavstroy =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "logdir_tenders_itmetal" -> logDirTendersItMetal =
-                    executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_itmetal" ->
+                        tempDirTendersItMetal =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
-                "prefix" -> Prefix = try {
-                    it.childNodes.item(0).textContent
-                } catch (e: Exception) {
-                    ""
+                    "logdir_tenders_itmetal" ->
+                        logDirTendersItMetal =
+                            executePath + File.separator + it.childNodes.item(0).textContent
+
+                    "prefix" ->
+                        Prefix =
+                            try {
+                                it.childNodes.item(0).textContent
+                            } catch (e: Exception) {
+                                ""
+                            }
+
+                    "usertander" -> UserTander = it.childNodes.item(0).textContent
+                    "usermvideo" -> UserMvideo = it.childNodes.item(0).textContent
+                    "passtander" -> PassTander = it.childNodes.item(0).textContent
+                    "usersafmar" -> UserSafmar = it.childNodes.item(0).textContent
+                    "passsafmar" -> PassSafmar = it.childNodes.item(0).textContent
+                    "userdb" -> UserDb = it.childNodes.item(0).textContent
+                    "passdb" -> PassDb = it.childNodes.item(0).textContent
+                    "server" -> Server = it.childNodes.item(0).textContent
+                    "port" -> Port = Integer.valueOf(it.childNodes.item(0).textContent)
                 }
-
-                "usertander" -> UserTander = it.childNodes.item(0).textContent
-                "usermvideo" -> UserMvideo = it.childNodes.item(0).textContent
-                "passtander" -> PassTander = it.childNodes.item(0).textContent
-                "usersafmar" -> UserSafmar = it.childNodes.item(0).textContent
-                "passsafmar" -> PassSafmar = it.childNodes.item(0).textContent
-                "userdb" -> UserDb = it.childNodes.item(0).textContent
-                "passdb" -> PassDb = it.childNodes.item(0).textContent
-                "server" -> Server = it.childNodes.item(0).textContent
-                "port" -> Port = Integer.valueOf(it.childNodes.item(0).textContent)
             }
-        }
-} catch (e: Exception) {
-    e.printStackTrace()
-    System.exit(1)
-}
+    } catch (e: Exception) {
+        e.printStackTrace()
+        System.exit(1)
+    }
 
 fun init(args: Array<String>) {
     if (args.isEmpty()) {
@@ -407,46 +474,196 @@ fun init(args: Array<String>) {
             "level" -> arg = Arguments.LEVEL
             "glavstroy" -> arg = Arguments.GLAVSTROY
             "itmetal" -> arg = Arguments.ITMETAL
-            else -> run {
-                println("Неверно указаны аргументы, используйте $arguments, выходим из программы"); System.exit(
-                0
-            )
-            }
-
+            else ->
+                run {
+                    println("Неверно указаны аргументы, используйте $arguments, выходим из программы")
+                    System.exit(
+                        0,
+                    )
+                }
         }
     }
     getSettings()
     when (arg) {
-        Arguments.TANDER -> run { tempDirTenders = tempDirTendersTander; logDirTenders = logDirTendersTander }
-        Arguments.SAFMARG -> run { tempDirTenders = tempDirTendersSafmarg; logDirTenders = logDirTendersSafmarg }
-        Arguments.TALAN -> run { tempDirTenders = tempDirTendersTalan; logDirTenders = logDirTendersTalan }
-        Arguments.MVIDEO -> run { tempDirTenders = tempDirTendersMvideo; logDirTenders = logDirTendersMvideo }
-        Arguments.MOSREG -> run { tempDirTenders = tempDirTendersMosreg; logDirTenders = logDirTendersMosreg }
-        Arguments.UGMK -> run { tempDirTenders = tempDirTendersUgmk; logDirTenders = logDirTendersUgmk }
-        Arguments.IMPTORGOV -> run { tempDirTenders = tempDirTendersImpTorgov; logDirTenders = logDirTendersImpTorgov }
-        Arguments.SIBPRIME -> run { tempDirTenders = tempDirTendersSibPrime; logDirTenders = logDirTendersSibPrime }
-        Arguments.CRIMEABT -> run { tempDirTenders = tempDirTendersCrimeaBt; logDirTenders = logDirTendersCrimeaBt }
-        Arguments.BELMARKET -> run { tempDirTenders = tempDirTendersBelMarket; logDirTenders = logDirTendersBelMarket }
-        Arguments.BICO -> run { tempDirTenders = tempDirTendersBico; logDirTenders = logDirTendersBico }
-        Arguments.ROSTOV -> run { tempDirTenders = tempDirTendersRostov; logDirTenders = logDirTendersRostov }
-        Arguments.SIMFEROP -> run { tempDirTenders = tempDirTendersSimferop; logDirTenders = logDirTendersSimferop }
-        Arguments.KOSTROMA -> run { tempDirTenders = tempDirTendersKostroma; logDirTenders = logDirTendersKostroma }
-        Arguments.TOMSK -> run { tempDirTenders = tempDirTendersTomsk; logDirTenders = logDirTendersTomsk }
-        Arguments.ZMO -> run { tempDirTenders = tempDirTendersZmo; logDirTenders = logDirTendersZmo }
-        Arguments.GOSZAKAZ -> run { tempDirTenders = tempDirTendersGosZakaz; logDirTenders = logDirTendersGosZakaz }
-        Arguments.EUROTRANS -> run { tempDirTenders = tempDirTendersEuroTrans; logDirTenders = logDirTendersEuroTrans }
-        Arguments.RHTORG -> run { tempDirTenders = tempDirTendersRhTorg; logDirTenders = logDirTendersRhTorg }
-        Arguments.TSM -> run { tempDirTenders = tempDirTendersTsm; logDirTenders = logDirTendersTsm }
-        Arguments.MEDSI -> run { tempDirTenders = tempDirTendersMedsi; logDirTenders = logDirTendersMedsi }
-        Arguments.PNSH -> run { tempDirTenders = tempDirTendersPnsh; logDirTenders = logDirTendersPnsh }
-        Arguments.SLAVECO -> run { tempDirTenders = tempDirTendersSlaveco; logDirTenders = logDirTendersSlaveco }
-        Arguments.BRUSNIKA -> run { tempDirTenders = tempDirTendersBrusnika; logDirTenders = logDirTendersBrusnika }
-        Arguments.ETPDON -> run { tempDirTenders = tempDirTendersEtpDon; logDirTenders = logDirTendersEtpDon }
-        Arguments.SMINEX -> run { tempDirTenders = tempDirTendersSminex; logDirTenders = logDirTendersSminex }
-        Arguments.ORELSTROY -> run { tempDirTenders = tempDirTendersOrelStroy; logDirTenders = logDirTendersOrelStroy }
-        Arguments.LEVEL -> run { tempDirTenders = tempDirTendersLevel; logDirTenders = logDirTendersLevel }
-        Arguments.GLAVSTROY -> run { tempDirTenders = tempDirTendersGlavstroy; logDirTenders = logDirTendersGlavstroy }
-        Arguments.ITMETAL -> run { tempDirTenders = tempDirTendersItMetal; logDirTenders = logDirTendersItMetal }
+        Arguments.TANDER ->
+            run {
+                tempDirTenders = tempDirTendersTander
+                logDirTenders = logDirTendersTander
+            }
+
+        Arguments.SAFMARG ->
+            run {
+                tempDirTenders = tempDirTendersSafmarg
+                logDirTenders = logDirTendersSafmarg
+            }
+
+        Arguments.TALAN ->
+            run {
+                tempDirTenders = tempDirTendersTalan
+                logDirTenders = logDirTendersTalan
+            }
+
+        Arguments.MVIDEO ->
+            run {
+                tempDirTenders = tempDirTendersMvideo
+                logDirTenders = logDirTendersMvideo
+            }
+
+        Arguments.MOSREG ->
+            run {
+                tempDirTenders = tempDirTendersMosreg
+                logDirTenders = logDirTendersMosreg
+            }
+
+        Arguments.UGMK ->
+            run {
+                tempDirTenders = tempDirTendersUgmk
+                logDirTenders = logDirTendersUgmk
+            }
+
+        Arguments.IMPTORGOV ->
+            run {
+                tempDirTenders = tempDirTendersImpTorgov
+                logDirTenders = logDirTendersImpTorgov
+            }
+
+        Arguments.SIBPRIME ->
+            run {
+                tempDirTenders = tempDirTendersSibPrime
+                logDirTenders = logDirTendersSibPrime
+            }
+
+        Arguments.CRIMEABT ->
+            run {
+                tempDirTenders = tempDirTendersCrimeaBt
+                logDirTenders = logDirTendersCrimeaBt
+            }
+
+        Arguments.BELMARKET ->
+            run {
+                tempDirTenders = tempDirTendersBelMarket
+                logDirTenders = logDirTendersBelMarket
+            }
+
+        Arguments.BICO ->
+            run {
+                tempDirTenders = tempDirTendersBico
+                logDirTenders = logDirTendersBico
+            }
+
+        Arguments.ROSTOV ->
+            run {
+                tempDirTenders = tempDirTendersRostov
+                logDirTenders = logDirTendersRostov
+            }
+
+        Arguments.SIMFEROP ->
+            run {
+                tempDirTenders = tempDirTendersSimferop
+                logDirTenders = logDirTendersSimferop
+            }
+
+        Arguments.KOSTROMA ->
+            run {
+                tempDirTenders = tempDirTendersKostroma
+                logDirTenders = logDirTendersKostroma
+            }
+
+        Arguments.TOMSK ->
+            run {
+                tempDirTenders = tempDirTendersTomsk
+                logDirTenders = logDirTendersTomsk
+            }
+
+        Arguments.ZMO ->
+            run {
+                tempDirTenders = tempDirTendersZmo
+                logDirTenders = logDirTendersZmo
+            }
+
+        Arguments.GOSZAKAZ ->
+            run {
+                tempDirTenders = tempDirTendersGosZakaz
+                logDirTenders = logDirTendersGosZakaz
+            }
+
+        Arguments.EUROTRANS ->
+            run {
+                tempDirTenders = tempDirTendersEuroTrans
+                logDirTenders = logDirTendersEuroTrans
+            }
+
+        Arguments.RHTORG ->
+            run {
+                tempDirTenders = tempDirTendersRhTorg
+                logDirTenders = logDirTendersRhTorg
+            }
+
+        Arguments.TSM ->
+            run {
+                tempDirTenders = tempDirTendersTsm
+                logDirTenders = logDirTendersTsm
+            }
+
+        Arguments.MEDSI ->
+            run {
+                tempDirTenders = tempDirTendersMedsi
+                logDirTenders = logDirTendersMedsi
+            }
+
+        Arguments.PNSH ->
+            run {
+                tempDirTenders = tempDirTendersPnsh
+                logDirTenders = logDirTendersPnsh
+            }
+
+        Arguments.SLAVECO ->
+            run {
+                tempDirTenders = tempDirTendersSlaveco
+                logDirTenders = logDirTendersSlaveco
+            }
+
+        Arguments.BRUSNIKA ->
+            run {
+                tempDirTenders = tempDirTendersBrusnika
+                logDirTenders = logDirTendersBrusnika
+            }
+
+        Arguments.ETPDON ->
+            run {
+                tempDirTenders = tempDirTendersEtpDon
+                logDirTenders = logDirTendersEtpDon
+            }
+
+        Arguments.SMINEX ->
+            run {
+                tempDirTenders = tempDirTendersSminex
+                logDirTenders = logDirTendersSminex
+            }
+
+        Arguments.ORELSTROY ->
+            run {
+                tempDirTenders = tempDirTendersOrelStroy
+                logDirTenders = logDirTendersOrelStroy
+            }
+
+        Arguments.LEVEL ->
+            run {
+                tempDirTenders = tempDirTendersLevel
+                logDirTenders = logDirTendersLevel
+            }
+
+        Arguments.GLAVSTROY ->
+            run {
+                tempDirTenders = tempDirTendersGlavstroy
+                logDirTenders = logDirTendersGlavstroy
+            }
+
+        Arguments.ITMETAL ->
+            run {
+                tempDirTenders = tempDirTendersItMetal
+                logDirTenders = logDirTendersItMetal
+            }
     }
     if (tempDirTenders == null || tempDirTenders == "") {
         println("Не задана папка для временных файлов, выходим из программы")

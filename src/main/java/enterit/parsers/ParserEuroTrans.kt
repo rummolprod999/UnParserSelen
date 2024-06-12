@@ -15,7 +15,9 @@ import java.util.logging.Level
 class ParserEuroTrans : Iparser {
     init {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog")
-        java.util.logging.Logger.getLogger("org.openqa.selenium").level = Level.OFF
+        java.util.logging.Logger
+            .getLogger("org.openqa.selenium")
+            .level = Level.OFF
         System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver")
     }
 
@@ -25,6 +27,7 @@ class ParserEuroTrans : Iparser {
     }
 
     private val tendersS = mutableListOf<SafmargT<String>>()
+
     override fun parser() {
         val options = ChromeOptions()
         options.addArguments("headless")
@@ -37,7 +40,8 @@ class ParserEuroTrans : Iparser {
         try {
             driver.get(BaseUrl)
             val wait = WebDriverWait(driver, timeoutB)
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@id = 'mat-button-toggle-3-button']")))
+            wait
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@id = 'mat-button-toggle-3-button']")))
                 .click()
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-search-card/um-card")))
             val tenders = driver.findElements(By.xpath("//um-trade-search-card/um-card"))
@@ -65,9 +69,12 @@ class ParserEuroTrans : Iparser {
             logger("cannot find dates or purNum in tender")
             return
         }
-        val href = el.findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
-            ?.getAttribute("href")?.trim { it <= ' ' }
-            ?: ""
+        val href =
+            el
+                .findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
+                ?.getAttribute("href")
+                ?.trim { it <= ' ' }
+                ?: ""
         val tn = SafmargT(purNum, href, "")
         tendersS.add(tn)
     }

@@ -10,5 +10,5 @@ data class UgmkT(
     val endDate: Date,
     var status: String,
     val placingWayName: String,
-    val nameCus: String
+    val nameCus: String,
 )

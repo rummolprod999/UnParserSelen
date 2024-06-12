@@ -17,7 +17,9 @@ import java.util.logging.Level
 class ParserPnsh : Iparser {
     init {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog")
-        java.util.logging.Logger.getLogger("org.openqa.selenium").level = Level.OFF
+        java.util.logging.Logger
+            .getLogger("org.openqa.selenium")
+            .level = Level.OFF
         System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver")
     }
 
@@ -28,6 +30,7 @@ class ParserPnsh : Iparser {
     }
 
     private val tendersS = mutableListOf<SafmargT<String>>()
+
     override fun parser() {
         val options = ChromeOptions()
         options.addArguments("headless")
@@ -66,7 +69,7 @@ class ParserPnsh : Iparser {
 
     private fun showAllTenders(
         driver: ChromeDriver,
-        wait: WebDriverWait
+        wait: WebDriverWait,
     ) {
         try {
             driver.switchTo().defaultContent()
@@ -81,7 +84,7 @@ class ParserPnsh : Iparser {
 
     private fun getTenderList(
         wait: WebDriverWait,
-        driver: ChromeDriver
+        driver: ChromeDriver,
     ) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-search-card/um-card")))
         driver.switchTo().defaultContent()
@@ -95,7 +98,10 @@ class ParserPnsh : Iparser {
         }
     }
 
-    private fun parserPageN(driver: ChromeDriver, wait: WebDriverWait) {
+    private fun parserPageN(
+        driver: ChromeDriver,
+        wait: WebDriverWait,
+    ) {
         driver.switchTo().defaultContent()
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@aria-label= 'Next']")))
         sleep(5000)
@@ -115,9 +121,12 @@ class ParserPnsh : Iparser {
             logger("cannot find dates or purNum in tender")
             return
         }
-        val href = el.findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
-            ?.getAttribute("href")?.trim { it <= ' ' }
-            ?: ""
+        val href =
+            el
+                .findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
+                ?.getAttribute("href")
+                ?.trim { it <= ' ' }
+                ?: ""
         val purName =
             el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))?.text?.trim { it <= ' ' }
                 ?: ""

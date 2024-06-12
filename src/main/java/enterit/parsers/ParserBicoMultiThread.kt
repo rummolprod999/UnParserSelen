@@ -8,26 +8,37 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.util.*
 
-data class PageBico(val page: String, val url: String)
+data class PageBico(
+    val page: String,
+    val url: String,
+)
 
-class PageProducer(val bicoStore: BicoStore, val st: String, val countPage: Int) : Runnable {
+class PageProducer(
+    val bicoStore: BicoStore,
+    val st: String,
+    val countPage: Int,
+) : Runnable {
     override fun run() {
         bicoStore.put(st, countPage)
     }
-
 }
 
-class PageConsumer(val bicoStore: BicoStore, val tr: Int, val fn: (PageBico) -> Unit) : Runnable {
+class PageConsumer(
+    val bicoStore: BicoStore,
+    val tr: Int,
+    val fn: (PageBico) -> Unit,
+) : Runnable {
     override fun run() {
         (0 until tr).forEach {
             val d = bicoStore.get()
             fn(d)
         }
-
     }
 }
 
-class BicoStore(val dec: ArrayDeque<PageBico>) {
+class BicoStore(
+    val dec: ArrayDeque<PageBico>,
+) {
     fun get(): PageBico {
         synchronized(this) {
             while (dec.size < 1) {
@@ -39,7 +50,10 @@ class BicoStore(val dec: ArrayDeque<PageBico>) {
         }
     }
 
-    fun put(url: String, countPage: Int) {
+    fun put(
+        url: String,
+        countPage: Int,
+    ) {
         (1..countPage).forEach { c ->
             val url = "$url?page=$c"
             val stPage = downloadFromUrl(url, i = 2, wt = 3000)
@@ -102,12 +116,11 @@ class ParserBicoMultiThread : Iparser {
             val t = Thread(PageProducer(st, it, countPage))
             t.start()
             Thread.sleep(300)
-            //t.join()
+            // t.join()
         }
         val tt = Thread(PageConsumer(st, listUrls.size * countPage, ::parserList))
         tt.start()
         tt.join()
-
     }
 
     private fun parserList(tnd: PageBico) {
@@ -124,36 +137,71 @@ class ParserBicoMultiThread : Iparser {
         }
     }
 
-    private fun parsingTender(el: Element, url: String) {
-        val purObj = el.selectFirst("td:eq(0) a")?.ownText()?.trim { it <= ' ' }
-            ?: throw IllegalArgumentException("purObj required $url")
-        val urlT = el.selectFirst("td:eq(0) a")?.attr("href")?.trim { it <= ' ' }
-            ?: ""
-        if (urlT == "") run { logger("get empty urlT"); return }
+    private fun parsingTender(
+        el: Element,
+        url: String,
+    ) {
+        val purObj =
+            el.selectFirst("td:eq(0) a")?.ownText()?.trim { it <= ' ' }
+                ?: throw IllegalArgumentException("purObj required $url")
+        val urlT =
+            el.selectFirst("td:eq(0) a")?.attr("href")?.trim { it <= ' ' }
+                ?: ""
+        if (urlT == "") {
+            run {
+                logger("get empty urlT")
+                return
+            }
+        }
         val urlTend = "$BaseUrl$urlT"
-        val typeT = el.selectFirst("td:eq(1)")?.text()?.trim { it <= ' ' }
-            ?: ""
+        val typeT =
+            el.selectFirst("td:eq(1)")?.text()?.trim { it <= ' ' }
+                ?: ""
         val purNum = typeT.getDataFromRegexp("#(\\d+)")
         if (purNum == "") {
-            run { logger("get empty purNum $urlTend"); return }
+            run {
+                logger("get empty purNum $urlTend")
+                return
+            }
         }
         val pwName = typeT.getDataFromRegexp("^(.+)#").deleteDoubleWhiteSpace()
-        val priceT = el.selectFirst("td:eq(2)")?.text()?.trim { it <= ' ' }
-            ?: ""
+        val priceT =
+            el.selectFirst("td:eq(2)")?.text()?.trim { it <= ' ' }
+                ?: ""
         val currency = priceT.getDataFromRegexp("\\s+([\\p{L}.]+)$").deleteDoubleWhiteSpace()
         val price = priceT.extractPrice()
-        val dateS = el.selectFirst("td:eq(3)")?.text()?.deleteDoubleWhiteSpace()?.trim { it <= ' ' }
-            ?: ""
+        val dateS =
+            el
+                .selectFirst("td:eq(3)")
+                ?.text()
+                ?.deleteDoubleWhiteSpace()
+                ?.trim { it <= ' ' }
+                ?: ""
         val pubDateT = dateS.getDataFromRegexp("(\\d{2}\\.\\d{2}\\.\\d{4})")
         val endDateT = dateS.getDataFromRegexp("(\\d{2}\\.\\d{2}\\.\\d{4})$")
         val datePub = getDateFromFormat(pubDateT, formatterOnlyDate)
         var dateEnd = getDateFromFormat(endDateT, formatterOnlyDate)
         if (dateEnd == Date(0L)) dateEnd = datePub
-        if (datePub == Date(0L)) run { logger("bad datePub", urlTend, dateS); return }
-        val region = el.selectFirst("td:eq(4)")?.text()?.deleteDoubleWhiteSpace()?.trim { it <= ' ' }
-            ?: ""
-        val otr = el.selectFirst("td:eq(5)")?.text()?.deleteDoubleWhiteSpace()?.trim { it <= ' ' }
-            ?: ""
+        if (datePub == Date(0L)) {
+            run {
+                logger("bad datePub", urlTend, dateS)
+                return
+            }
+        }
+        val region =
+            el
+                .selectFirst("td:eq(4)")
+                ?.text()
+                ?.deleteDoubleWhiteSpace()
+                ?.trim { it <= ' ' }
+                ?: ""
+        val otr =
+            el
+                .selectFirst("td:eq(5)")
+                ?.text()
+                ?.deleteDoubleWhiteSpace()
+                ?.trim { it <= ' ' }
+                ?: ""
         val tn = BicoT(purNum, urlTend, purObj, datePub, dateEnd, pwName, price, currency, region, otr)
         try {
             Thread.sleep(3)

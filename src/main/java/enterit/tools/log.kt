@@ -12,18 +12,15 @@ fun <T : Any> logger(vararg parametrs: T) {
     for (p in parametrs) {
         if (p is Array<*>) {
             for (n in p) {
-                s.append(" ${n.toString()}\n")
+                s.append(" $n\n")
             }
         } else {
             s.append(" $p\n")
         }
-
     }
     try {
         FileWriter(logPath, true).use { writer -> writer.write(s.toString()) }
     } catch (ex: IOException) {
-
         println(ex.message)
     }
-
 }

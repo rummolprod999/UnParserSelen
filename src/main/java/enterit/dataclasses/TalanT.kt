@@ -11,5 +11,5 @@ data class TalanT(
     val endDate: Date,
     var status: String,
     var placingWayName: String,
-    val urlOrg: String
+    val urlOrg: String,
 )

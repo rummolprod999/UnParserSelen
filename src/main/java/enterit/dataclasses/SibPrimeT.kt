@@ -11,5 +11,5 @@ data class SibPrimeT(
     val endDate: Date,
     var status: String,
     var placingWayName: String,
-    var nameCus: String
+    var nameCus: String,
 )

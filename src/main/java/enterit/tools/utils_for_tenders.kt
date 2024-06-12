@@ -13,7 +13,6 @@ import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-
 fun getConformity(conf: String): Int {
     val s = conf.lowercase(Locale.getDefault())
     return when {
@@ -30,12 +29,18 @@ fun getConformity(conf: String): Int {
     SQLException::class,
     ClassNotFoundException::class,
     IllegalAccessException::class,
-    InstantiationException::class
+    InstantiationException::class,
 )
-fun addVNum(con: Connection, id: String, typeFz: Int) {
+fun addVNum(
+    con: Connection,
+    id: String,
+    typeFz: Int,
+) {
     var verNum = 1
     val p1: PreparedStatement =
-        con.prepareStatement("SELECT id_tender FROM ${Prefix}tender WHERE purchase_number = ? AND type_fz = ? ORDER BY UNIX_TIMESTAMP(date_version) ASC")
+        con.prepareStatement(
+            "SELECT id_tender FROM ${Prefix}tender WHERE purchase_number = ? AND type_fz = ? ORDER BY UNIX_TIMESTAMP(date_version) ASC",
+        )
     p1.setString(1, id)
     p1.setInt(2, typeFz)
     val r1: ResultSet = p1.executeQuery()
@@ -52,20 +57,25 @@ fun addVNum(con: Connection, id: String, typeFz: Int) {
     }
     r1.close()
     p1.close()
-
 }
 
 @Throws(
     SQLException::class,
     ClassNotFoundException::class,
     IllegalAccessException::class,
-    InstantiationException::class
+    InstantiationException::class,
 )
-fun tenderKwords(idTender: Int, con: Connection, addInfo: String = "") {
+fun tenderKwords(
+    idTender: Int,
+    con: Connection,
+    addInfo: String = "",
+) {
     val s = StringBuilder()
     if (addInfo != "") with(s) { append(addInfo) }
     val p1: PreparedStatement =
-        con.prepareStatement("SELECT DISTINCT po.name, po.okpd_name FROM ${Prefix}purchase_object AS po LEFT JOIN ${Prefix}lot AS l ON l.id_lot = po.id_lot WHERE l.id_tender = ?")
+        con.prepareStatement(
+            "SELECT DISTINCT po.name, po.okpd_name FROM ${Prefix}purchase_object AS po LEFT JOIN ${Prefix}lot AS l ON l.id_lot = po.id_lot WHERE l.id_tender = ?",
+        )
     p1.setInt(1, idTender)
     val r1: ResultSet = p1.executeQuery()
     while (r1.next()) {
@@ -127,13 +137,14 @@ fun tenderKwords(idTender: Int, con: Connection, addInfo: String = "") {
                 append(" $innOrg")
                 append(" $nameOrg")
             }
-
         }
         r4.close()
         p4.close()
     }
     val p5: PreparedStatement =
-        con.prepareStatement("SELECT DISTINCT cus.inn, cus.full_name FROM ${Prefix}customer AS cus LEFT JOIN ${Prefix}purchase_object AS po ON cus.id_customer = po.id_customer LEFT JOIN ${Prefix}lot AS l ON l.id_lot = po.id_lot WHERE l.id_tender = ?")
+        con.prepareStatement(
+            "SELECT DISTINCT cus.inn, cus.full_name FROM ${Prefix}customer AS cus LEFT JOIN ${Prefix}purchase_object AS po ON cus.id_customer = po.id_customer LEFT JOIN ${Prefix}lot AS l ON l.id_lot = po.id_lot WHERE l.id_tender = ?",
+        )
     p5.setInt(1, idTender)
     val r5: ResultSet = p5.executeQuery()
     while (r5.next()) {
@@ -163,7 +174,6 @@ fun tenderKwords(idTender: Int, con: Connection, addInfo: String = "") {
     p6.setInt(2, idTender)
     p6.executeUpdate()
     p6.close()
-
 }
 
 fun getDate(dt: String): Date {
@@ -180,7 +190,10 @@ fun getDate(dt: String): Date {
     return d
 }
 
-fun getDateFromFormat(dt: String, format: Format): Date {
+fun getDateFromFormat(
+    dt: String,
+    format: Format,
+): Date {
     var d = Date(0L)
     try {
         d = format.parseObject(dt) as Date
@@ -201,7 +214,10 @@ fun String.getDateFromString(format: Format): Date {
     return d
 }
 
-fun dateAddHours(dt: Date, h: Int): Date {
+fun dateAddHours(
+    dt: Date,
+    h: Int,
+): Date {
     val cal = Calendar.getInstance()
     cal.time = dt
     cal.add(Calendar.HOUR_OF_DAY, h)
@@ -268,7 +284,6 @@ fun getOkpd(s: String): Pair<Int, String> {
         if (dot != -1) {
             okpd2GroupLevel1Code = s.slice(dot + 1 until dot + 2)
         }
-
     }
     return Pair(okpd2GroupCode, okpd2GroupLevel1Code)
 }
@@ -278,15 +293,13 @@ fun getDateFromString(d: String): Date {
     return t
 }
 
-fun String.tryParseInt(): Boolean {
-    return try {
+fun String.tryParseInt(): Boolean =
+    try {
         Integer.parseInt(this)
         true
     } catch (e: NumberFormatException) {
         false
     }
-
-}
 
 fun getOffset(s: String): String {
     var g = "GMT+3"
@@ -302,7 +315,11 @@ fun getOffset(s: String): String {
     return g
 }
 
-fun getDateFromFormatOffset(dt: String, format: SimpleDateFormat, offset: String): Date {
+fun getDateFromFormatOffset(
+    dt: String,
+    format: SimpleDateFormat,
+    offset: String,
+): Date {
     var d = Date(0L)
     try {
         format.timeZone = TimeZone.getTimeZone(offset)
@@ -313,8 +330,10 @@ fun getDateFromFormatOffset(dt: String, format: SimpleDateFormat, offset: String
     return d
 }
 
-
-fun regExpTester(reg: String, s: String): String {
+fun regExpTester(
+    reg: String,
+    s: String,
+): String {
     var st = ""
     try {
         val pattern: Pattern = Pattern.compile(reg)
@@ -432,5 +451,4 @@ fun getRegion(sp: String): String {
         s.contains("байкон") -> "байкон"
         else -> ""
     }
-
 }

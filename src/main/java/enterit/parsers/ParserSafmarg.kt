@@ -18,7 +18,9 @@ import java.util.logging.Level
 class ParserSafmarg : Iparser {
     init {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog")
-        java.util.logging.Logger.getLogger("org.openqa.selenium").level = Level.OFF
+        java.util.logging.Logger
+            .getLogger("org.openqa.selenium")
+            .level = Level.OFF
         System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver")
     }
 
@@ -28,6 +30,7 @@ class ParserSafmarg : Iparser {
     }
 
     private val tendersS = mutableListOf<SafmargT<String>>()
+
     override fun parser() {
         val options = ChromeOptions()
         options.addArguments("headless")
@@ -41,9 +44,9 @@ class ParserSafmarg : Iparser {
             driver.get(BaseUrl)
             val wait = WebDriverWait(driver, timeoutB)
             Thread.sleep(5000)
-            //auth(wait, driver)
-            //driver.get(BaseUrl)
-            //Thread.sleep(5000)
+            // auth(wait, driver)
+            // driver.get(BaseUrl)
+            // Thread.sleep(5000)
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@id = 'mat-button-toggle-3-button']")))
             driver.switchTo().defaultContent()
             try {
@@ -73,7 +76,7 @@ class ParserSafmarg : Iparser {
 
     private fun auth(
         wait: WebDriverWait,
-        driver: ChromeDriver
+        driver: ChromeDriver,
     ) {
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[contains(., 'Войти')]")))
@@ -85,7 +88,7 @@ class ParserSafmarg : Iparser {
             val usr = driver.findElement(By.xpath("//input[@formcontrolname = 'login']"))
             val pass = driver.findElement(By.xpath("//input[@formcontrolname = 'password']"))
             val inp = driver.findElement(By.xpath("//button[contains(., 'ДАЛЕЕ')]"))
-            //Thread.sleep(10000)
+            // Thread.sleep(10000)
             usr.sendKeys(UserSafmar)
             pass.sendKeys(PassSafmar)
             inp.click()
@@ -107,9 +110,12 @@ class ParserSafmarg : Iparser {
         val purName =
             el.findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))?.text?.trim { it <= ' ' }
                 ?: ""
-        val href = el.findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
-            ?.getAttribute("href")?.trim { it <= ' ' }
-            ?: ""
+        val href =
+            el
+                .findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
+                ?.getAttribute("href")
+                ?.trim { it <= ' ' }
+                ?: ""
         val tn = SafmargT(purNum, href, purName)
         tendersS.add(tn)
     }

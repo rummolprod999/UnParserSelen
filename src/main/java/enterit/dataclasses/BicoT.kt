@@ -12,5 +12,5 @@ data class BicoT(
     val nmck: String,
     val currency: String,
     val region: String,
-    val otr: String
+    val otr: String,
 )

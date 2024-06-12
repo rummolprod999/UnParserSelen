@@ -95,8 +95,8 @@ class TenderTalan(
                 var IdOrganizer = 0
                 var inn = ""
                 var fullnameOrg = ""
-            /*val urlOrgT = htmlTen.selectFirst("label:containsOwn(Организатор) + div > div > a")?.attr("href")?.trim { it <= ' ' }
-                    ?: ""*/
+                /*val urlOrgT = htmlTen.selectFirst("label:containsOwn(Организатор) + div > div > a")?.attr("href")?.trim { it <= ' ' }
+                        ?: ""*/
                 val urlOrgT = tn.urlOrg
                 if (urlOrgT != "") {
                     val pageOrg = downloadFromUrl(urlOrgT)

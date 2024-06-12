@@ -31,5 +31,4 @@ enum class Arguments {
     LEVEL,
     GLAVSTROY,
     ITMETAL,
-
 }

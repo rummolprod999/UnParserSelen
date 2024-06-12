@@ -7,15 +7,17 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 fun <T> T.findElementWithoutException(by: By): WebElement?
-        where T : SearchContext {
-    return try {
+        where T : SearchContext =
+    try {
         this.findElement(by)
     } catch (e: Exception) {
         null
     }
-}
 
-fun <T> T.clickertWithoutException(by: By, count: Int = 5)
+fun <T> T.clickertWithoutException(
+    by: By,
+    count: Int = 5,
+)
         where T : SearchContext {
     (1 until count).forEach { _ ->
         try {
@@ -23,10 +25,8 @@ fun <T> T.clickertWithoutException(by: By, count: Int = 5)
             el.click()
             return@forEach
         } catch (e: Exception) {
-
         }
     }
-
 }
 
 fun String.getDataFromRegexp(reg: String): String {

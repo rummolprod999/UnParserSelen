@@ -37,7 +37,6 @@ fun main(args: Array<String>) {
         Arguments.GLAVSTROY -> parserGlavstroy()
         Arguments.ITMETAL -> parserItMetal()
     }
-
 }
 
 fun parserTander() {

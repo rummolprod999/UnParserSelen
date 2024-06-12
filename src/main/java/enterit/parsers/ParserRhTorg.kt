@@ -15,7 +15,9 @@ import java.util.logging.Level
 class ParserRhTorg : Iparser {
     init {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog")
-        java.util.logging.Logger.getLogger("org.openqa.selenium").level = Level.OFF
+        java.util.logging.Logger
+            .getLogger("org.openqa.selenium")
+            .level = Level.OFF
         System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver")
     }
 
@@ -25,6 +27,7 @@ class ParserRhTorg : Iparser {
     }
 
     private val tendersS = mutableListOf<SafmargT<String>>()
+
     override fun parser() {
         val options = ChromeOptions()
         options.addArguments("headless")
@@ -62,9 +65,12 @@ class ParserRhTorg : Iparser {
             logger("cannot find dates or purNum in tender")
             return
         }
-        val href = el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))
-            ?.getAttribute("href")?.trim { it <= ' ' }
-            ?: ""
+        val href =
+            el
+                .findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))
+                ?.getAttribute("href")
+                ?.trim { it <= ' ' }
+                ?: ""
         val purName =
             el.findElementWithoutException(By.xpath(".//span[contains(@class, 'header-title')]//a"))?.text?.trim { it <= ' ' }
                 ?: ""

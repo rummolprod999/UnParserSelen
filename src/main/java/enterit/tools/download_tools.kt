@@ -12,11 +12,14 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import javax.net.ssl.*
 
-
-fun downloadFromUrl(urls: String, i: Int = 3, wt: Long = 5000): String {
+fun downloadFromUrl(
+    urls: String,
+    i: Int = 3,
+    wt: Long = 5000,
+): String {
     var count = 0
     while (true) {
-        //val i = 50
+        // val i = 50
         if (count >= i) {
             logger(String.format("Не скачали строку за %d попыток", count), urls)
             break
@@ -41,21 +44,24 @@ fun downloadFromUrl(urls: String, i: Int = 3, wt: Long = 5000): String {
                 executor.shutdown()
             }
             return s
-
         } catch (e: Exception) {
-            //logger(e, e.stackTrace)
+            // logger(e, e.stackTrace)
             count++
             sleep(wt)
         }
-
     }
     return ""
 }
 
-fun downloadFromUrlMosreg(urls: String, i: Int = 3, wt: Long = 5000, refferer: String = ""): String {
+fun downloadFromUrlMosreg(
+    urls: String,
+    i: Int = 3,
+    wt: Long = 5000,
+    refferer: String = "",
+): String {
     var count = 0
     while (true) {
-        //val i = 50
+        // val i = 50
         if (count >= i) {
             logger(String.format("Не скачали строку за %d попыток", count), urls)
             break
@@ -80,13 +86,11 @@ fun downloadFromUrlMosreg(urls: String, i: Int = 3, wt: Long = 5000, refferer: S
                 executor.shutdown()
             }
             return s
-
         } catch (e: Exception) {
             logger(e, e.stackTrace)
             count++
             sleep(wt)
         }
-
     }
     return ""
 }
@@ -105,7 +109,6 @@ fun downloadWait(urls: String): String {
         } else {
             s.append(inputLine)
         }
-
     }
     br.close()
     `is`.close()
@@ -131,23 +134,35 @@ fun downloadWaitWithRef(urls: String): String {
         } else {
             s.append(inputLine)
         }
-
     }
     br.close()
     `is`.close()
     return s.toString()
 }
 
-fun downloadWaitWithRefMosreg(urls: String, refferer: String = ""): String {
+fun downloadWaitWithRefMosreg(
+    urls: String,
+    refferer: String = "",
+): String {
     val s = StringBuilder()
-    val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-        override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate>? {
-            return null
-        }
+    val trustAllCerts =
+        arrayOf<TrustManager>(
+            object : X509TrustManager {
+                override fun getAcceptedIssuers(): Array<java.security.cert.X509Certificate>? = null
 
-        override fun checkClientTrusted(certs: Array<X509Certificate>, authType: String) {}
-        override fun checkServerTrusted(certs: Array<X509Certificate>, authType: String) {}
-    })
+                override fun checkClientTrusted(
+                    certs: Array<X509Certificate>,
+                    authType: String,
+                ) {
+                }
+
+                override fun checkServerTrusted(
+                    certs: Array<X509Certificate>,
+                    authType: String,
+                ) {
+                }
+            },
+        )
     val sc = SSLContext.getInstance("SSL")
     sc.init(null, trustAllCerts, java.security.SecureRandom())
     HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
@@ -176,17 +191,19 @@ fun downloadWaitWithRefMosreg(urls: String, refferer: String = ""): String {
         } else {
             s.append(inputLine)
         }
-
     }
     br.close()
     `is`.close()
     return s.toString()
 }
 
-fun downloadFromUrl1251(urls: String, i: Int = 3): String {
+fun downloadFromUrl1251(
+    urls: String,
+    i: Int = 3,
+): String {
     var count = 0
     while (true) {
-        //val i = 50
+        // val i = 50
         if (count >= i) {
             logger(String.format("Не скачали строку за %d попыток", count), urls)
             break
@@ -211,13 +228,11 @@ fun downloadFromUrl1251(urls: String, i: Int = 3): String {
                 executor.shutdown()
             }
             return s
-
         } catch (e: Exception) {
-            //logger(e, e.stackTrace)
+            // logger(e, e.stackTrace)
             count++
             sleep(5000)
         }
-
     }
     return ""
 }
@@ -230,7 +245,7 @@ fun downloadWaitWithRef1251(urls: String): String {
     uc.readTimeout = 600_000
     uc.addRequestProperty(
         "User-Agent",
-        "Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727) 3gpp-gba UNTRUSTED/1.0"
+        "Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727) 3gpp-gba UNTRUSTED/1.0",
     )
     uc.connect()
     val `is`: InputStream = uc.getInputStream()
@@ -244,7 +259,6 @@ fun downloadWaitWithRef1251(urls: String): String {
         } else {
             s.append(inputLine)
         }
-
     }
     br.close()
     `is`.close()

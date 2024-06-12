@@ -6,7 +6,6 @@ import enterit.tenders.TenderMvideo
 import enterit.tools.logger
 import javax.xml.ws.BindingProvider
 
-
 class ParserMvideo : Iparser {
     override fun parser() {
         val t = siGetProcList2SRMSO("")
@@ -20,8 +19,6 @@ class ParserMvideo : Iparser {
                 logger("error in TenderMvideo.parsing()", e.stackTrace, e)
             }
         }
-
-
     }
 
     private fun siGetProcList2SRMSO(mtGetProcListRequest: String): DTGetProcListResponse {

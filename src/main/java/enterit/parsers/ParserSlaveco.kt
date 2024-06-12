@@ -18,19 +18,23 @@ import java.util.logging.Level
 class ParserSlaveco : Iparser {
     init {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog")
-        java.util.logging.Logger.getLogger("org.openqa.selenium").level = Level.OFF
+        java.util.logging.Logger
+            .getLogger("org.openqa.selenium")
+            .level = Level.OFF
         System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver")
     }
 
     companion object WebCl {
-        const val BaseUrl = "https://tender.slaveco.ru/trades?page=purchases.trades.search&documents=N4IgLgTghgJgpgZTlCBjAFgbQA4Fc3pQDOcRAdJLKWSShgLogBcoEpuANmALID28zUADcoHXHGYhUKGCAC%2BAGhC8I8CIJABLWUwBMSsJrAcJTEIBQQQAwggIRBLIJQFsoYAJKpeAO0koIvAO4A%2BjD%2BHn4y9iDYEJpOEACeAKIAHlGkRJqeGsSocB4wmh4A5swAZqIkSlG82HAQYHGSAEoJAOIuCAAqCc0AIgE9AIJd8kpwKWxE6Z5EzJig2bn5RaXlcJW%2BNXUNZs1tnd0JfYPDiqBVm%2FWSLj0RC3kFxUxlHCRy9HKK4NDwAGKaXLUAApQDxwDg4fAYYjUSjwci0AiMFggIhgZy4IgAYX4phAog4ERUag02mY%2BnARhMkistgiTlc7i8Zh8%2FiCITCqgiURiKES4zSGSZ8yIOXuyyeq3W1Vqlx2rXaXV6%2FSGCRGIDGqUmgpmTDmeJFiweKxea0iGxl2xAuwVByOKpGZ3NWyuNyUdyWj2er3eUpykwQaLAGNIs3eciAA"
+        const val BaseUrl =
+            "https://tender.slaveco.ru/trades?page=purchases.trades.search&documents=N4IgLgTghgJgpgZTlCBjAFgbQA4Fc3pQDOcRAdJLKWSShgLogBcoEpuANmALID28zUADcoHXHGYhUKGCAC%2BAGhC8I8CIJABLWUwBMSsJrAcJTEIBQQQAwggIRBLIJQFsoYAJKpeAO0koIvAO4A%2BjD%2BHn4y9iDYEJpOEACeAKIAHlGkRJqeGsSocB4wmh4A5swAZqIkSlG82HAQYHGSAEoJAOIuCAAqCc0AIgE9AIJd8kpwKWxE6Z5EzJig2bn5RaXlcJW%2BNXUNZs1tnd0JfYPDiqBVm%2FWSLj0RC3kFxUxlHCRy9HKK4NDwAGKaXLUAApQDxwDg4fAYYjUSjwci0AiMFggIhgZy4IgAYX4phAog4ERUag02mY%2BnARhMkistgiTlc7i8Zh8%2FiCITCqgiURiKES4zSGSZ8yIOXuyyeq3W1Vqlx2rXaXV6%2FSGCRGIDGqUmgpmTDmeJFiweKxea0iGxl2xAuwVByOKpGZ3NWyuNyUdyWj2er3eUpykwQaLAGNIs3eciAA"
         const val timeoutB = 60L
     }
 
     private val tendersS = mutableListOf<SafmargT<String>>()
+
     override fun parser() {
         val options = ChromeOptions()
-        //options.addArguments("headless")
+        // options.addArguments("headless")
         options.addArguments("disable-gpu")
         options.addArguments("no-sandbox")
         options.addArguments("ignore-certificate-errors")
@@ -75,7 +79,7 @@ class ParserSlaveco : Iparser {
 
     private fun auth(
         wait: WebDriverWait,
-        driver: ChromeDriver
+        driver: ChromeDriver,
     ) {
         try {
             driver.switchTo().defaultContent()
@@ -84,7 +88,7 @@ class ParserSlaveco : Iparser {
             val usr = driver.findElement(By.xpath("//input[@formcontrolname = 'login']"))
             val pass = driver.findElement(By.xpath("//input[@formcontrolname = 'password']"))
             val inp = driver.findElement(By.xpath("//button[contains(., 'ДАЛЕЕ')]"))
-            //Thread.sleep(10000)
+            // Thread.sleep(10000)
             usr.sendKeys(UserSafmar)
             pass.sendKeys(PassSafmar)
             inp.click()
@@ -95,7 +99,10 @@ class ParserSlaveco : Iparser {
         driver.switchTo().defaultContent()
     }
 
-    private fun parserPageN(driver: ChromeDriver, wait: WebDriverWait) {
+    private fun parserPageN(
+        driver: ChromeDriver,
+        wait: WebDriverWait,
+    ) {
         driver.switchTo().defaultContent()
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("button.mat-button-base.mat-icon-button.mat-primary")))
         Thread.sleep(5000)
@@ -109,9 +116,9 @@ class ParserSlaveco : Iparser {
 
     private fun addTenders(
         wait: WebDriverWait,
-        driver: ChromeDriver
+        driver: ChromeDriver,
     ) {
-        //driver.getScreenshotAs(OutputType.FILE)
+        // driver.getScreenshotAs(OutputType.FILE)
         driver.switchTo().defaultContent()
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-search-card/um-card")))
         val tenders = driver.findElements(By.xpath("//um-trade-search-card/um-card"))
@@ -132,9 +139,12 @@ class ParserSlaveco : Iparser {
             logger("cannot find dates or purNum in tender")
             return
         }
-        val href = el.findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
-            ?.getAttribute("href")?.trim { it <= ' ' }
-            ?: ""
+        val href =
+            el
+                .findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
+                ?.getAttribute("href")
+                ?.trim { it <= ' ' }
+                ?: ""
         val tn = SafmargT(purNum, href, "")
         tendersS.add(tn)
     }

@@ -13,6 +13,7 @@ import java.sql.Statement
 abstract class TenderAbstract {
     var etpName = ""
     var etpUrl = ""
+
     fun getEtp(con: Connection): Int {
         var IdEtp = 0
         val stmto = con.prepareStatement("SELECT id_etp FROM ${Prefix}etp WHERE name = ? AND url = ? LIMIT 1")
@@ -26,10 +27,11 @@ abstract class TenderAbstract {
         } else {
             rso.close()
             stmto.close()
-            val stmtins = con.prepareStatement(
-                "INSERT INTO ${Prefix}etp SET name = ?, url = ?, conf=0",
-                Statement.RETURN_GENERATED_KEYS
-            )
+            val stmtins =
+                con.prepareStatement(
+                    "INSERT INTO ${Prefix}etp SET name = ?, url = ?, conf=0",
+                    Statement.RETURN_GENERATED_KEYS,
+                )
             stmtins.setString(1, etpName)
             stmtins.setString(2, etpUrl)
             stmtins.executeUpdate()
@@ -43,7 +45,11 @@ abstract class TenderAbstract {
         return IdEtp
     }
 
-    fun getAttachments(idTender: Int, con: Connection, purNum: String) {
+    fun getAttachments(
+        idTender: Int,
+        con: Connection,
+        purNum: String,
+    ) {
         val page = downloadFromUrl("https://zmo-new-webapi.rts-tender.ru/api/Trade/$purNum/GetTradeDocuments")
         if (page == "") {
             return
@@ -53,7 +59,8 @@ abstract class TenderAbstract {
         val docs: List<RtsAtt> = gson.fromJson(page, listType)
         docs.forEach {
             if (it.FileName != null && it.Url != null) {
-                con.prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?")
+                con
+                    .prepareStatement("INSERT INTO ${Prefix}attachment SET id_tender = ?, file_name = ?, url = ?")
                     .apply {
                         setInt(1, idTender)
                         setString(2, it.FileName)
@@ -63,10 +70,12 @@ abstract class TenderAbstract {
                     }
             }
         }
-
     }
 
-    fun getPlacingWay(con: Connection, placingWay: String): Int {
+    fun getPlacingWay(
+        con: Connection,
+        placingWay: String,
+    ): Int {
         var idPlacingWay = 0
         val stmto = con.prepareStatement("SELECT id_placing_way FROM ${Prefix}placing_way WHERE name = ? LIMIT 1")
         stmto.setString(1, placingWay)
@@ -79,10 +88,11 @@ abstract class TenderAbstract {
             rso.close()
             stmto.close()
             val conf = getConformity(placingWay)
-            val stmtins = con.prepareStatement(
-                "INSERT INTO ${Prefix}placing_way SET name = ?, conformity = ?",
-                Statement.RETURN_GENERATED_KEYS
-            )
+            val stmtins =
+                con.prepareStatement(
+                    "INSERT INTO ${Prefix}placing_way SET name = ?, conformity = ?",
+                    Statement.RETURN_GENERATED_KEYS,
+                )
             stmtins.setString(1, placingWay)
             stmtins.setInt(2, conf)
             stmtins.executeUpdate()
@@ -92,12 +102,14 @@ abstract class TenderAbstract {
             }
             rsoi.close()
             stmtins.close()
-
         }
         return idPlacingWay
     }
 
-    fun getIdRegion(con: Connection, reg: String): Int {
+    fun getIdRegion(
+        con: Connection,
+        reg: String,
+    ): Int {
         var idReg = 0
         val re = getRegion(reg)
         if (re != "") {
@@ -114,7 +126,6 @@ abstract class TenderAbstract {
             }
         }
         return idReg
-
     }
 
     class RtsAtt {

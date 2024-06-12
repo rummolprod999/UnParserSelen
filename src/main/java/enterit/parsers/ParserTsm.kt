@@ -16,7 +16,9 @@ import java.util.logging.Level
 class ParserTsm : Iparser {
     init {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog")
-        java.util.logging.Logger.getLogger("org.openqa.selenium").level = Level.OFF
+        java.util.logging.Logger
+            .getLogger("org.openqa.selenium")
+            .level = Level.OFF
         System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver")
     }
 
@@ -26,6 +28,7 @@ class ParserTsm : Iparser {
     }
 
     private val tendersS = mutableListOf<SafmargT<String>>()
+
     override fun parser() {
         val options = ChromeOptions()
         options.addArguments("headless")
@@ -64,7 +67,7 @@ class ParserTsm : Iparser {
 
     private fun getTenderList(
         wait: WebDriverWait,
-        driver: ChromeDriver
+        driver: ChromeDriver,
     ) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//um-trade-search-card/um-card")))
         driver.switchTo().defaultContent()
@@ -78,7 +81,10 @@ class ParserTsm : Iparser {
         }
     }
 
-    private fun parserPageN(driver: ChromeDriver, wait: WebDriverWait) {
+    private fun parserPageN(
+        driver: ChromeDriver,
+        wait: WebDriverWait,
+    ) {
         driver.switchTo().defaultContent()
         Thread.sleep(5000)
         driver.switchTo().defaultContent()
@@ -97,9 +103,12 @@ class ParserTsm : Iparser {
             logger("cannot find dates or purNum in tender")
             return
         }
-        val href = el.findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
-            ?.getAttribute("href")?.trim { it <= ' ' }
-            ?: ""
+        val href =
+            el
+                .findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))
+                ?.getAttribute("href")
+                ?.trim { it <= ' ' }
+                ?: ""
         val purName =
             el.findElementWithoutException(By.xpath(".//a[contains(@class, 'trade-title')]"))?.text?.trim { it <= ' ' }
                 ?: ""
