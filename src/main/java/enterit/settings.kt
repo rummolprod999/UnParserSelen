@@ -79,9 +79,13 @@ var tempDirTendersGlavstroy: String? = null
 var logDirTendersGlavstroy: String? = null
 var tempDirTendersItMetal: String? = null
 var logDirTendersItMetal: String? = null
+var tempDirTendersAbsGroup: String? = null
+var logDirTendersAbsGroup: String? = null
 var UserTander: String? = null
+var UserAbsGroup: String? = null
 var UserMvideo: String? = null
 var PassTander: String? = null
+var PassAbsGroup: String? = null
 var UserSafmar: String? = null
 var PassSafmar: String? = null
 var Prefix: String? = null
@@ -95,6 +99,8 @@ var AddTenderTander: Int = 0
 var UpdateTenderTander: Int = 0
 var AddTenderSafmarg: Int = 0
 var UpdateTenderSafmarg: Int = 0
+var AddTenderAbsGroup: Int = 0
+var UpdateTenderAbsGroup: Int = 0
 var AddTenderMvideo: Int = 0
 var UpdateTenderMvideo: Int = 0
 var AddTenderTalan: Int = 0
@@ -413,6 +419,13 @@ fun getSettings() =
                     "logdir_tenders_itmetal" ->
                         logDirTendersItMetal =
                             executePath + File.separator + it.childNodes.item(0).textContent
+                    "tempdir_tenders_absgroup" ->
+                        tempDirTendersAbsGroup =
+                            executePath + File.separator + it.childNodes.item(0).textContent
+
+                    "logdir_tenders_absgroup" ->
+                        logDirTendersAbsGroup =
+                            executePath + File.separator + it.childNodes.item(0).textContent
 
                     "prefix" ->
                         Prefix =
@@ -423,8 +436,10 @@ fun getSettings() =
                             }
 
                     "usertander" -> UserTander = it.childNodes.item(0).textContent
+                    "userabsgroup" -> UserAbsGroup = it.childNodes.item(0).textContent
                     "usermvideo" -> UserMvideo = it.childNodes.item(0).textContent
                     "passtander" -> PassTander = it.childNodes.item(0).textContent
+                    "passabsgroupr" -> PassAbsGroup = it.childNodes.item(0).textContent
                     "usersafmar" -> UserSafmar = it.childNodes.item(0).textContent
                     "passsafmar" -> PassSafmar = it.childNodes.item(0).textContent
                     "userdb" -> UserDb = it.childNodes.item(0).textContent
@@ -474,6 +489,7 @@ fun init(args: Array<String>) {
             "level" -> arg = Arguments.LEVEL
             "glavstroy" -> arg = Arguments.GLAVSTROY
             "itmetal" -> arg = Arguments.ITMETAL
+            "absgroup" -> arg = Arguments.ABSGROUP
             else ->
                 run {
                     println("Неверно указаны аргументы, используйте $arguments, выходим из программы")
@@ -663,6 +679,11 @@ fun init(args: Array<String>) {
             run {
                 tempDirTenders = tempDirTendersItMetal
                 logDirTenders = logDirTendersItMetal
+            }
+        Arguments.ABSGROUP ->
+            run {
+                tempDirTenders = tempDirTendersAbsGroup
+                logDirTenders = logDirTendersAbsGroup
             }
     }
     if (tempDirTenders == null || tempDirTenders == "") {

@@ -36,6 +36,7 @@ fun main(args: Array<String>) {
         Arguments.LEVEL -> parserLevel()
         Arguments.GLAVSTROY -> parserGlavstroy()
         Arguments.ITMETAL -> parserItMetal()
+        Arguments.ABSGROUP -> parserAbsGroup()
     }
 }
 
@@ -82,6 +83,29 @@ fun parserSafmarg() {
     }
     logger("Добавили тендеров $AddTenderSafmarg")
     logger("Обновили тендеров $UpdateTenderSafmarg")
+    logger("Конец парсинга")
+}
+
+fun parserAbsGroup() {
+    logger("Начало парсинга")
+    val p = ParserAbsGroup()
+    var tr = 0
+    while (true) {
+        try {
+            p.parser()
+            break
+        } catch (e: Exception) {
+            tr++
+            if (tr > 4) {
+                logger("Количество попыток истекло, выходим из программы")
+                break
+            }
+            logger("Error in parserAbsGroup function", e.stackTrace, e)
+            e.printStackTrace()
+        }
+    }
+    logger("Добавили тендеров $AddTenderAbsGroup")
+    logger("Обновили тендеров $UpdateTenderAbsGroup")
     logger("Конец парсинга")
 }
 
