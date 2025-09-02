@@ -52,7 +52,7 @@ class TenderItMetal(
                 ),
             )
         } catch (e: Exception) {
-            logger("cannot find expected startDate", driver.pageSource)
+            logger("cannot find expected startDate", tn.href)
             return
         }
         var datePubT =
@@ -62,7 +62,7 @@ class TenderItMetal(
                 )?.text
                 ?.trim {
                     it <=
-                        ' '
+                            ' '
                 }
                 ?: ""
         var pubDate = Date()
@@ -98,7 +98,7 @@ class TenderItMetal(
                 )?.text
                 ?.trim {
                     it <=
-                        ' '
+                            ' '
                 }
                 ?: ""
         var endDate = Date()
@@ -227,7 +227,7 @@ class TenderItMetal(
                                 )?.text
                                 ?.trim {
                                     it <=
-                                        ' '
+                                            ' '
                                 }
                                 ?: ""
                         val factAdr =
@@ -239,7 +239,7 @@ class TenderItMetal(
                                 )?.text
                                 ?.trim {
                                     it <=
-                                        ' '
+                                            ' '
                                 }
                                 ?: ""
                         val email =
@@ -249,7 +249,7 @@ class TenderItMetal(
                                 )?.text
                                 ?.trim {
                                     it <=
-                                        ' '
+                                            ' '
                                 }
                                 ?: ""
                         val phone =
@@ -259,7 +259,7 @@ class TenderItMetal(
                                 )?.text
                                 ?.trim {
                                     it <=
-                                        ' '
+                                            ' '
                                 }
                                 ?: ""
                         val contactPerson =
@@ -269,7 +269,7 @@ class TenderItMetal(
                                 )?.text
                                 ?.trim {
                                     it <=
-                                        ' '
+                                            ' '
                                 }
                                 ?: ""
                         val stmtins =
@@ -301,7 +301,7 @@ class TenderItMetal(
                         )?.text
                         ?.trim {
                             it <=
-                                ' '
+                                    ' '
                         }
                         ?: ""
                 var scoringDate = Date()
@@ -353,7 +353,7 @@ class TenderItMetal(
                 val placingWayName =
                     driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Способ закупки')]"))?.text?.trim {
                         it <=
-                            ' '
+                                ' '
                     }
                         ?: ""
                 if (placingWayName != "") {
@@ -366,7 +366,7 @@ class TenderItMetal(
                         )?.text
                         ?.trim {
                             it <=
-                                ' '
+                                    ' '
                         }
                         ?: ""
 
@@ -381,7 +381,7 @@ class TenderItMetal(
                         )?.text
                         ?.trim {
                             it <=
-                                ' '
+                                    ' '
                         }
                         ?: ""
                 val purObj = "${tn.purName} $purObj1 $purObj2".trim { it <= ' ' }
@@ -477,7 +477,7 @@ class TenderItMetal(
                         )?.text
                         ?.trim {
                             it <=
-                                ' '
+                                    ' '
                         }
                         ?: ""
                 if (rec1 != "") requareList.add(rec1)
@@ -490,7 +490,7 @@ class TenderItMetal(
                         )?.text
                         ?.trim {
                             it <=
-                                ' '
+                                    ' '
                         }
                         ?: ""
                 if (rec2 != "") requareList.add(rec2)
@@ -502,7 +502,7 @@ class TenderItMetal(
                         )?.text
                         ?.trim {
                             it <=
-                                ' '
+                                    ' '
                         }
                         ?: ""
                 val delivPlace = "$delivPlace1 $delivPlace2".trim { it <= ' ' }
@@ -513,7 +513,7 @@ class TenderItMetal(
                         )?.text
                         ?.trim {
                             it <=
-                                ' '
+                                    ' '
                         }
                         ?: ""
                 if (delivTerm1 != "") delivTerm1 = "Условия оплаты: $delivTerm1"
@@ -524,7 +524,7 @@ class TenderItMetal(
                         )?.text
                         ?.trim {
                             it <=
-                                ' '
+                                    ' '
                         }
                         ?: ""
                 if (delivTerm2 != "") {
@@ -540,7 +540,7 @@ class TenderItMetal(
                         )?.text
                         ?.trim {
                             it <=
-                                ' '
+                                    ' '
                         }
                         ?: ""
                 if (delivTerm3 != "") {
@@ -556,7 +556,7 @@ class TenderItMetal(
                         )?.text
                         ?.trim {
                             it <=
-                                ' '
+                                    ' '
                         }
                         ?: ""
                 if (delivTerm4 != "") {
@@ -570,7 +570,7 @@ class TenderItMetal(
                 val currency =
                     driver.findElementWithoutException(By.xpath("//div[contains(preceding-sibling::div, 'Валюта')]"))?.text?.trim {
                         it <=
-                            ' '
+                                ' '
                     }
                         ?: ""
                 val lots = driver.findElements(By.xpath("//mat-expansion-panel"))
@@ -584,7 +584,7 @@ class TenderItMetal(
                             )?.text
                             ?.trim {
                                 it <=
-                                    ' '
+                                        ' '
                             }
                             ?: ""
                     if (lotName == "") {
@@ -595,7 +595,7 @@ class TenderItMetal(
                                 )?.text
                                 ?.trim {
                                     it <=
-                                        ' '
+                                            ' '
                                 }
                                 ?: ""
                     }
@@ -606,7 +606,7 @@ class TenderItMetal(
                             )?.text
                             ?.trim {
                                 it <=
-                                    ' '
+                                        ' '
                             }?.deleteAllWhiteSpace()
                             ?.replace(",", ".")
                             ?: ""
@@ -719,7 +719,78 @@ class TenderItMetal(
                                 }
                         }
                     }
+                    var need = true
+                    if (purobj1.isEmpty()) {
+                        val purobj3 =
+                            driver.findElements(
+                                By.xpath(
+                                    "//mat-card-title[contains(., 'Спецификация поставки')]/following-sibling::mat-card-content//div[@class = 'k-grid-table-wrap' and @role = 'presentation']//tr",
+                                ),
+                            )
+                        purobj3.forEach {
+                            need = false
+                            val test =
+                                it.findElementWithoutException(By.xpath(".//td[7]"))?.text?.trim { it <= ' ' }
+                                    ?: ""
+                            if (true) {
+                                val name1 =
+                                    it.findElementWithoutException(By.xpath(".//td[2]"))?.text?.trim { it <= ' ' }
+                                        ?: ""
+                                val name2 =
+                                    it.findElementWithoutException(By.xpath(".//td[3]"))?.text?.trim { it <= ' ' }
+                                        ?: ""
+                                val name = "$name1 $name2".trim { it <= ' ' }
+                                val okei =
+                                    it.findElementWithoutException(By.xpath(".//td[5]"))?.text?.trim { it <= ' ' }
+                                        ?: ""
+                                val quantity =
+                                    it
+                                        .findElementWithoutException(By.xpath(".//td[4]"))
+                                        ?.text
+                                        ?.trim { it <= ' ' }
+                                        ?.replace(",", "")
+                                        ?.deleteAllWhiteSpace()
+                                        ?: ""
+                                val insertPurObj =
+                                    con
+                                        .prepareStatement(
+                                            "INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, okei = ?, quantity_value = ?, customer_quantity_value = ?",
+                                        ).apply {
+                                            setInt(1, idLot)
+                                            setInt(2, idCustomer)
+                                            setString(3, name)
+                                            setString(4, okei)
+                                            setString(5, quantity)
+                                            setString(6, quantity)
+                                            executeUpdate()
+                                            close()
+                                        }
+                                val delivTermT =
+                                    it.findElementWithoutException(By.xpath(".//td[6]"))?.text?.trim { it <= ' ' }
+                                        ?: ""
+                                val delivTerm =
+                                    if (delivTermT != "") {
+                                        "Срок поставки: $delivTerm"
+                                    } else {
+                                        ""
+                                    }
+                                if (delivTerm != "") {
+                                    con
+                                        .prepareStatement(
+                                            "INSERT INTO ${Prefix}customer_requirement SET id_lot = ?, id_customer = ?, delivery_place = ?, delivery_term = ?",
+                                        ).apply {
+                                            setInt(1, idLot)
+                                            setInt(2, idCustomer)
+                                            setString(3, delivPlace)
+                                            setString(4, delivTerm)
+                                            executeUpdate()
+                                            close()
+                                        }
+                                }
+                            }
+                        }
 
+                    }
                     var purobj2 = mutableListOf<WebElement>()
                     val toggler =
                         lot.findElementWithoutException(By.xpath("//tr[@class = 'purchase-items-toggler-row' and @onclick]"))
@@ -758,13 +829,13 @@ class TenderItMetal(
                                 close()
                             }
                     }
-                    if (purobj1.isEmpty() && purobj2.isEmpty()) {
+                    if (purobj1.isEmpty() && purobj2.isEmpty() && need) {
                         con
                             .prepareStatement("INSERT INTO ${Prefix}purchase_object SET id_lot = ?, id_customer = ?, name = ?, sum = ?")
                             .apply {
                                 setInt(1, idLot)
                                 setInt(2, idCustomer)
-                                setString(3, lotName)
+                                setString(3, tn.purName)
                                 setString(4, nmck)
                                 executeUpdate()
                                 close()

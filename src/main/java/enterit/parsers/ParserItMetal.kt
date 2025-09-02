@@ -113,7 +113,10 @@ class ParserItMetal : Iparser {
                 ?.getAttribute("href")
                 ?.trim { it <= ' ' }
                 ?: ""
-        val tn = SafmargT(purNum, href, "")
+        val purName =
+            el.findElementWithoutException(By.xpath(".//div[contains(@class, 'trade-number')]/following-sibling::span"))?.text?.trim { it <= ' ' }
+                ?: ""
+        val tn = SafmargT(purNum, href, purName)
         tendersS.add(tn)
     }
 }
